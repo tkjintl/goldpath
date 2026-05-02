@@ -1,93 +1,60 @@
-# Aurum Site
+# Goldpath / Aurum
 
-Production Vite + React site consolidating all 12 Aurum surfaces into one routed SPA.
+Two apps live here.
 
-## Install & run
+## `aurum-next/` — production target
+
+Next.js 16 App Router app. **This is what `tkjintls-projects/goldpath` on Vercel should deploy.**
+
+Phase 1 surface: diaspora-positioned landing, heritage feature page, waitlist with
+deposit-intent capture, six trust/transparency pages, Korean-residents non-solicitation
+disclosure, `/ops` admin dashboard, sitemap, robots, OG image, illustrative calculator.
+
+```bash
+cd aurum-next
+npm install
+cp .env.example .env.local   # set ADMIN_TOKEN at minimum
+npm run dev                  # http://localhost:3000
+```
+
+See `aurum-next/README.md` for full Phase 1 scope, the 90-day kill criteria, and the
+Phase 2 roadmap.
+
+## `src/` (and root) — Vite mockup, design reference
+
+The original Korean-MZ drop-energy design exploration. Kept as a reference for the design
+system, not the production target. Ignore if you're working on the live product.
 
 ```bash
 npm install
-npm run dev
+npm run dev   # Vite dev server, original mockup
 ```
 
-Opens at `http://localhost:5173`.
+## Vercel deploy posture
 
-## Build for production
+The `tkjintls-projects/goldpath` Vercel project should be configured with:
 
-```bash
-npm run build
-```
+- **Root Directory:** `aurum-next`
+- **Framework Preset:** Next.js (auto-detected)
+- **Build / Install / Output:** defaults (`aurum-next/vercel.json` pins them)
 
-Output in `dist/`. Deploy as static site (Vercel, Netlify, Cloudflare Pages).
+Once Root Directory is set, every push to `main` deploys `aurum-next/` to production.
+The Vite mockup at repo root is no longer the deploy target.
 
-## Routes
+## Environment variables (Vercel project settings)
 
-| Path | Purpose |
-|------|---------|
-| `/` | Homepage · V4 Quiet + Hybrid toggle |
-| `/start` | MZ acquisition page |
-| `/founders` | Founders Club tier ladder |
-| `/terminal` | Authenticated dashboard (mock data) |
-| `/shop` | Product catalog · bars + coins |
-| `/vault` | Malca-Amit deep-dive |
-| `/why` | The thesis · four forces |
-| `/security` | Trust infrastructure |
-| `/signup` | Onboarding · 4-step |
-| `/login` | KakaoTalk SSO + email |
-| `/kyc` | MAS PSPM 2019 compliance flow |
-| `/referral` | GMV growth engine · 5-tier + 90-day promo |
+Required for the Phase 1 waitlist surface:
 
-## Structure
+| key | purpose | scope |
+|---|---|---|
+| `ADMIN_TOKEN` | gates `/ops` and `/api/waitlist` GET | Production + Preview |
+| `RESEND_API_KEY` | (optional) waitlist confirmation emails | Production |
+| `DATABASE_URL` | (Phase 2) Neon Postgres for waitlist persistence | all |
 
-```
-src/
-├── main.jsx              React root + BrowserRouter
-├── App.jsx               Routes + layout
-├── index.css             Global resets + font imports
-├── lib/
-│   ├── tokens.js         Design tokens (T object, single source of truth)
-│   └── constants.js      GATES, AGP_CREDITS, PRODUCTS, math helpers
-├── components/
-│   ├── QuietNav.jsx      Sticky top nav
-│   ├── QuietFooter.jsx   2-line Roman numeral finish
-│   ├── SectionHead.jsx   § numeral + bilingual heading
-│   └── UI.jsx            Prose, PrimaryCTA, GhostCTA
-└── pages/
-    └── (12 page components)
-```
+Without `DATABASE_URL`, waitlist entries fall back to a local JSONL file — fine for
+development, **not for production** (filesystem is ephemeral on Vercel Functions).
+Provision Neon via the Vercel Marketplace before any real traffic.
 
-## Design notes
+## Background work tracked elsewhere
 
-- V4 Quiet register throughout (serif Korean + italic English pairing)
-- Gold palette: `#C5A572` (mid), `#E3C187` (bright), `#8a7d6b` (dim)
-- Fonts: Cormorant Garamond (serif), Pretendard (Korean sans), Outfit (English sans), JetBrains Mono
-- Korean-first: KRW shown before USD, Korean labels before English
-- Two-line Roman numeral footer on every page: `MMXXVI · QUIETLY · FOREVER`
-
-## Membership tiers
-
-| Level | Name (KO/EN) | GMV threshold | Founder discount | AGP bonus credit |
-|-------|--------------|---------------|------------------|------------------|
-| I | 브론즈 / Bronze | ₩7.2M | −1.0% | +₩50K |
-| II | 실버 / Silver | ₩21.6M | −1.5% | +₩150K |
-| III | 골드 / Gold (APEX) | ₩50.4M | −2.0% | +₩400K |
-| IV | 플래티넘 / Platinum | ₩93.6M | −2.5% | +₩1M |
-| V | 소브린 / Sovereign | ₩144M | −3.0% | +₩2.5M |
-
-Total max AGP bonus: ₩4.1M in free physical gold over lifetime.
-
-## Every new signup
-
-Gets the tier-above discount rate for 90 days (Bronze → Silver rate, etc). Sovereign is max — no uplift.
-
-## Discount applied to
-
-**Aurum price** (spot × 1.08 platform markup), not spot. Discount compounds as GMV crosses each gate.
-
-## Four GMV sources
-
-1. My physical (direct bar/coin purchases)
-2. My GoldPath (monthly subscription auto-debit)
-3. Referral physical (friends' purchases)
-4. Referral GoldPath (friends' AGP commitments)
-
-Referrals are **unlimited**. Referee purchases count toward the referrer's GMV.
+- 30-day waitlist kill-criteria check is scheduled at <https://claude.ai/code/routines/trig_01BSQZi877nJ2deReZHDYK39> — update the placeholder URL/token before it fires on 2026-06-01.
