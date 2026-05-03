@@ -57,10 +57,7 @@ export async function Hero() {
             <span>
               LBMA{' '}
               <span className="gp-num" style={{ color: 'var(--ink)' }}>
-                <CountUp
-                  to={p.lbmaUsdPerOz}
-                  format={(n) => '$' + n.toFixed(0)}
-                />
+                <CountUp to={p.lbmaUsdPerOz} prefix="$" />
               </span>{' '}
               · SINGAPORE
             </span>

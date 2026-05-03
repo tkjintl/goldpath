@@ -8,18 +8,25 @@ function easeOutExpo(t: number): number {
   return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
 }
 
-const defaultFormat = (n: number) => n.toLocaleString('ko-KR');
-
+// Primitive props only — no function props. Server components can't
+// serialize functions across the RSC boundary, so format is composed
+// from prefix/suffix/decimals/locale instead of a callback.
 export function CountUp({
   to,
-  format = defaultFormat,
   duration = 1100,
   start = 0,
+  prefix = '',
+  suffix = '',
+  decimals = 0,
+  locale = 'ko-KR',
 }: {
   to: number;
-  format?: (n: number) => string;
   duration?: number;
   start?: number;
+  prefix?: string;
+  suffix?: string;
+  decimals?: number;
+  locale?: string;
 }) {
   const ref = useRef<HTMLSpanElement | null>(null);
   const [val, setVal] = useState<number>(start);
@@ -71,13 +78,21 @@ export function CountUp({
     return () => observer.disconnect();
   }, [to, duration, start, done]);
 
+  const formatted =
+    decimals > 0
+      ? val.toLocaleString(locale, {
+          minimumFractionDigits: decimals,
+          maximumFractionDigits: decimals,
+        })
+      : Math.round(val).toLocaleString(locale);
+
   return (
     <span
       ref={ref}
       data-counted={done ? 'true' : 'false'}
       style={{ fontVariantNumeric: 'tabular-nums' }}
     >
-      {format(Math.round(val))}
+      {prefix}{formatted}{suffix}
     </span>
   );
 }

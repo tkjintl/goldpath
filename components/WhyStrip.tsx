@@ -26,7 +26,7 @@ export async function WhyStrip() {
       render: () => (
         <>
           <span>{kimchiSign}</span>
-          <CountUp to={kimchiAbs} format={(n) => n.toFixed(1)} />
+          <CountUp to={kimchiAbs} decimals={1} />
           <span>%</span>
         </>
       ),
