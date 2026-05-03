@@ -231,7 +231,7 @@ input, textarea, select {
     padding: 20px 16px 40px !important;
   }
   section.gp-hero {
-    padding-top: 0 !important;
+    padding-top: 16px !important;
   }
   .gp-hero-eyebrow {
     flex-wrap: nowrap !important;
