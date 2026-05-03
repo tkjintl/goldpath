@@ -1,3 +1,4 @@
+// Homepage entry — / route
 import { Ticker } from '@/components/Ticker';
 import { Nav } from '@/components/Nav';
 import { Hero } from '@/components/Hero';
