@@ -135,6 +135,33 @@ export function storageBackend(): 'postgres' | 'jsonl' {
   return process.env.DATABASE_URL ? 'postgres' : 'jsonl';
 }
 
+// ─── Recent signups (anonymized for /promo leaderboard) ─────────────
+function deriveInitial(name: string): string {
+  const tokens = name.trim().split(/\s+/).slice(0, 3);
+  if (tokens.length === 0) return '—';
+  if (tokens.every((t) => /^[a-zA-Z]/.test(t))) {
+    return tokens.map((t) => t[0]!.toUpperCase()).join('.');
+  }
+  return tokens.map((t) => t[0]!).join('.');
+}
+
+export async function getRecentSignups(
+  limit: number = 8,
+): Promise<Array<{ initial: string; tier: string; daysAgo: number }>> {
+  const all = await listSignups(100);
+  const sorted = [...all].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  );
+  return sorted.slice(0, limit).map((s) => ({
+    initial: deriveInitial(s.name),
+    tier: s.tier ?? 'I',
+    daysAgo: Math.max(
+      0,
+      Math.floor((Date.now() - new Date(s.createdAt).getTime()) / 86_400_000),
+    ),
+  }));
+}
+
 // ─── Admin audit re-exports ──────────────────────────────────────────
 // Convenience so call sites can `import { recordAdminAction } from
 // '@/lib/db/store'`. The canonical implementation lives in

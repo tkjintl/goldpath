@@ -5,11 +5,11 @@ import { useEffect, useState } from 'react';
 import { Mark } from './Mark';
 
 const links = [
+  { href: '/promo', label: 'DROP', live: true },
   { href: '/why', label: '왜 지금' },
   { href: '/how', label: '방법' },
   { href: '/tiers', label: '등급' },
   { href: '/trust', label: '트러스트' },
-  { href: '/heritage', label: '유산' },
   { href: '/faq', label: 'FAQ' },
 ];
 
@@ -84,11 +84,28 @@ export function Nav() {
               key={l.href}
               href={l.href as any}
               style={{
-                fontFamily: 'var(--font-kr)',
-                fontSize: 14,
-                color: 'var(--ink-2)',
+                fontFamily: l.live ? 'var(--font-mono)' : 'var(--font-kr)',
+                fontSize: l.live ? 11 : 14,
+                color: l.live ? 'var(--accent)' : 'var(--ink-2)',
+                letterSpacing: l.live ? '0.18em' : 'normal',
+                fontWeight: l.live ? 700 : 'inherit',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: l.live ? 6 : 0,
               }}
             >
+              {l.live && (
+                <span
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: '50%',
+                    background: 'var(--accent)',
+                    boxShadow: '0 0 8px var(--accent)',
+                    animation: 'pulse 1.6s ease-in-out infinite',
+                  }}
+                />
+              )}
               {l.label}
             </Link>
           ))}
