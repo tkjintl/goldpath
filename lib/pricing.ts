@@ -1,39 +1,33 @@
-// ─────────────────────────────────────────────────────────────────────
 // GoldPath pricing oracle
 //
 // Three numbers we need:
-//   1. LBMA / international gold (USD/oz)        — what GoldPath actually buys at
-//   2. FX rate (KRW per USD)                     — to express gold in KRW
-//   3. Korea Gold Exchange retail (KRW/g)        — for kimchi-premium comparison
+//   1. LBMA / international gold (USD/oz)  — what GoldPath actually buys at
+//   2. FX rate (KRW per USD)               — to express gold in KRW
+//   3. Korea retail KRW/g                  — for kimchi-premium comparison
 //
-// Approach (Phase 1):
-//   - FX:    Frankfurter.app — open, no key, ECB rates
-//   - Gold:  Stooq daily quote (XAUUSD index) — open CSV, no key
-//   - Retail: weekly-updated seed in code; Phase 2 ops portal lets staff
-//            update this manually until we license a real feed
+// Gold source priority:
+//   1. Yahoo Finance GC=F (gold futures front-month, COMEX) — reliable JSON, no key
+//   2. Stooq XAUUSD CSV                                     — backup, no key
+//   3. Seed constant                                         — honest last-known value
 //
-// Cached 5 min via Next's unstable_cache. Falls back to honest seed
-// values when any feed misbehaves; surfaces `LIVE` vs `CACHED` in UI.
-// ─────────────────────────────────────────────────────────────────────
+// FX: Frankfurter (ECB rates, open, no key)
+// Retail: weekly seed; Phase 2 ops portal lets staff update until live feed licensed
+//
+// Cached 5 min. Surfaces LIVE vs SEED status in UI.
 
 import { unstable_cache } from 'next/cache';
 
 export type FeedStatus = 'live' | 'seed';
 
 export type PriceSnapshot = {
-  // KRW per gram
   retailKrwPerGram: number;
   aurumKrwPerGram: number;
   lbmaKrwPerGram: number;
-  // Reference
   lbmaUsdPerOz: number;
   fxKrwPerUsd: number;
-  // Compatibility (kept so existing components keep working)
-  krxKrwPerGram: number;
-  // Derived
+  krxKrwPerGram: number; // kept for component compatibility — same as lbmaKrwPerGram
   kimchiPremiumPct: number; // (retail − lbma_in_krw) / lbma_in_krw
-  aurumDiscountPct: number; // (aurum − retail) / retail (negative is good)
-  // Meta
+  aurumDiscountPct: number; // (aurum − retail) / retail — negative = cheaper than retail
   timestamp: string;
   retailAsOf: string;
   sources: { gold: FeedStatus; fx: FeedStatus; retail: FeedStatus };
@@ -42,92 +36,137 @@ export type PriceSnapshot = {
 const OZ_TO_G = 31.1034768;
 const AURUM_SPREAD_PCT = 0.02;
 
-// ─── Honest seeds (update on each weekly check) ───────────────────────
-// Last updated: 2026-05-02 — gold rally context, late KRW weakness.
-const SEED_LBMA_USD_OZ = 4842.10;
-const SEED_FX = 1440.20;
-const SEED_RETAIL_KRW_G = 269_500;        // ~20% kimchi premium snapshot
-const SEED_RETAIL_AS_OF = '2026-05-02';
+// Sanity bounds — reject any feed value outside this range
+const GOLD_MIN_USD = 2_000;
+const GOLD_MAX_USD = 12_000;
 
-// ─── FX — Frankfurter (ECB, free, no key) ─────────────────────────────
-async function fetchFx(): Promise<{ value: number; ok: boolean }> {
+// ─── Seeds — update weekly ──────────────────────────────────────────────
+// Last updated: 2026-05-03 (confirmed via Yahoo Finance GC=F: $4,644 · Stooq: $4,610)
+const SEED_LBMA_USD_OZ   = 4_644.50;
+const SEED_FX            = 1_440.20;
+const SEED_RETAIL_KRW_G  = 258_000;  // ~20% kimchi premium at current spot
+const SEED_RETAIL_AS_OF  = '2026-05-03';
+
+// ─── Yahoo Finance GC=F (primary gold source) ───────────────────────────
+// GC=F = gold futures front-month (COMEX). Tracks spot very closely.
+// Endpoint returns JSON with chart.result[0].meta.regularMarketPrice
+type YahooChartResponse = {
+  chart?: {
+    result?: Array<{
+      meta?: { regularMarketPrice?: number };
+    }>;
+  };
+};
+
+async function fetchGoldYahoo(): Promise<{ value: number; ok: boolean }> {
   try {
-    const res = await fetch('https://api.frankfurter.app/latest?from=USD&to=KRW', {
-      cache: 'no-store',
-      next: { revalidate: 300 },
-    });
+    const res = await fetch(
+      'https://query2.finance.yahoo.com/v8/finance/chart/GC=F?interval=1d&range=1d',
+      {
+        cache: 'no-store',
+        headers: {
+          'User-Agent':
+            'Mozilla/5.0 (compatible; GoldPathPricer/1.0)',
+          Accept: 'application/json',
+        },
+      }
+    );
     if (!res.ok) return { value: 0, ok: false };
-    const data = (await res.json()) as { rates?: { KRW?: number } };
-    const v = Number(data.rates?.KRW);
-    if (!isFinite(v) || v <= 0) return { value: 0, ok: false };
+    const data = (await res.json()) as YahooChartResponse;
+    const price = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
+    const v = Number(price);
+    if (!isFinite(v) || v < GOLD_MIN_USD || v > GOLD_MAX_USD) return { value: 0, ok: false };
     return { value: v, ok: true };
   } catch {
     return { value: 0, ok: false };
   }
 }
 
-// ─── Gold — Stooq XAUUSD daily close (free, no key, CSV) ──────────────
-async function fetchGoldUsdOz(): Promise<{ value: number; ok: boolean }> {
+// ─── Stooq XAUUSD CSV (fallback gold source) ────────────────────────────
+// CSV columns: Symbol, Date, Time, Open, High, Low, Close, Volume
+// cols[6] = Close
+async function fetchGoldStooq(): Promise<{ value: number; ok: boolean }> {
   try {
-    const res = await fetch('https://stooq.com/q/l/?s=xauusd&f=sd2t2ohlcv&h&e=csv', {
-      cache: 'no-store',
-      next: { revalidate: 300 },
-      headers: { 'User-Agent': 'GoldPathPricer/0.1' },
-    });
+    const res = await fetch(
+      'https://stooq.com/q/l/?s=xauusd&f=sd2t2ohlcv&h&e=csv',
+      {
+        cache: 'no-store',
+        headers: { 'User-Agent': 'GoldPathPricer/1.0' },
+      }
+    );
     if (!res.ok) return { value: 0, ok: false };
     const csv = await res.text();
-    // Header line + one data line: Symbol,Date,Time,Open,High,Low,Close,Volume
     const lines = csv.trim().split('\n');
     if (lines.length < 2) return { value: 0, ok: false };
     const cols = lines[1].split(',');
-    const close = Number(cols[6]);
-    if (!isFinite(close) || close <= 0) return { value: 0, ok: false };
-    return { value: close, ok: true };
+    const v = Number(cols[6]);
+    if (!isFinite(v) || v < GOLD_MIN_USD || v > GOLD_MAX_USD) return { value: 0, ok: false };
+    return { value: v, ok: true };
   } catch {
     return { value: 0, ok: false };
   }
 }
 
-// ─── Composer ─────────────────────────────────────────────────────────
-async function fetchSnapshot(): Promise<PriceSnapshot> {
-  const [gold, fx] = await Promise.all([fetchGoldUsdOz(), fetchFx()]);
+// ─── FX — Frankfurter (ECB, free, no key) ──────────────────────────────
+async function fetchFx(): Promise<{ value: number; ok: boolean }> {
+  try {
+    const res = await fetch('https://api.frankfurter.app/latest?from=USD&to=KRW', {
+      cache: 'no-store',
+    });
+    if (!res.ok) return { value: 0, ok: false };
+    const data = (await res.json()) as { rates?: { KRW?: number } };
+    const v = Number(data.rates?.KRW);
+    if (!isFinite(v) || v < 500 || v > 3000) return { value: 0, ok: false };
+    return { value: v, ok: true };
+  } catch {
+    return { value: 0, ok: false };
+  }
+}
 
-  const lbmaUsdPerOz = gold.ok ? gold.value : SEED_LBMA_USD_OZ;
-  const fxKrwPerUsd = fx.ok ? fx.value : SEED_FX;
+// ─── Composer ────────────────────────────────────────────────────────────
+async function fetchSnapshot(): Promise<PriceSnapshot> {
+  // Gold: try Yahoo first, fall back to Stooq, then seed
+  const [yahooGold, fx] = await Promise.all([fetchGoldYahoo(), fetchFx()]);
+
+  let goldResult = yahooGold;
+  if (!goldResult.ok) {
+    goldResult = await fetchGoldStooq();
+  }
+
+  const lbmaUsdPerOz  = goldResult.ok ? goldResult.value : SEED_LBMA_USD_OZ;
+  const fxKrwPerUsd   = fx.ok ? fx.value : SEED_FX;
   const lbmaKrwPerGram = (lbmaUsdPerOz * fxKrwPerUsd) / OZ_TO_G;
 
   const retailKrwPerGram = SEED_RETAIL_KRW_G;
-  const aurumKrwPerGram = Math.round(lbmaKrwPerGram * (1 + AURUM_SPREAD_PCT));
-
-  const kimchiPremiumPct = (retailKrwPerGram - lbmaKrwPerGram) / lbmaKrwPerGram;
-  const aurumDiscountPct = (aurumKrwPerGram - retailKrwPerGram) / retailKrwPerGram;
+  const aurumKrwPerGram  = Math.round(lbmaKrwPerGram * (1 + AURUM_SPREAD_PCT));
 
   return {
     retailKrwPerGram,
     aurumKrwPerGram,
-    lbmaKrwPerGram: Math.round(lbmaKrwPerGram),
-    krxKrwPerGram: Math.round(lbmaKrwPerGram), // KRX gold market trades very close to LBMA in KRW
+    lbmaKrwPerGram:  Math.round(lbmaKrwPerGram),
+    krxKrwPerGram:   Math.round(lbmaKrwPerGram),
     lbmaUsdPerOz,
     fxKrwPerUsd,
-    kimchiPremiumPct,
-    aurumDiscountPct,
-    timestamp: new Date().toISOString(),
-    retailAsOf: SEED_RETAIL_AS_OF,
+    kimchiPremiumPct: (retailKrwPerGram - lbmaKrwPerGram) / lbmaKrwPerGram,
+    aurumDiscountPct: (aurumKrwPerGram - retailKrwPerGram) / retailKrwPerGram,
+    timestamp:   new Date().toISOString(),
+    retailAsOf:  SEED_RETAIL_AS_OF,
     sources: {
-      gold: gold.ok ? 'live' : 'seed',
-      fx: fx.ok ? 'live' : 'seed',
-      retail: 'seed', // licensed feed wires in Phase 2
+      gold:   goldResult.ok ? 'live' : 'seed',
+      fx:     fx.ok ? 'live' : 'seed',
+      retail: 'seed',
     },
   };
 }
 
+// Cache key bumped to v4 to bust any stale values from previous deployments
 export const getPriceSnapshot = unstable_cache(
   fetchSnapshot,
-  ['gp-price-snapshot-v2'],
+  ['gp-price-snapshot-v4'],
   { revalidate: 300, tags: ['pricing'] },
 );
 
-// ─── Helpers ──────────────────────────────────────────────────────────
+// ─── Helpers ─────────────────────────────────────────────────────────────
 export function fmtKRW(n: number): string {
   return '₩' + Math.round(n).toLocaleString('ko-KR');
 }
