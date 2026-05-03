@@ -194,7 +194,12 @@ input, textarea, select {
     align-self: center !important;
   }
   .gp-nav [data-mobile="nav-cta"] {
-    padding: 6px 11px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 0 12px !important;
+    height: 30px !important;
     font-size: 11px !important;
     line-height: 1 !important;
     letter-spacing: 0.04em !important;
@@ -320,23 +325,24 @@ input, textarea, select {
     box-sizing: border-box !important;
   }
 
-  /* ── Ticker ──────────────────────────────────────────────────── */
+  /* ── Ticker — kill marquee on mobile, items visible immediately ── */
   .gp-ticker {
     padding: 8px 12px !important;
     flex-wrap: nowrap !important;
+    gap: 14px !important;
+  }
+  .gp-ticker [data-mobile="ticker-items"] {
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    gap: 14px !important;
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
   }
-  .gp-ticker::-webkit-scrollbar { display: none; }
-  .gp-ticker [data-mobile="ticker-items"] {
-    flex-wrap: nowrap !important;
-    gap: 16px !important;
-    white-space: nowrap !important;
-  }
-  .gp-ticker [data-mobile="ticker-items"] > span {
-    flex: 0 0 auto !important;
+  .gp-ticker [data-mobile="ticker-items"]::-webkit-scrollbar { display: none; }
+  .gp-ticker .gp-ticker-track {
+    animation: none !important;
+    width: max-content !important;
+    gap: 24px !important;
   }
 
   /* ── Stub (generic page header) ──────────────────────────────── */
