@@ -109,24 +109,24 @@ export function Nav() {
               {l.label}
             </Link>
           ))}
-          <Link
-            href="/signup"
-            data-mobile="nav-cta"
-            className="gp-cta-primary"
-            style={{
-              background: 'var(--accent)',
-              color: 'var(--inv-ink)',
-              padding: '10px 18px',
-              fontFamily: 'var(--font-kr)',
-              fontWeight: 600,
-              fontSize: 13,
-              letterSpacing: '0.04em',
-              borderRadius: 2,
-            }}
-          >
-            시작→
-          </Link>
         </div>
+        <Link
+          href="/signup"
+          data-mobile="nav-cta"
+          className="gp-cta-primary"
+          style={{
+            background: 'var(--accent)',
+            color: 'var(--inv-ink)',
+            padding: '10px 18px',
+            fontFamily: 'var(--font-kr)',
+            fontWeight: 600,
+            fontSize: 13,
+            letterSpacing: '0.04em',
+            borderRadius: 2,
+          }}
+        >
+          시작→
+        </Link>
       </div>
     </nav>
   );
