@@ -60,6 +60,7 @@ export function Footer() {
           <FCol
             title="신뢰"
             links={[
+              { href: '/trust', label: '트러스트' },
               { href: '/vault', label: '금고' },
               { href: '/insurance', label: '보험' },
               { href: '/audits', label: '감사' },
@@ -67,11 +68,19 @@ export function Footer() {
             ]}
           />
           <FCol
+            title="회사"
+            links={[
+              { href: '/about', label: 'TACC' },
+              { href: '/why-singapore', label: '왜 싱가포르' },
+              { href: '/tax', label: '세금' },
+              { href: '/contact', label: '문의' },
+            ]}
+          />
+          <FCol
             title="지원"
             links={[
               { href: '/faq', label: 'FAQ' },
               { href: '/heritage', label: '유산' },
-              { href: '/contact', label: '문의' },
               { href: '/legal', label: '법적 고지' },
             ]}
           />
@@ -92,7 +101,7 @@ export function Footer() {
           }}
         >
           <span>© MMXXVI TACC PTE. LTD.</span>
-          <span>SGP · MAS PSPM 2019 · MinLaw ACD</span>
+          <span>SGP · MinLaw PSPM 2019 · IRAS IPM</span>
           <span style={{ color: 'var(--accent-dim)' }}>QUIETLY · FOREVER</span>
         </div>
       </div>

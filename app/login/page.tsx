@@ -117,7 +117,7 @@ export default function LoginPage() {
             lineHeight: 1.7,
           }}
         >
-          Phase 1 dev login — passwordless. Phase 2 wires KFTC 본인인증 + passkey + MFA via Clerk.
+          이메일로 진행합니다. 비밀번호 없이 매직링크 — 베타 단계.
         </div>
 
         <div style={{ marginTop: 18, fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.12em' }}>

@@ -12,9 +12,11 @@ export type Tier = {
   spread: string;
   storage: string;
   streak12: string;
-  joined: number;
   apex?: boolean;
 };
+
+// Shared placeholder until cohort signup data is wired in (Phase 2).
+const COHORT_STATUS = '정원 1,000 · 사전 등록 진행';
 
 export const TIERS: readonly Tier[] = [
   {
@@ -26,7 +28,6 @@ export const TIERS: readonly Tier[] = [
     spread: '2.0%',
     storage: '50g까지 무료',
     streak12: '1g 기념 바',
-    joined: 2112,
   },
   {
     n: 'II',
@@ -37,7 +38,6 @@ export const TIERS: readonly Tier[] = [
     spread: '1.8%',
     storage: '100g까지 무료',
     streak12: '5g 기념 바',
-    joined: 486,
   },
   {
     n: 'III',
@@ -48,7 +48,6 @@ export const TIERS: readonly Tier[] = [
     spread: '1.5%',
     storage: '250g까지 무료',
     streak12: '10g + 각인',
-    joined: 184,
     apex: true,
   },
   {
@@ -60,7 +59,6 @@ export const TIERS: readonly Tier[] = [
     spread: '1.2%',
     storage: '500g까지 무료',
     streak12: '25g + 맞춤',
-    joined: 54,
   },
   {
     n: 'V',
@@ -71,7 +69,6 @@ export const TIERS: readonly Tier[] = [
     spread: '1.0%',
     storage: '무제한 무료',
     streak12: '연간 프라이빗 바',
-    joined: 12,
   },
 ];
 
@@ -118,7 +115,7 @@ export async function TierLadder() {
                 maxWidth: 720,
               }}
             >
-              5,000명.{' '}
+              첫 코호트 · 5,000명.{' '}
               <em
                 style={{
                   fontFamily: 'var(--font-serif)',
@@ -127,9 +124,25 @@ export async function TierLadder() {
                   fontWeight: 400,
                 }}
               >
-                그다음은 없다.
+                이 라운드의 가격은 다시 오지 않습니다.
               </em>
             </h2>
+            <p
+              style={{
+                fontFamily: 'var(--font-krs)',
+                fontWeight: 300,
+                fontSize: 15,
+                lineHeight: 1.7,
+                color: 'var(--ink-2)',
+                maxWidth: 640,
+                marginTop: 22,
+              }}
+            >
+              첫 라운드는 50kg를 LBMA 픽스에 선매입해 보관소에 배정합니다. 평균
+              누적 10g/회원 기준으로 약 5,000명이 한도입니다. 이 한도가 채워지면
+              다음 라운드는 새 픽스에 시작합니다 — 같은 가격은 두 번 오지
+              않습니다.
+            </p>
           </div>
           <div
             style={{
@@ -177,7 +190,7 @@ export async function TierLadder() {
                     padding: '4px 10px',
                   }}
                 >
-                  MOST PICKED
+                  RECOMMENDED · 추천
                 </div>
               )}
               <div
@@ -231,13 +244,66 @@ export async function TierLadder() {
                   color: 'var(--ink-3)',
                 }}
               >
-                {t.joined.toLocaleString()} JOINED
+                {COHORT_STATUS}
               </div>
             </article>
           ))}
         </div>
+
+        <div
+          style={{
+            marginTop: 36,
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: 28,
+          }}
+        >
+          <Footnote
+            label="FOUNDERS GIFT · 베스팅 · 세무"
+            body="가입 즉시 그램으로 환산되어 잔고에 적립. 12개월 자동이체 유지 시 베스팅 완료. 한국 세법상 일반 소득으로 분류 — 첫 결제 후 신고 안내 발송."
+          />
+          <Footnote
+            label="12개월 STREAK · 기념바"
+            body="12개월 연속 자동이체 유지 시 기념바 발송. 발송 비용은 회원 부담, 무게는 자동이체 누적 그램에서 차감. 기념바 가치는 일반 소득으로 분류될 수 있습니다."
+          />
+        </div>
       </div>
     </section>
+  );
+}
+
+function Footnote({ label, body }: { label: string; body: string }) {
+  return (
+    <div
+      style={{
+        borderTop: '1px solid var(--rule)',
+        paddingTop: 16,
+      }}
+    >
+      <div
+        style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: 10,
+          letterSpacing: '0.22em',
+          color: 'var(--accent)',
+          marginBottom: 8,
+        }}
+      >
+        {label}
+      </div>
+      <p
+        style={{
+          fontFamily: 'var(--font-krs)',
+          fontWeight: 300,
+          fontSize: 12,
+          lineHeight: 1.7,
+          color: 'var(--ink-3)',
+          margin: 0,
+        }}
+      >
+        {body}
+      </p>
+    </div>
   );
 }
 

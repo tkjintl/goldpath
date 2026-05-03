@@ -9,7 +9,7 @@ export async function Ticker() {
   const items = [
     { l: 'LBMA USD/oz', v: '$' + p.lbmaUsdPerOz.toFixed(2), tone: '' as const, status: p.sources.gold },
     { l: 'KRW/USD', v: p.fxKrwPerUsd.toFixed(2), tone: '' as const, status: p.sources.fx },
-    { l: 'KRX 1g', v: fmtKRW(p.lbmaKrwPerGram), tone: '' as const, status: p.sources.gold },
+    { l: 'LBMA 1g · KRW', v: fmtKRW(p.lbmaKrwPerGram), tone: '' as const, status: p.sources.gold },
     { l: 'KOREA RETAIL 1g', v: fmtKRW(p.retailKrwPerGram), tone: 'warn' as const, status: p.sources.retail },
     { l: 'GOLDPATH 1g', v: fmtKRW(p.aurumKrwPerGram), tone: 'good' as const, status: 'live' as const },
     { l: '김치 프리미엄', v: fmtPct(p.kimchiPremiumPct), tone: 'warn' as const },

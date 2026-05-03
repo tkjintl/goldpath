@@ -2,7 +2,7 @@ export function Mechanism() {
   const steps = [
     { n: '01', ko: '가입', en: 'Sign up · 5 min', body: '신분증 + 계좌 연결. KFTC 본인인증.' },
     { n: '02', ko: '자동이체', en: 'Auto-debit', body: '매달 ₩200K~ 원하는 날. 토스페이먼츠 CMS.' },
-    { n: '03', ko: '매입', en: 'Buy at fix', body: 'LBMA 오후 픽스에 999.9 매입. 그램 적립.' },
+    { n: '03', ko: '매입', en: 'Buy at fix', body: '결제일 D+0~D+1 LBMA 오후 픽스, 999.9 직매입. 그램 단위 소수점 4자리까지 적립. 픽스 사이의 가격 변동은 GoldPath 마진(2%)이 흡수합니다.' },
     { n: '04', ko: '금고', en: 'Vault', body: 'Malca-Amit 싱가포르 FTZ 배분 보관.' },
   ];
   return (

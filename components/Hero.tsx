@@ -108,7 +108,9 @@ export async function Hero() {
               오늘 1g. 한국 소매 vs GoldPath.
             </strong>{' '}
             한국 소매 {fmtKRW(p.retailKrwPerGram)} vs GoldPath {fmtKRW(p.aurumKrwPerGram)}{' '}
-            ({fmtPct(p.aurumDiscountPct)}). 매달 자동이체로 999.9 실물 금이 싱가포르
+            ({fmtPct(p.aurumDiscountPct)}). 싱가포르는 IPM(투자용 귀금속)에 부가세를
+            면제하고, MinLaw가 딜러를 등록·감독합니다. 같은 1g, 한국 소매보다 약 18%
+            낮게 매입할 수 있는 이유입니다. 매달 자동이체로 999.9 실물 금이 싱가포르
             금고에 회원님 이름으로 쌓입니다. 약정 없음. 5분 가입.
           </p>
 

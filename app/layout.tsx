@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: 'GoldPath — A TACC Company',
   description:
     '매달 한 그램. 999.9 실물 금이 싱가포르 금고에 회원님 이름으로 쌓입니다. Korean retail gold accumulation, vaulted in Singapore.',
-  metadataBase: new URL('https://goldpath.example'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://goldpath-git-main-tkjintls-projects.vercel.app'),
   openGraph: {
     title: 'GoldPath — 매달 한 그램',
     description: 'Korean retail gold accumulation, vaulted in Singapore. A TACC Company.',

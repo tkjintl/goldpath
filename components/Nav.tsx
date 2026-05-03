@@ -5,7 +5,7 @@ const links = [
   { href: '/why', label: '왜 지금' },
   { href: '/how', label: '방법' },
   { href: '/tiers', label: '등급' },
-  { href: '/vault', label: '금고' },
+  { href: '/trust', label: '트러스트' },
   { href: '/heritage', label: '유산' },
   { href: '/faq', label: 'FAQ' },
 ];
