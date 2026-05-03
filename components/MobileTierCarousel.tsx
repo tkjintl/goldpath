@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { TIERS, type Tier } from './TierLadder';
+import { TIERS, type Tier } from './tiers-data';
 
 function Row({
   label,
