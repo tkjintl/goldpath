@@ -12,6 +12,7 @@ export async function Hero() {
 
   return (
     <section
+      className="gp-hero"
       style={{
         padding: '80px 36px 100px',
         borderBottom: '1px solid var(--rule)',
@@ -20,6 +21,7 @@ export async function Hero() {
       }}
     >
       <div
+        data-mobile="hero-grid"
         style={{
           maxWidth: 1280,
           margin: '0 auto',
@@ -51,6 +53,7 @@ export async function Hero() {
           </div>
 
           <h1
+            data-mobile="hero-headline"
             style={{
               fontFamily: 'var(--font-krs)',
               fontWeight: 300,
@@ -114,7 +117,7 @@ export async function Hero() {
             금고에 회원님 이름으로 쌓입니다. 약정 없음. 5분 가입.
           </p>
 
-          <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+          <div data-mobile="hero-ctas" style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
             <Link
               href="/signup"
               style={{
@@ -150,6 +153,7 @@ export async function Hero() {
         {/* RIGHT — product card / specimen */}
         <div>
           <div
+            data-mobile="hero-card"
             style={{
               aspectRatio: '3 / 4',
               background:

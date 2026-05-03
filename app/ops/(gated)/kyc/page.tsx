@@ -1,6 +1,7 @@
 import { getKycQueue } from '@/lib/demo-ops';
 import { OpsHeader, OpsTable, OpsTh, OpsTd, StatusPill } from '@/components/ops/Queue';
 import { fmtKRW } from '@/lib/pricing';
+import { approveKycAction } from './actions';
 
 const STATUS_TONE: Record<string, 'pending' | 'warn' | 'critical' | 'ok' | 'info'> = {
   pending: 'pending',
@@ -57,14 +58,24 @@ export default function KycQueuePage() {
               </OpsTd>
               <OpsTd>{it.submitted}</OpsTd>
               <OpsTd align="right">
-                <button disabled style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.16em', color: 'var(--accent)', border: '1px solid var(--accent)', padding: '5px 10px', opacity: 0.6 }}>
-                  REVIEW
-                </button>
+                {it.status === 'approved' || it.status === 'rejected' ? (
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.16em', color: 'var(--ink-3)' }}>—</span>
+                ) : (
+                  <form action={approveKycAction} style={{ display: 'inline' }}>
+                    <input type="hidden" name="id" value={it.id} />
+                    <button type="submit" style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.16em', color: 'var(--accent)', border: '1px solid var(--accent)', padding: '5px 10px', background: 'transparent', cursor: 'pointer' }}>
+                      승인 · APPROVE
+                    </button>
+                  </form>
+                )}
               </OpsTd>
             </tr>
           ))}
         </tbody>
       </OpsTable>
+      <p style={{ marginTop: 16, fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.18em', color: 'var(--ink-3)' }}>
+        시연 데이터 — 새로고침 시 초기화. 감사 로그는 영구 기록.
+      </p>
     </>
   );
 }

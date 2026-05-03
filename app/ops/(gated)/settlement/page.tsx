@@ -1,5 +1,6 @@
 import { getSettlementQueue, fmtKRW } from '@/lib/demo-ops';
 import { OpsHeader, OpsTable, OpsTh, OpsTd, StatusPill } from '@/components/ops/Queue';
+import { publishSettlementAction } from './actions';
 
 const STATUS_TONE: Record<string, 'pending' | 'ok' | 'critical'> = {
   pending: 'pending',
@@ -41,14 +42,25 @@ export default function SettlementPage() {
               <OpsTd align="right">{b.fixPrice ? fmtKRW(b.fixPrice) + '/g' : '—'}</OpsTd>
               <OpsTd><StatusPill status={b.status.replace('_', ' ')} tone={STATUS_TONE[b.status]} /></OpsTd>
               <OpsTd align="right">
-                <button disabled style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.16em', color: b.status === 'pending' ? 'var(--accent)' : 'var(--ink-3)', border: `1px solid ${b.status === 'pending' ? 'var(--accent)' : 'var(--rule)'}`, padding: '5px 10px', opacity: 0.6 }}>
-                  {b.status === 'pending' ? 'TAKE FIX' : 'VIEW'}
-                </button>
+                {b.status === 'ledger_posted' ? (
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.16em', color: 'var(--ink-3)' }}>—</span>
+                ) : (
+                  <form action={publishSettlementAction} style={{ display: 'inline' }}>
+                    <input type="hidden" name="id" value={b.id} />
+                    <button type="submit" style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.16em', color: 'var(--accent)', border: '1px solid var(--accent)', padding: '5px 10px', background: 'transparent', cursor: 'pointer' }}>
+                      발행 · PUBLISH
+                    </button>
+                  </form>
+                )}
               </OpsTd>
             </tr>
           ))}
         </tbody>
       </OpsTable>
+
+      <p style={{ marginTop: 16, fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.18em', color: 'var(--ink-3)' }}>
+        시연 데이터 — 새로고침 시 초기화. 감사 로그는 영구 기록.
+      </p>
 
       <section style={{ marginTop: 36, padding: 24, background: 'var(--bg-2)', border: '1px solid var(--rule)' }}>
         <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.22em', color: 'var(--accent)', marginBottom: 14 }}>

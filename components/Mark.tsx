@@ -3,6 +3,7 @@
 export function Mark({ size = 36 }: { size?: number }) {
   return (
     <span
+      className="gp-mark"
       style={{
         display: 'inline-flex',
         alignItems: 'center',

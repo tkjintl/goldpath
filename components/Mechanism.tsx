@@ -7,6 +7,7 @@ export function Mechanism() {
   ];
   return (
     <section
+      className="gp-mechanism"
       style={{
         padding: '100px 36px',
         background: 'var(--bg-2)',
@@ -58,6 +59,7 @@ export function Mechanism() {
           </span>
         </div>
         <div
+          data-mobile="mech-grid"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',

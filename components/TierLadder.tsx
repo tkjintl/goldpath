@@ -77,6 +77,7 @@ export async function TierLadder() {
   const founders = foundersDisplayCount(signupCount);
   return (
     <section
+      className="gp-tiers"
       style={{
         padding: '100px 36px',
         borderBottom: '1px solid var(--rule)',
@@ -157,6 +158,7 @@ export async function TierLadder() {
         </div>
 
         <div
+          data-mobile="tier-grid"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
@@ -167,6 +169,7 @@ export async function TierLadder() {
           {TIERS.map((t, i) => (
             <article
               key={t.n}
+              className="gp-tier-card"
               style={{
                 padding: '32px 22px 28px',
                 borderRight:
@@ -251,6 +254,7 @@ export async function TierLadder() {
         </div>
 
         <div
+          data-mobile="tier-footnotes"
           style={{
             marginTop: 36,
             display: 'grid',

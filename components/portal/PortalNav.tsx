@@ -21,6 +21,7 @@ export function PortalNav({
 }) {
   return (
     <nav
+      className="gp-portal-nav"
       style={{
         background: 'var(--bg-2)',
         borderBottom: '1px solid var(--rule)',
@@ -31,6 +32,7 @@ export function PortalNav({
       }}
     >
       <div
+        data-mobile="portal-nav-row"
         style={{
           maxWidth: 1280,
           margin: '0 auto',
@@ -68,6 +70,7 @@ export function PortalNav({
         </Link>
 
         <div
+          data-mobile="portal-nav-links"
           style={{
             display: 'flex',
             gap: 4,
@@ -96,7 +99,7 @@ export function PortalNav({
           })}
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+        <div data-mobile="portal-nav-user" style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           <div style={{ textAlign: 'right' }}>
             <div
               style={{

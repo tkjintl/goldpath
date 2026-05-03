@@ -13,6 +13,7 @@ const links = [
 export function Nav() {
   return (
     <nav
+      className="gp-nav"
       style={{
         background: 'color-mix(in srgb, var(--bg) 92%, transparent)',
         backdropFilter: 'blur(14px)',
@@ -24,6 +25,7 @@ export function Nav() {
       }}
     >
       <div
+        className="gp-nav-row"
         style={{
           maxWidth: 1280,
           margin: '0 auto',
@@ -34,7 +36,7 @@ export function Nav() {
           flexWrap: 'wrap',
         }}
       >
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+        <Link href="/" className="gp-nav-brand" style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           <Mark size={32} />
           <span
             style={{
@@ -47,6 +49,7 @@ export function Nav() {
             GOLDPATH
           </span>
           <span
+            data-mobile="nav-tagline"
             style={{
               fontFamily: 'var(--font-mono)',
               fontSize: 10,
@@ -60,7 +63,7 @@ export function Nav() {
           </span>
         </Link>
 
-        <div style={{ display: 'flex', gap: 26, alignItems: 'center' }}>
+        <div data-mobile="nav-links" style={{ display: 'flex', gap: 26, alignItems: 'center' }}>
           {links.map((l) => (
             <Link
               key={l.href}
@@ -76,6 +79,7 @@ export function Nav() {
           ))}
           <Link
             href="/signup"
+            data-mobile="nav-cta"
             style={{
               background: 'var(--accent)',
               color: 'var(--inv-ink)',

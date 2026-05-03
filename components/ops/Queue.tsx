@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 // Reusable queue table for ops surfaces.
 export function OpsTable({ children }: { children: ReactNode }) {
   return (
-    <div style={{ background: 'var(--bg)', border: '1px solid var(--rule-strong)', overflowX: 'auto' }}>
+    <div className="gp-ops-table" style={{ background: 'var(--bg)', border: '1px solid var(--rule-strong)', overflowX: 'auto' }}>
       <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'var(--font-mono)', fontSize: 12 }}>
         {children}
       </table>
@@ -95,6 +95,7 @@ export function OpsHeader({
 }) {
   return (
     <header
+      className="gp-ops-header"
       style={{
         marginBottom: 32,
         display: 'flex',

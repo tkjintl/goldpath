@@ -4,6 +4,7 @@ import { Mark } from './Mark';
 export function Footer() {
   return (
     <footer
+      className="gp-footer"
       style={{
         background: 'var(--bg-2)',
         borderTop: '1px solid var(--rule)',
@@ -12,6 +13,7 @@ export function Footer() {
     >
       <div style={{ maxWidth: 1280, margin: '0 auto' }}>
         <div
+          data-mobile="footer-grid"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
@@ -88,6 +90,7 @@ export function Footer() {
         </div>
 
         <div
+          data-mobile="footer-legal"
           style={{
             paddingTop: 24,
             borderTop: '1px solid var(--rule)',

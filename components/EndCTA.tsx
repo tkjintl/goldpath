@@ -3,6 +3,7 @@ import Link from 'next/link';
 export function EndCTA() {
   return (
     <section
+      className="gp-end-cta"
       style={{
         padding: '140px 36px',
         background: 'var(--inv-bg)',
@@ -39,6 +40,7 @@ export function EndCTA() {
           파운더스 · 5,000명에서 영원히 마감
         </div>
         <h2
+          data-mobile="end-cta-headline"
           style={{
             fontFamily: 'var(--font-krs)',
             fontWeight: 200,

@@ -11,6 +11,7 @@ export function Stub(props: {
 }) {
   return (
     <section
+      className="gp-stub"
       style={{
         padding: '100px 36px 80px',
         borderBottom: '1px solid var(--rule)',

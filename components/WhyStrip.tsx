@@ -37,6 +37,7 @@ export async function WhyStrip() {
 
   return (
     <section
+      className="gp-why-strip"
       style={{
         background: 'var(--bg-2)',
         padding: '48px 36px',
@@ -44,6 +45,7 @@ export async function WhyStrip() {
       }}
     >
       <div
+        data-mobile="why-grid"
         style={{
           maxWidth: 1280,
           margin: '0 auto',

@@ -21,6 +21,7 @@ export async function Ticker() {
 
   return (
     <div
+      className="gp-ticker"
       style={{
         background: 'var(--inv-bg)',
         color: 'var(--inv-ink)',
@@ -36,7 +37,7 @@ export async function Ticker() {
         alignItems: 'center',
       }}
     >
-      <div style={{ display: 'flex', gap: 22, flexWrap: 'wrap' }}>
+      <div data-mobile="ticker-items" style={{ display: 'flex', gap: 22, flexWrap: 'wrap' }}>
         {items.map((it) => (
           <span
             key={it.l}
