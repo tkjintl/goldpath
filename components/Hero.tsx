@@ -2,10 +2,12 @@ import Link from 'next/link';
 import { getPriceSnapshot, fmtKRW, fmtPct } from '@/lib/pricing';
 import { getSignupCount } from '@/lib/db/store';
 import { foundersDisplayCount } from '@/lib/founders';
+import { FlakeParticles } from './FlakeParticles';
+import { CountUp } from './CountUp';
 
 // Hero — B2 magazine layout, GP brass-gold palette.
-// Left: editorial-issue eyebrow → giant Korean serif headline → italic deck →
-//   bilingual lede → CTAs. Right: product card with seal/serial/specimen.
+// Left: editorial-issue eyebrow → giant Korean serif headline → Pretendard accent →
+//   bilingual lede → CTAs. Right: dimensional specimen card with depth + ambient breath.
 export async function Hero() {
   const [p, signupCount] = await Promise.all([getPriceSnapshot(), getSignupCount()]);
   const founderNumber = foundersDisplayCount(signupCount) + 1;
@@ -20,6 +22,7 @@ export async function Hero() {
         overflow: 'hidden',
       }}
     >
+      <FlakeParticles count={4} />
       <div
         data-mobile="hero-grid"
         style={{
@@ -29,10 +32,12 @@ export async function Hero() {
           gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
           gap: 64,
           alignItems: 'end',
+          position: 'relative',
+          zIndex: 1,
         }}
       >
         {/* LEFT — editorial */}
-        <div>
+        <div className="gp-fade-up">
           <div
             style={{
               fontFamily: 'var(--font-mono)',
@@ -49,7 +54,16 @@ export async function Hero() {
             }}
           >
             <span>VOL. I · ISSUE 001 · MMXXVI</span>
-            <span>SINGAPORE</span>
+            <span>
+              LBMA{' '}
+              <span className="gp-num" style={{ color: 'var(--ink)' }}>
+                <CountUp
+                  to={p.lbmaUsdPerOz}
+                  format={(n) => '$' + n.toFixed(0)}
+                />
+              </span>{' '}
+              · SINGAPORE
+            </span>
           </div>
 
           <h1
@@ -66,26 +80,24 @@ export async function Hero() {
           >
             매달
             <br />
-            <em
+            <span
               style={{
-                fontFamily: 'var(--font-serif)',
-                fontStyle: 'italic',
+                fontFamily: 'var(--font-krs)',
+                fontWeight: 600,
                 color: 'var(--accent)',
-                fontWeight: 400,
               }}
             >
               한 그램.
-            </em>
+            </span>
           </h1>
 
           <div
             style={{
-              fontFamily: 'var(--font-serif)',
-              fontStyle: 'italic',
+              fontFamily: 'var(--font-krs)',
+              fontWeight: 400,
               fontSize: 'clamp(20px, 2.4vw, 28px)',
               color: 'var(--ink-2)',
               lineHeight: 1.4,
-              fontWeight: 400,
               marginTop: 24,
               marginBottom: 36,
               maxWidth: 560,
@@ -120,6 +132,7 @@ export async function Hero() {
           <div data-mobile="hero-ctas" style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
             <Link
               href="/signup"
+              className="gp-cta-primary"
               style={{
                 background: 'var(--accent)',
                 color: 'var(--inv-ink)',
@@ -135,6 +148,7 @@ export async function Hero() {
             </Link>
             <Link
               href="/why"
+              className="gp-cta-ghost"
               style={{
                 border: '1px solid var(--ink)',
                 color: 'var(--ink)',
@@ -151,28 +165,60 @@ export async function Hero() {
         </div>
 
         {/* RIGHT — product card / specimen */}
-        <div>
+        <div style={{ position: 'relative' }}>
+          {/* ambient breath glow */}
+          <div
+            aria-hidden="true"
+            className="gp-breathe"
+            style={{
+              position: 'absolute',
+              inset: -24,
+              borderRadius: 4,
+              boxShadow: '0 0 80px color-mix(in srgb, var(--accent) 40%, transparent)',
+              pointerEvents: 'none',
+              zIndex: 0,
+            }}
+          />
           <div
             data-mobile="hero-card"
+            className="gp-card-lift"
             style={{
+              position: 'relative',
+              zIndex: 1,
               aspectRatio: '3 / 4',
               background:
                 'linear-gradient(170deg, var(--accent-bright) 0%, var(--accent) 50%, var(--accent-dim) 100%)',
               color: 'var(--inv-ink)',
               padding: 36,
-              position: 'relative',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
               overflow: 'hidden',
+              boxShadow:
+                'inset 0 0 0 1px color-mix(in srgb, white 14%, transparent), inset 0 -16px 24px -8px color-mix(in srgb, black 18%, transparent), 0 30px 60px -30px color-mix(in srgb, black 40%, transparent)',
+              transition:
+                'transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 320ms cubic-bezier(0.2, 0.8, 0.2, 1)',
             }}
           >
+            {/* specular highlight overlay */}
+            <div
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background:
+                  'radial-gradient(circle at 30% 22%, color-mix(in srgb, white 22%, transparent), transparent 56%)',
+                pointerEvents: 'none',
+                zIndex: 1,
+              }}
+            />
             <div
               style={{
                 position: 'absolute',
                 inset: 18,
                 border: '1px solid color-mix(in srgb, var(--inv-ink) 22%, transparent)',
                 pointerEvents: 'none',
+                zIndex: 2,
               }}
             />
             <div
@@ -182,7 +228,7 @@ export async function Hero() {
                 fontSize: 14,
                 letterSpacing: '0.32em',
                 position: 'relative',
-                zIndex: 2,
+                zIndex: 3,
               }}
             >
               金 · GOLDPATH
@@ -195,7 +241,7 @@ export async function Hero() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 position: 'relative',
-                zIndex: 2,
+                zIndex: 3,
               }}
             >
               <div
@@ -205,6 +251,8 @@ export async function Hero() {
                   fontSize: 'clamp(96px, 16vw, 160px)',
                   lineHeight: 0.9,
                   letterSpacing: '-0.06em',
+                  filter:
+                    'drop-shadow(0 4px 24px color-mix(in srgb, black 22%, transparent))',
                 }}
               >
                 금
@@ -227,7 +275,7 @@ export async function Hero() {
                 fontSize: 11,
                 letterSpacing: '0.32em',
                 position: 'relative',
-                zIndex: 2,
+                zIndex: 3,
                 display: 'flex',
                 justifyContent: 'space-between',
               }}

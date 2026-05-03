@@ -1,8 +1,9 @@
 import { getSignupCount } from '@/lib/db/store';
 import { foundersDisplayCount, FOUNDERS_CAP } from '@/lib/founders';
+import { CohortBar } from './CohortBar';
 
 // Tier ladder — 5 tiers with launch credit + spread + storage cap.
-// Magazine-style table feel with editorial accent on the apex (Gold · III).
+// Progressive scale visualizes the climb; apex tier breathes.
 export type Tier = {
   n: string;
   ko: string;
@@ -15,8 +16,21 @@ export type Tier = {
   apex?: boolean;
 };
 
-// Shared placeholder until cohort signup data is wired in (Phase 2).
-const COHORT_STATUS = '정원 1,000 · 사전 등록 진행';
+// Per-tier visual scale — graduated treatment.
+type TierVisual = {
+  padding: string;
+  numeral: number;
+  opacity: number;
+  translateY: number;
+};
+
+const TIER_VISUALS: TierVisual[] = [
+  { padding: '24px 22px', numeral: 36, opacity: 0.92, translateY: 0 },     // Bronze
+  { padding: '26px 22px', numeral: 42, opacity: 0.95, translateY: 0 },     // Silver
+  { padding: '32px 22px', numeral: 56, opacity: 1.0, translateY: -12 },    // Gold (apex)
+  { padding: '28px 22px', numeral: 48, opacity: 0.97, translateY: 0 },     // Platinum
+  { padding: '30px 22px', numeral: 52, opacity: 0.98, translateY: -4 },    // Sovereign
+];
 
 export const TIERS: readonly Tier[] = [
   {
@@ -117,16 +131,15 @@ export async function TierLadder() {
               }}
             >
               첫 코호트 · 5,000명.{' '}
-              <em
+              <span
                 style={{
-                  fontFamily: 'var(--font-serif)',
-                  fontStyle: 'italic',
+                  fontFamily: 'var(--font-krs)',
+                  fontWeight: 600,
                   color: 'var(--accent)',
-                  fontWeight: 400,
                 }}
               >
                 이 라운드의 가격은 다시 오지 않습니다.
-              </em>
+              </span>
             </h2>
             <p
               style={{
@@ -145,16 +158,7 @@ export async function TierLadder() {
               않습니다.
             </p>
           </div>
-          <div
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: 13,
-              color: 'var(--accent-dim)',
-              letterSpacing: '0.2em',
-            }}
-          >
-            {founders.toLocaleString()} / {FOUNDERS_CAP.toLocaleString()}
-          </div>
+          <CohortBar joined={founders} cap={FOUNDERS_CAP} />
         </div>
 
         <div
@@ -164,93 +168,109 @@ export async function TierLadder() {
             gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
             gap: 0,
             border: '1px solid var(--ink)',
+            alignItems: 'stretch',
           }}
         >
-          {TIERS.map((t, i) => (
-            <article
-              key={t.n}
-              className="gp-tier-card"
-              style={{
-                padding: '32px 22px 28px',
-                borderRight:
-                  i < TIERS.length - 1 ? '1px solid var(--rule)' : 'none',
-                background: t.apex ? 'color-mix(in srgb, var(--accent) 8%, var(--bg))' : 'var(--bg)',
-                position: 'relative',
-              }}
-            >
-              {t.apex && (
+          {TIERS.map((t, i) => {
+            const vis = TIER_VISUALS[i];
+            const cardStyle: React.CSSProperties = {
+              padding: vis.padding,
+              borderRight:
+                i < TIERS.length - 1 ? '1px solid var(--rule)' : 'none',
+              background: t.apex
+                ? 'color-mix(in srgb, var(--accent) 8%, var(--bg))'
+                : 'var(--bg)',
+              position: 'relative',
+              opacity: vis.opacity,
+              transform: vis.translateY ? `translateY(${vis.translateY}px)` : undefined,
+              boxShadow: t.apex
+                ? '0 -8px 32px -16px color-mix(in srgb, var(--accent) 40%, transparent), 0 24px 60px -32px color-mix(in srgb, var(--accent) 22%, transparent)'
+                : undefined,
+              zIndex: t.apex ? 2 : 1,
+            };
+            return (
+              <article
+                key={t.n}
+                className={`gp-tier-card gp-card-lift gp-fade-up gp-fade-up-delay-${i + 1}`}
+                style={cardStyle}
+              >
+                {t.apex && (
+                  <div
+                    aria-hidden="true"
+                    className="gp-breathe"
+                    style={{
+                      position: 'absolute',
+                      inset: -16,
+                      borderRadius: 4,
+                      boxShadow:
+                        '0 0 56px color-mix(in srgb, var(--accent) 30%, transparent)',
+                      pointerEvents: 'none',
+                      zIndex: -1,
+                    }}
+                  />
+                )}
+                {t.apex && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: '50%',
+                      transform: 'translateX(-50%) translateY(-50%)',
+                      background: 'var(--accent)',
+                      color: 'var(--inv-ink)',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 9,
+                      letterSpacing: '0.22em',
+                      padding: '4px 10px',
+                      zIndex: 3,
+                    }}
+                  >
+                    RECOMMENDED · 추천
+                  </div>
+                )}
                 <div
                   style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: '50%',
-                    transform: 'translateX(-50%) translateY(-50%)',
-                    background: 'var(--accent)',
-                    color: 'var(--inv-ink)',
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 9,
-                    letterSpacing: '0.22em',
-                    padding: '4px 10px',
+                    fontFamily: 'var(--font-serif)',
+                    fontStyle: 'italic',
+                    fontSize: vis.numeral,
+                    color: t.apex ? 'var(--accent)' : 'var(--ink)',
+                    fontWeight: 500,
+                    lineHeight: 1,
                   }}
                 >
-                  RECOMMENDED · 추천
+                  {t.n}
                 </div>
-              )}
-              <div
-                style={{
-                  fontFamily: 'var(--font-serif)',
-                  fontStyle: 'italic',
-                  fontSize: 48,
-                  color: t.apex ? 'var(--accent)' : 'var(--ink)',
-                  fontWeight: 500,
-                  lineHeight: 1,
-                }}
-              >
-                {t.n}
-              </div>
-              <div
-                style={{
-                  fontFamily: 'var(--font-krs)',
-                  fontWeight: 500,
-                  fontSize: 18,
-                  marginTop: 14,
-                }}
-              >
-                {t.ko}
-              </div>
-              <div
-                style={{
-                  fontFamily: 'var(--font-serif)',
-                  fontStyle: 'italic',
-                  fontSize: 13,
-                  color: 'var(--ink-3)',
-                  marginBottom: 24,
-                }}
-              >
-                {t.en}
-              </div>
+                <div
+                  style={{
+                    fontFamily: 'var(--font-krs)',
+                    fontWeight: 600,
+                    fontSize: 18,
+                    marginTop: 14,
+                    color: t.apex ? 'var(--accent)' : 'var(--ink)',
+                  }}
+                >
+                  {t.ko}
+                </div>
+                <div
+                  style={{
+                    fontFamily: 'var(--font-serif)',
+                    fontStyle: 'italic',
+                    fontSize: 13,
+                    color: 'var(--ink-3)',
+                    marginBottom: 24,
+                  }}
+                >
+                  {t.en}
+                </div>
 
-              <Row label="MIN MONTHLY" value={t.min} />
-              <Row label="FOUNDERS GIFT" value={t.gift} accent emphasized={t.apex} />
-              <Row label="SPREAD" value={t.spread} />
-              <Row label="STORAGE" value={t.storage} />
-              <Row label="12개월 STREAK" value={t.streak12} />
-
-              <div
-                style={{
-                  marginTop: 18,
-                  paddingTop: 14,
-                  borderTop: '1px dashed var(--rule)',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 10,
-                  letterSpacing: '0.18em',
-                  color: 'var(--ink-3)',
-                }}
-              >
-                {COHORT_STATUS}
-              </div>
-            </article>
-          ))}
+                <Row label="MIN MONTHLY" value={t.min} />
+                <Row label="FOUNDERS GIFT" value={t.gift} accent emphasized={t.apex} />
+                <Row label="SPREAD" value={t.spread} />
+                <Row label="STORAGE" value={t.storage} />
+                <Row label="12개월 STREAK" value={t.streak12} />
+              </article>
+            );
+          })}
         </div>
 
         <div

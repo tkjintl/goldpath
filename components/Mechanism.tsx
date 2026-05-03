@@ -36,16 +36,15 @@ export function Mechanism() {
             }}
           >
             네 단계.{' '}
-            <em
+            <span
               style={{
-                fontFamily: 'var(--font-serif)',
-                fontStyle: 'italic',
+                fontFamily: 'var(--font-krs)',
+                fontWeight: 600,
                 color: 'var(--accent)',
-                fontWeight: 400,
               }}
             >
               레버리지 없이.
-            </em>
+            </span>
           </h3>
           <span
             style={{
@@ -61,6 +60,7 @@ export function Mechanism() {
         <div
           data-mobile="mech-grid"
           style={{
+            position: 'relative',
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
             gap: 0,
@@ -69,9 +69,26 @@ export function Mechanism() {
             border: '1px solid var(--rule)',
           }}
         >
+          {/* connector line — animates from 0 → 100% on first paint */}
+          <div
+            aria-hidden="true"
+            className="gp-fade-up"
+            style={{
+              position: 'absolute',
+              top: -1,
+              left: 0,
+              height: 1,
+              width: '100%',
+              background: 'linear-gradient(90deg, var(--accent), var(--accent-dim))',
+              transformOrigin: 'left center',
+              animation: 'gp-fade-up 1400ms cubic-bezier(0.16, 1, 0.3, 1) both',
+              zIndex: 1,
+            }}
+          />
           {steps.map((s, i) => (
             <div
               key={s.n}
+              className={`gp-fade-up gp-fade-up-delay-${i + 1}`}
               style={{
                 padding: '28px 24px 32px',
                 borderRight: i < steps.length - 1 ? '1px solid var(--rule)' : 'none',
@@ -80,21 +97,24 @@ export function Mechanism() {
               <div
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  fontSize: 11,
+                  fontSize: 'clamp(28px, 4vw, 36px)',
+                  fontVariantNumeric: 'tabular-nums',
                   color: 'var(--accent)',
-                  letterSpacing: '0.24em',
-                  marginBottom: 16,
+                  letterSpacing: '0.04em',
+                  borderBottom: '1px solid var(--rule)',
+                  paddingBottom: 8,
+                  marginBottom: 18,
+                  fontWeight: 400,
                 }}
               >
                 {s.n}
               </div>
               <div
                 style={{
-                  fontFamily: 'var(--font-serif)',
-                  fontStyle: 'italic',
+                  fontFamily: 'var(--font-krs)',
+                  fontWeight: 500,
                   fontSize: 30,
                   color: 'var(--ink)',
-                  fontWeight: 500,
                   marginBottom: 4,
                   lineHeight: 1.05,
                 }}

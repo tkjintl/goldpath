@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { FlakeParticles } from './FlakeParticles';
 
 export function EndCTA() {
   return (
@@ -14,6 +15,7 @@ export function EndCTA() {
       }}
     >
       <div
+        className="gp-breathe"
         style={{
           position: 'absolute',
           top: -200,
@@ -25,8 +27,10 @@ export function EndCTA() {
           background:
             'radial-gradient(circle, color-mix(in srgb, var(--inv-accent) 18%, transparent), transparent 70%)',
           pointerEvents: 'none',
+          zIndex: 0,
         }}
       />
+      <FlakeParticles count={6} tone="inv-accent" />
       <div style={{ position: 'relative', zIndex: 2, maxWidth: 760, margin: '0 auto' }}>
         <div
           style={{
@@ -52,16 +56,15 @@ export function EndCTA() {
         >
           한 그램.
           <br />
-          <em
+          <span
             style={{
-              fontFamily: 'var(--font-serif)',
-              fontStyle: 'italic',
+              fontFamily: 'var(--font-krs)',
+              fontWeight: 600,
               color: 'var(--inv-accent)',
-              fontWeight: 300,
             }}
           >
             지금.
-          </em>
+          </span>
         </h2>
         <div
           style={{
@@ -76,6 +79,7 @@ export function EndCTA() {
         </div>
         <Link
           href="/signup"
+          className="gp-cta-primary"
           style={{
             display: 'inline-block',
             background: 'var(--inv-accent)',
@@ -98,7 +102,7 @@ export function EndCTA() {
             marginTop: 36,
           }}
         >
-          MALCA-AMIT SGP · LLOYD'S · BRINK'S · MAS PSPM 2019
+          MALCA-AMIT SGP · LLOYD&apos;S · BRINK&apos;S · MAS PSPM 2019
         </div>
       </div>
     </section>

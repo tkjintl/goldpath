@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { Mark } from './Mark';
 
 const links = [
@@ -11,17 +14,29 @@ const links = [
 ];
 
 export function Nav() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 32);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
     <nav
       className="gp-nav"
+      data-scrolled={scrolled ? 'true' : 'false'}
       style={{
         background: 'color-mix(in srgb, var(--bg) 92%, transparent)',
-        backdropFilter: 'blur(14px)',
+        backdropFilter: scrolled ? 'blur(24px)' : 'blur(14px)',
+        WebkitBackdropFilter: scrolled ? 'blur(24px)' : 'blur(14px)',
         borderBottom: '1px solid var(--rule)',
-        padding: '18px 28px',
+        padding: scrolled ? '12px 28px' : '18px 28px',
         position: 'sticky',
         top: 0,
         zIndex: 40,
+        transition: 'padding 220ms ease, backdrop-filter 220ms ease',
       }}
     >
       <div
@@ -80,6 +95,7 @@ export function Nav() {
           <Link
             href="/signup"
             data-mobile="nav-cta"
+            className="gp-cta-primary"
             style={{
               background: 'var(--accent)',
               color: 'var(--inv-ink)',

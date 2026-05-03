@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Mark } from './Mark';
+import { MobilePolishStyles } from './MobilePolishStyles';
 
 export function Footer() {
   return (
@@ -9,9 +10,47 @@ export function Footer() {
         background: 'var(--bg-2)',
         borderTop: '1px solid var(--rule)',
         padding: '60px 28px 36px',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+      {/* watermark — pure visual signature, never interactive */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          right: 24,
+          bottom: 24,
+          opacity: 0.05,
+          pointerEvents: 'none',
+          zIndex: 0,
+        }}
+      >
+        <Mark size={120} />
+      </div>
+
+      <div style={{ maxWidth: 1280, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            marginBottom: 12,
+          }}
+        >
+          <a
+            href="#main"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 11,
+              letterSpacing: '0.22em',
+              color: 'var(--accent)',
+              textDecoration: 'none',
+            }}
+          >
+            위로 ↑
+          </a>
+        </div>
+
         <div
           data-mobile="footer-grid"
           style={{
@@ -106,9 +145,20 @@ export function Footer() {
         >
           <span>© MMXXVI TACC PTE. LTD.</span>
           <span>SGP · MinLaw PSPM 2019 · IRAS IPM</span>
-          <span style={{ color: 'var(--accent-dim)' }}>QUIETLY · FOREVER</span>
+          <span
+            style={{
+              fontFamily: 'var(--font-serif)',
+              fontStyle: 'italic',
+              fontSize: 13,
+              letterSpacing: '0.04em',
+              color: 'var(--accent-dim)',
+            }}
+          >
+            Quietly · Forever
+          </span>
         </div>
       </div>
+      <MobilePolishStyles />
     </footer>
   );
 }

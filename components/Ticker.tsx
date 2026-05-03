@@ -2,7 +2,7 @@ import { getPriceSnapshot, fmtKRW, fmtPct } from '@/lib/pricing';
 import { getSignupCount } from '@/lib/db/store';
 import { foundersDisplayCount, FOUNDERS_CAP } from '@/lib/founders';
 
-// Live ticker strip. Server-rendered, refreshes every 5 min via cache.
+// Live ticker strip — true marquee with edge fades and pause-on-hover via CSS.
 export async function Ticker() {
   const [p, signupCount] = await Promise.all([getPriceSnapshot(), getSignupCount()]);
   const founders = foundersDisplayCount(signupCount);
@@ -18,6 +18,8 @@ export async function Ticker() {
   ];
 
   const allLive = p.sources.gold === 'live' && p.sources.fx === 'live';
+  // Duplicate for seamless loop
+  const looped = [...items, ...items];
 
   return (
     <div
@@ -32,31 +34,57 @@ export async function Ticker() {
         padding: '8px 16px',
         display: 'flex',
         gap: 24,
-        flexWrap: 'wrap',
-        justifyContent: 'space-between',
         alignItems: 'center',
+        justifyContent: 'space-between',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      <div data-mobile="ticker-items" style={{ display: 'flex', gap: 22, flexWrap: 'wrap' }}>
-        {items.map((it) => (
-          <span
-            key={it.l}
-            style={{
-              display: 'inline-flex',
-              gap: 8,
-              alignItems: 'baseline',
-              color:
-                it.tone === 'good'
-                  ? 'var(--green)'
-                  : it.tone === 'warn'
-                  ? 'var(--red)'
-                  : 'var(--inv-ink)',
-            }}
-          >
-            <span style={{ opacity: 0.55, color: 'var(--inv-ink)' }}>{it.l}</span>
-            <span style={{ fontWeight: 600 }}>{it.v}</span>
-          </span>
-        ))}
+      <div
+        data-mobile="ticker-items"
+        style={{
+          flex: 1,
+          minWidth: 0,
+          overflow: 'hidden',
+          maskImage:
+            'linear-gradient(to right, transparent 0, black 32px, black calc(100% - 32px), transparent 100%)',
+          WebkitMaskImage:
+            'linear-gradient(to right, transparent 0, black 32px, black calc(100% - 32px), transparent 100%)',
+        }}
+      >
+        <div
+          className="gp-ticker-track"
+          style={{
+            display: 'flex',
+            flexWrap: 'nowrap',
+            whiteSpace: 'nowrap',
+            gap: 36,
+            animation: 'ticker-scroll 60s linear infinite',
+            width: 'max-content',
+          }}
+        >
+          {looped.map((it, idx) => (
+            <span
+              key={`${it.l}-${idx}`}
+              style={{
+                display: 'inline-flex',
+                gap: 8,
+                alignItems: 'baseline',
+                color:
+                  it.tone === 'good'
+                    ? 'var(--green)'
+                    : it.tone === 'warn'
+                    ? 'var(--red)'
+                    : 'var(--inv-ink)',
+              }}
+            >
+              <span style={{ opacity: 0.55, color: 'var(--inv-ink)' }}>{it.l}</span>
+              <span className="gp-num" style={{ fontWeight: 600 }}>
+                {it.v}
+              </span>
+            </span>
+          ))}
+        </div>
       </div>
       <span
         title={`gold:${p.sources.gold} fx:${p.sources.fx} retail:${p.sources.retail} (as of ${p.retailAsOf})`}
@@ -66,6 +94,7 @@ export async function Ticker() {
           alignItems: 'center',
           color: allLive ? 'var(--inv-accent)' : 'var(--accent-dim)',
           opacity: 0.85,
+          flexShrink: 0,
         }}
       >
         <span

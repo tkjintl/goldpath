@@ -41,8 +41,11 @@ export type Theme = {
   serif: string;       // Display/italic headlines
   sans: string;        // UI text
   kr: string;          // Korean sans
-  krs: string;         // Korean serif (display)
+  krs: string;         // Korean serif (display) — Pretendard-led; serif Korean reserved for editorial moments
   mono: string;        // Data, labels
+  display: string;     // Italic display headlines (≥ 56px) — Cormorant Garamond italic stack
+  canvas: string;      // Alias of `bg` — exposed as --canvas for layered background contexts
+  krsRare: string;     // Noto Serif KR — opt-in editorial Korean serif
   // Ornament feel — picked up by special components
   ornament: 'data-dense' | 'editorial-quiet' | 'ink-wash' | 'magazine-warm' | 'document-formal' | 'document-modern';
 };
@@ -72,10 +75,13 @@ export const THEMES: Record<ThemeId, Theme> = {
     invertedInk: '#F5EEDC',
     invertedAccent: '#C99857',
     serif: "'Cormorant Garamond', Georgia, serif",
-    sans: "'Inter', system-ui, sans-serif",
-    kr: "'Noto Sans KR', sans-serif",
-    krs: "'Noto Serif KR', serif",
+    sans: "'Pretendard Variable', Pretendard, 'Inter', system-ui, sans-serif",
+    kr: "'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif",
+    krs: "'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif",
     mono: "'IBM Plex Mono', monospace",
+    display: "'Cormorant Garamond', Georgia, 'Noto Serif KR', serif",
+    canvas: '#F5EEDC',
+    krsRare: "'Noto Serif KR', 'Apple SD Gothic Neo', serif",
     ornament: 'magazine-warm',
   },
 
@@ -101,10 +107,13 @@ export const THEMES: Record<ThemeId, Theme> = {
     invertedInk: '#1B1815',
     invertedAccent: '#A67C3F',
     serif: "'Newsreader', Georgia, serif",
-    sans: "'Inter Tight', system-ui, sans-serif",
-    kr: "'Noto Sans KR', sans-serif",
-    krs: "'Noto Serif KR', serif",
+    sans: "'Pretendard Variable', Pretendard, 'Inter Tight', system-ui, sans-serif",
+    kr: "'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif",
+    krs: "'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif",
     mono: "'JetBrains Mono', monospace",
+    display: "'Cormorant Garamond', Georgia, 'Noto Serif KR', serif",
+    canvas: '#1B1815',
+    krsRare: "'Noto Serif KR', 'Apple SD Gothic Neo', serif",
     ornament: 'data-dense',
   },
 
@@ -130,10 +139,13 @@ export const THEMES: Record<ThemeId, Theme> = {
     invertedInk: '#F4F1EA',
     invertedAccent: '#C99857',
     serif: "'Newsreader', Georgia, serif",
-    sans: "'Inter Tight', system-ui, sans-serif",
-    kr: "'Noto Sans KR', sans-serif",
-    krs: "'Noto Serif KR', serif",
+    sans: "'Pretendard Variable', Pretendard, 'Inter Tight', system-ui, sans-serif",
+    kr: "'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif",
+    krs: "'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif",
     mono: "'JetBrains Mono', monospace",
+    display: "'Cormorant Garamond', Georgia, 'Noto Serif KR', serif",
+    canvas: '#F4F1EA',
+    krsRare: "'Noto Serif KR', 'Apple SD Gothic Neo', serif",
     ornament: 'editorial-quiet',
   },
 
@@ -159,10 +171,13 @@ export const THEMES: Record<ThemeId, Theme> = {
     invertedInk: '#EDE6D6',
     invertedAccent: '#C95A3A',
     serif: "'Cormorant Garamond', Georgia, serif",
-    sans: "'Inter', system-ui, sans-serif",
-    kr: "'Noto Sans KR', sans-serif",
-    krs: "'Noto Serif KR', serif",
+    sans: "'Pretendard Variable', Pretendard, 'Inter', system-ui, sans-serif",
+    kr: "'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif",
+    krs: "'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif",
     mono: "'IBM Plex Mono', monospace",
+    display: "'Cormorant Garamond', Georgia, 'Noto Serif KR', serif",
+    canvas: '#EDE6D6',
+    krsRare: "'Noto Serif KR', 'Apple SD Gothic Neo', serif",
     ornament: 'ink-wash',
   },
 
@@ -188,10 +203,13 @@ export const THEMES: Record<ThemeId, Theme> = {
     invertedInk: '#F5EEDC',
     invertedAccent: '#E07758',
     serif: "'Cormorant Garamond', Georgia, serif",
-    sans: "'Inter', system-ui, sans-serif",
-    kr: "'Noto Sans KR', sans-serif",
-    krs: "'Noto Serif KR', serif",
+    sans: "'Pretendard Variable', Pretendard, 'Inter', system-ui, sans-serif",
+    kr: "'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif",
+    krs: "'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif",
     mono: "'IBM Plex Mono', monospace",
+    display: "'Cormorant Garamond', Georgia, 'Noto Serif KR', serif",
+    canvas: '#F5EEDC',
+    krsRare: "'Noto Serif KR', 'Apple SD Gothic Neo', serif",
     ornament: 'magazine-warm',
   },
 
@@ -217,10 +235,13 @@ export const THEMES: Record<ThemeId, Theme> = {
     invertedInk: '#F8F6F0',
     invertedAccent: '#C9A14B',
     serif: "'EB Garamond', Georgia, serif",
-    sans: "'Inter', system-ui, sans-serif",
-    kr: "'Noto Sans KR', sans-serif",
-    krs: "'Noto Serif KR', serif",
+    sans: "'Pretendard Variable', Pretendard, 'Inter', system-ui, sans-serif",
+    kr: "'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif",
+    krs: "'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif",
     mono: "'IBM Plex Mono', monospace",
+    display: "'Cormorant Garamond', Georgia, 'Noto Serif KR', serif",
+    canvas: '#F8F6F0',
+    krsRare: "'Noto Serif KR', 'Apple SD Gothic Neo', serif",
     ornament: 'document-formal',
   },
 
@@ -246,10 +267,13 @@ export const THEMES: Record<ThemeId, Theme> = {
     invertedInk: '#F8F6F0',
     invertedAccent: '#C9A14B',
     serif: "'EB Garamond', Georgia, serif",
-    sans: "'Inter Tight', 'Inter', system-ui, sans-serif",
-    kr: "'Noto Sans KR', sans-serif",
-    krs: "'Noto Serif KR', serif",
+    sans: "'Pretendard Variable', Pretendard, 'Inter Tight', 'Inter', system-ui, sans-serif",
+    kr: "'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif",
+    krs: "'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif",
     mono: "'IBM Plex Mono', monospace",
+    display: "'Cormorant Garamond', Georgia, 'Noto Serif KR', serif",
+    canvas: '#F8F6F0',
+    krsRare: "'Noto Serif KR', 'Apple SD Gothic Neo', serif",
     ornament: 'document-modern',
   },
 };
@@ -298,5 +322,8 @@ export function themeToCSSVars(theme: Theme): string {
     --font-kr: ${theme.kr};
     --font-krs: ${theme.krs};
     --font-mono: ${theme.mono};
+    --font-display: ${theme.display};
+    --font-krs-rare: ${theme.krsRare};
+    --canvas: ${theme.canvas};
   `.trim();
 }

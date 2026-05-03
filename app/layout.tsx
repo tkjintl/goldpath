@@ -25,6 +25,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="ko" data-theme={themeId} data-ornament={theme.ornament}>
       <head>
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
         <style
           // Inline theme variables on :root so SSR + client agree on first paint.
           dangerouslySetInnerHTML={{
