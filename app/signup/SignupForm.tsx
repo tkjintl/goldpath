@@ -26,9 +26,10 @@ export function SignupForm() {
       <fieldset style={{ border: 'none' }}>
         <legend style={legendStyle}>§ I · 등급 선택 · CHOOSE TIER</legend>
         <div
+          className="gp-signup-tier-grid"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+            gridTemplateColumns: 'repeat(5, 1fr)',
             gap: 8,
             marginTop: 14,
           }}

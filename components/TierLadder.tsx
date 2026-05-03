@@ -1,6 +1,7 @@
 import { getSignupCount } from '@/lib/db/store';
 import { foundersDisplayCount, FOUNDERS_CAP } from '@/lib/founders';
 import { CohortBar } from './CohortBar';
+import { MobileTierCarousel } from './MobileTierCarousel';
 
 // Tier ladder — 5 tiers with launch credit + spread + storage cap.
 // Progressive scale visualizes the climb; apex tier breathes.
@@ -161,6 +162,13 @@ export async function TierLadder() {
           <CohortBar joined={founders} cap={FOUNDERS_CAP} />
         </div>
 
+        {/* Mobile carousel — hidden on desktop via .gp-tier-mobile CSS class */}
+        <div className="gp-tier-mobile">
+          <MobileTierCarousel />
+        </div>
+
+        {/* Desktop grid — hidden on mobile via .gp-tier-desktop CSS class */}
+        <div className="gp-tier-desktop">
         <div
           data-mobile="tier-grid"
           style={{
@@ -272,6 +280,7 @@ export async function TierLadder() {
             );
           })}
         </div>
+        </div>{/* end gp-tier-desktop */}
 
         <div
           data-mobile="tier-footnotes"

@@ -81,6 +81,7 @@ export function Leaderboard({ recentSignups }: { recentSignups: Row[] }) {
           {rows.map((r, idx) => (
             <div
               key={idx}
+              className="gp-leaderboard-row"
               style={{
                 display: 'grid',
                 gridTemplateColumns: '60px 1fr 80px 100px 1fr',

@@ -39,6 +39,7 @@ export async function Hero() {
         {/* LEFT — editorial */}
         <div className="gp-fade-up">
           <div
+            className="gp-hero-eyebrow"
             style={{
               fontFamily: 'var(--font-mono)',
               fontSize: 11,
@@ -184,6 +185,7 @@ export async function Hero() {
               zIndex: 1,
               aspectRatio: '4 / 5',
               maxHeight: 520,
+              margin: '0 auto',
               background:
                 'linear-gradient(170deg, var(--accent-bright) 0%, var(--accent) 50%, var(--accent-dim) 100%)',
               color: 'var(--inv-ink)',

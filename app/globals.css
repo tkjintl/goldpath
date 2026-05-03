@@ -228,7 +228,20 @@ input, textarea, select {
 
   /* ── Hero ────────────────────────────────────────────────────── */
   .gp-hero {
-    padding: 48px 16px 56px !important;
+    padding: 20px 16px 40px !important;
+  }
+  .gp-hero-eyebrow {
+    flex-wrap: nowrap !important;
+    overflow: hidden !important;
+    gap: 6px !important;
+  }
+  .gp-hero-eyebrow > span {
+    font-size: 9px !important;
+    letter-spacing: 0.1em !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    min-width: 0 !important;
   }
   .gp-hero [data-mobile="hero-grid"] {
     grid-template-columns: 1fr !important;
@@ -295,24 +308,17 @@ input, textarea, select {
   .gp-mechanism p {
     word-break: keep-all !important;
   }
+  .gp-mechanism [data-mobile="mech-grid"] [aria-hidden="true"] {
+    display: none !important;
+  }
 
   /* ── Tier Ladder ─────────────────────────────────────────────── */
   .gp-tiers {
     padding: 56px 16px !important;
   }
-  .gp-tiers [data-mobile="tier-grid"] {
-    grid-template-columns: 1fr !important;
-    overflow: visible !important;
-  }
-  .gp-tiers .gp-tier-card {
-    padding: 24px 18px !important;
-    border-right: none !important;
-    border-bottom: 1px solid var(--rule) !important;
-    transform: none !important;
-  }
-  .gp-tiers .gp-tier-card:last-child {
-    border-bottom: none !important;
-  }
+  .gp-tier-mobile { display: block; }
+  .gp-tier-desktop { display: none; }
+  .gp-carousel-track::-webkit-scrollbar { display: none; }
   .gp-tiers [data-mobile="tier-footnotes"] {
     grid-template-columns: 1fr !important;
     gap: 20px !important;
@@ -461,6 +467,25 @@ input, textarea, select {
      when they appear inside a flex/wrap row of CTAs. Conservative: only
      apply to anchors that are direct children of [data-mobile="hero-ctas"]
      (already done above) — generic rule avoided to prevent regressions. */
+
+  /* ── Signup tier picker — 2-col with III spanning full width ─── */
+  .gp-signup-tier-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .gp-signup-tier-grid > button:nth-child(3) {
+    grid-column: 1 / -1 !important;
+  }
+
+  /* ── Leaderboard JOINED column — no wrap ─────────────────────── */
+  .gp-leaderboard-row > span:last-child {
+    white-space: nowrap !important;
+  }
+
+  /* ── Trust grid cards — remove forced min-height on mobile ───── */
+  .gp-trust-grid a {
+    min-height: auto !important;
+    padding: 20px 18px !important;
+  }
 }
 
 /* Landscape phone / small tablet — restore some horizontal density */
@@ -663,4 +688,10 @@ textarea:focus,
 select:focus {
   outline: none;
   border-bottom-color: var(--accent);
+}
+
+/* ── Tier carousel: show carousel on mobile, grid on desktop ── */
+@media (min-width: 769px) {
+  .gp-tier-mobile { display: none; }
+  .gp-tier-desktop { display: block; }
 }
