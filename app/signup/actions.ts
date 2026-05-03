@@ -4,6 +4,7 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { SignupSchema, createSignup } from '@/lib/db/store';
 import { setSession } from '@/lib/auth';
+import { rateLimit } from '@/lib/rate-limit';
 
 export type SignupState = {
   status: 'idle' | 'success' | 'error';
@@ -23,6 +24,19 @@ export async function submitSignup(
   _prev: SignupState,
   formData: FormData,
 ): Promise<SignupState> {
+  // Rate limit before doing any work — 5 attempts per 60s per IP+UA.
+  const hdrs = await headers();
+  const xff = hdrs.get('x-forwarded-for') ?? '';
+  const ip = (xff.split(',')[0] ?? '').trim() || hdrs.get('x-real-ip') || 'unknown';
+  const uaPrefix = (hdrs.get('user-agent') ?? '').slice(0, 64);
+  const rl = rateLimit({ key: `signup:${ip}:${uaPrefix}`, limit: 5, windowSec: 60 });
+  if (!rl.ok) {
+    return {
+      status: 'error',
+      message: `요청이 너무 많습니다. ${rl.retryAfterSec}초 후 다시 시도해 주세요.`,
+    };
+  }
+
   const tier = String(formData.get('tier') || '') as 'I' | 'II' | 'III' | 'IV' | 'V';
   const monthlyKrwInput = String(formData.get('monthlyKrw') || '');
   const monthlyKrw = parseInt(monthlyKrwInput.replace(/[^\d]/g, ''), 10) || 0;
@@ -59,10 +73,9 @@ export async function submitSignup(
     };
   }
 
-  const h = await headers();
   const result = await createSignup(parsed.data, {
-    ip: h.get('x-forwarded-for') ?? undefined,
-    userAgent: h.get('user-agent') ?? undefined,
+    ip: hdrs.get('x-forwarded-for') ?? undefined,
+    userAgent: hdrs.get('user-agent') ?? undefined,
   });
 
   if (!result.ok) {

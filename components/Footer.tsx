@@ -81,6 +81,7 @@ export function Footer() {
             links={[
               { href: '/faq', label: 'FAQ' },
               { href: '/heritage', label: '유산' },
+              { href: '/changelog', label: '변경 기록' },
               { href: '/legal', label: '법적 고지' },
             ]}
           />

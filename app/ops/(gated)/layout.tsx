@@ -1,6 +1,7 @@
 import { headers } from 'next/headers';
 import { requireAdmin } from '@/lib/admin';
 import { OpsNav } from '@/components/ops/OpsNav';
+import { JsonlBanner } from '@/components/ops/JsonlBanner';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,6 +19,7 @@ export default async function OpsGatedLayout({ children }: { children: React.Rea
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
+      <JsonlBanner />
       <OpsNav active={active} />
       <main style={{ maxWidth: 1480, margin: '0 auto', padding: '32px 28px 80px' }}>
         {children}

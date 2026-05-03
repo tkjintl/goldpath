@@ -12,11 +12,20 @@ export async function GET() {
     getPriceSnapshot(),
     getSignupCount().catch(() => 0),
   ]);
+  const backend = storageBackend();
+  const cap = 5000;
   return NextResponse.json({
     ok: true,
     timestamp: new Date().toISOString(),
     build: process.env.VERCEL_GIT_COMMIT_SHA ?? 'local',
-    db: { status: db.status, message: db.message, backend: storageBackend() },
+    db: { status: db.status, message: db.message, backend },
+    storage: {
+      backend,
+      warning:
+        backend === 'jsonl'
+          ? 'JSONL on Vercel function disk is ephemeral — signups reset on each deploy. Set DATABASE_URL to wire Neon.'
+          : null,
+    },
     pricing: {
       sources: price.sources,
       retailAsOf: price.retailAsOf,
@@ -33,6 +42,11 @@ export async function GET() {
       customer: 'ok',
       admin: process.env.ADMIN_TOKEN ? 'ok' : 'admin-token-not-set',
     },
-    signups: { count: signupCount, capRemaining: 5000 - signupCount },
+    signups: { count: signupCount, capRemaining: cap - signupCount },
+    cohort: {
+      signups: signupCount,
+      cap,
+      remaining: Math.max(0, cap - signupCount),
+    },
   });
 }

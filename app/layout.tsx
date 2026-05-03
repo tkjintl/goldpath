@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { THEMES, themeToCSSVars, SHOW_THEME_SWITCHER } from '@/lib/themes';
 import { readThemeFromCookie } from '@/lib/theme-cookie';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher';
+import { SkipLink } from '@/components/SkipLink';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -32,7 +33,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body>
-        {children}
+        <SkipLink />
+        <main id="main" tabIndex={-1}>{children}</main>
         {SHOW_THEME_SWITCHER && <ThemeSwitcher active={themeId} />}
       </body>
     </html>

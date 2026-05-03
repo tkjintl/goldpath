@@ -134,3 +134,11 @@ export async function createSignup(
 export function storageBackend(): 'postgres' | 'jsonl' {
   return process.env.DATABASE_URL ? 'postgres' : 'jsonl';
 }
+
+// ─── Admin audit re-exports ──────────────────────────────────────────
+// Convenience so call sites can `import { recordAdminAction } from
+// '@/lib/db/store'`. The canonical implementation lives in
+// `lib/admin-audit.ts`; types stay there to avoid colliding with the
+// Phase-2 Postgres-shaped `AdminAuditEntry` already declared in
+// `lib/db/types.ts`.
+export { recordAdminAction, listAdminAudit } from '../admin-audit';
