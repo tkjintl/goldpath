@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aurum · Visual Identity Pitch · 6 Mockups</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#1a1a1a;color:#e8e3d8;font-family:'Inter',system-ui,sans-serif;padding:48px 32px;min-height:100vh}
+  .head{max-width:1200px;margin:0 auto 48px}
+  .head h1{font-family:'EB Garamond',serif;font-style:italic;font-weight:500;font-size:48px;margin-bottom:8px;color:#fff}
+  .head p{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.18em;color:#a8a39a}
+  .head p span{color:#C9A14B}
+
+  .grid{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:24px}
+  .card{background:#2a2622;border:1px solid #3a342c;overflow:hidden;transition:border-color .2s}
+  .card:hover{border-color:#C9A14B}
+  .card a{color:inherit;text-decoration:none;display:block}
+  .preview{aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;font-family:'EB Garamond',serif;font-style:italic;font-size:84px;font-weight:500;position:relative;overflow:hidden}
+  .preview::after{content:attr(data-label);position:absolute;bottom:14px;left:14px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;font-style:normal;font-weight:500}
+  .meta{padding:24px}
+  .meta .name{font-family:'EB Garamond',serif;font-style:italic;font-weight:500;font-size:24px;margin-bottom:6px}
+  .meta .id{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.22em;color:#C9A14B;margin-bottom:14px}
+  .meta .desc{font-size:14px;color:#bcb6a6;line-height:1.6}
+  .meta .open{margin-top:18px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;color:#C9A14B;border-top:1px solid #3a342c;padding-top:14px;text-transform:uppercase}
+
+  /* Card-specific previews */
+  .a1{background:#1B1815;color:#A67C3F}
+  .a1::after{color:#7d776a}
+  .a2{background:#F4F1EA;color:#1B1815}
+  .a2::after{color:#5C5C5C}
+  .b1{background:#EDE6D6;color:#0F0F0F}
+  .b1::after{color:#5A7A65}
+  .b2{background:#F5EEDC;color:#C95A3A}
+  .b2::after{color:#5A7A65}
+  .c1{background:#F8F6F0;color:#5B1A1A}
+  .c1::after{color:#0D2240}
+  .c2{background:#F8F6F0;color:#0D2240}
+  .c2::after{color:#5B1A1A}
+  .c2 .glyph{color:#C9A14B}
+</style>
+</head>
+<body>
+
+<div class="head">
+  <h1>Visual identity · 6 directions</h1>
+  <p><span>AURUM</span> · GoldPath · pick one to develop · click any card</p>
+</div>
+
+<div class="grid">
+
+  <div class="card">
+    <a href="A1-vault-data.html" target="_blank">
+      <div class="preview a1" data-label="DARK · DATA-DENSE · INSTITUTIONAL">Au</div>
+      <div class="meta">
+        <div class="id">A1 · VAULT / DATA</div>
+        <div class="name">Bloomberg meets Hermès.</div>
+        <div class="desc">Dark canvas, brass accent, ticker tape, live data panels in the hero. Reads as a financial terminal that happens to be elegant. Best for: institutional credibility, data-driven storytelling.</div>
+        <div class="open">OPEN A1 →</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="card">
+    <a href="A2-vault-quiet.html" target="_blank">
+      <div class="preview a2" data-label="LIGHT · MAGAZINE · QUIET">Au</div>
+      <div class="meta">
+        <div class="id">A2 · VAULT / QUIET</div>
+        <div class="name">Magazine cover.</div>
+        <div class="desc">Same palette flipped to a bone canvas. Massive Korean serif headline, one or two numbers, lots of breathing room. Best for: premium quiet luxury, slow-conversion HNW buyer.</div>
+        <div class="open">OPEN A2 →</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="card">
+    <a href="B1-daewangam-ink.html" target="_blank">
+      <div class="preview b1" data-label="CREAM · INK · CELADON">金</div>
+      <div class="meta">
+        <div class="id">B1 · DAEWANGAM / INK</div>
+        <div class="name">Korean heritage modern.</div>
+        <div class="desc">Cream paper, sumi ink seal, celadon accent, persimmon for warmth. Hanji-paper feel, 印 stamp motif. Best for: heritage/gifting positioning, deep Korean cultural resonance.</div>
+        <div class="open">OPEN B1 →</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="card">
+    <a href="B2-daewangam-warm.html" target="_blank">
+      <div class="preview b2" data-label="CREAM · PERSIMMON · MAGAZINE">금</div>
+      <div class="meta">
+        <div class="id">B2 · DAEWANGAM / WARM</div>
+        <div class="name">Editorial product card.</div>
+        <div class="desc">Same Korean heritage palette but persimmon-forward and product-led. Big serif headline + 3:4 product card. Magazine layout with explicit issue numbering.</div>
+        <div class="open">OPEN B2 →</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="card">
+    <a href="C1-specie-document.html" target="_blank">
+      <div class="preview c1" data-label="PARCHMENT · OXBLOOD · DOUBLE FRAME">·❦·</div>
+      <div class="meta">
+        <div class="id">C1 · SPECIE / DOCUMENT</div>
+        <div class="name">Reads like a deed.</div>
+        <div class="desc">Double-rule outer frame, deep blue ink, oxblood accents, gold-leaf for the close. Certificate energy throughout. Best for: maximum trust signaling, regulatory-conservative buyer.</div>
+        <div class="open">OPEN C1 →</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="card">
+    <a href="C2-specie-modern.html" target="_blank">
+      <div class="preview c2" data-label="PARCHMENT · NAVY · MODERN UI"><span class="glyph">Au</span></div>
+      <div class="meta">
+        <div class="id">C2 · SPECIE / MODERN</div>
+        <div class="name">Document register, fintech UI.</div>
+        <div class="desc">Same palette, modern card-grid layout, sticky nav, hover states. Specimen card in hero. Best for: balancing trust with usability — most translatable to a portal app shell.</div>
+        <div class="open">OPEN C2 →</div>
+      </div>
+    </a>
+  </div>
+
+</div>
+
+</body>
+</html>

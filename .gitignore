@@ -2,12 +2,11 @@
 node_modules
 
 # Builds
-dist
 .next
 out
 *.tsbuildinfo
 
-# Data (Phase 1 JSONL fallback — never commit waitlist entries)
+# Data (Phase 1 JSONL fallback — never commit waitlist/customer data)
 .data
 *.jsonl
 
@@ -17,7 +16,6 @@ out
 .env.*.local
 
 # Editor / OS
-.vite
 .DS_Store
 .vscode
 .idea
@@ -26,7 +24,6 @@ out
 # Logs
 *.log
 npm-debug.log*
-yarn-debug.log*
 
 # Vercel
 .vercel

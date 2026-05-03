@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aurum · A2 · Vault / Quiet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Noto+Sans+KR:wght@300;400;500&family=Noto+Serif+KR:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bone:#F4F1EA; --bone-2:#E9E4D6; --bone-3:#D9D2C0;
+    --ink:#1B1815; --ink-2:#3A3631; --ink-3:#6E6A60;
+    --brass:#A67C3F; --brass-b:#C99857; --brass-d:#7A5A2C;
+    --rule:#D9D2C0;
+    --sans:'Inter Tight',system-ui,sans-serif; --serif:'Newsreader',Georgia,serif;
+    --kr:'Noto Sans KR',sans-serif; --krs:'Noto Serif KR',serif;
+    --mono:'JetBrains Mono',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bone);color:var(--ink);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+
+  /* NAV */
+  nav{display:flex;justify-content:space-between;align-items:center;padding:24px 36px;border-bottom:1px solid var(--rule)}
+  .brand{display:flex;align-items:center;gap:14px}
+  .mark{width:30px;height:30px;border:1px solid var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-style:italic;color:var(--ink);font-size:18px;font-weight:500}
+  .word{font-family:var(--sans);font-weight:700;letter-spacing:.22em;font-size:13px}
+  .ser{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.2em}
+  nav .links{display:flex;gap:32px;font-family:var(--serif);font-style:italic;font-size:15px;color:var(--ink-2)}
+  nav .cta{font-family:var(--sans);font-weight:600;font-size:12px;letter-spacing:.08em;border-bottom:1px solid var(--ink);padding-bottom:3px;text-transform:uppercase}
+
+  /* HERO — magazine cover energy, big headline, one number */
+  .hero{min-height:88vh;display:flex;flex-direction:column;justify-content:center;padding:100px 36px 80px;position:relative;border-bottom:1px solid var(--rule)}
+  .hero .top{position:absolute;top:36px;left:36px;font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.32em}
+  .hero .top-r{position:absolute;top:36px;right:36px;font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.32em}
+  .hero h1{font-family:var(--krs);font-weight:200;font-size:clamp(60px,12vw,180px);line-height:.95;letter-spacing:-.04em;margin-bottom:16px;max-width:1080px}
+  .hero h1 em{font-family:var(--serif);font-style:italic;color:var(--brass);font-weight:300}
+  .hero .deck{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(20px,2.4vw,30px);color:var(--ink-2);max-width:680px;line-height:1.5;margin-bottom:48px}
+  .hero .meta{display:flex;gap:48px;align-items:flex-end;flex-wrap:wrap}
+  .hero .stat{display:flex;flex-direction:column;gap:6px}
+  .hero .stat .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--ink-3)}
+  .hero .stat .v{font-family:var(--serif);font-style:italic;font-size:48px;color:var(--brass);font-weight:400;line-height:1}
+  .hero .stat .v span{font-size:18px;color:var(--ink-3);font-style:normal;margin-left:4px;font-family:var(--mono)}
+  .hero .cta{display:flex;gap:14px;margin-left:auto}
+  .btn-p{background:var(--ink);color:var(--bone);padding:16px 26px;font-family:var(--sans);font-weight:700;font-size:12px;letter-spacing:.1em}
+  .btn-g{border:1px solid var(--ink);color:var(--ink);padding:16px 26px;font-family:var(--serif);font-style:italic;font-size:14px}
+  .scroll-cue{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:10px;letter-spacing:.32em;color:var(--ink-3)}
+
+  /* THESIS */
+  .thesis{padding:120px 36px;border-bottom:1px solid var(--rule)}
+  .thesis-grid{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:280px 1fr;gap:80px}
+  .thesis .label{font-family:var(--mono);font-size:11px;color:var(--brass);letter-spacing:.32em}
+  .thesis h2{font-family:var(--krs);font-weight:300;font-size:clamp(36px,5vw,64px);line-height:1.1;letter-spacing:-.02em;margin-bottom:32px}
+  .thesis h2 em{font-family:var(--serif);font-style:italic;color:var(--brass);font-weight:400}
+  .thesis p{font-family:var(--krs);font-weight:300;font-size:18px;line-height:1.85;color:var(--ink-2);margin-bottom:18px;max-width:720px}
+  .thesis p strong{color:var(--ink);font-weight:500}
+  .thesis cite{display:block;margin-top:36px;font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.18em;border-top:1px solid var(--rule);padding-top:16px;font-style:normal}
+
+  /* MECHANISM */
+  .mech{padding:80px 36px;background:var(--bone-2);border-bottom:1px solid var(--rule)}
+  .mech .head{max-width:1280px;margin:0 auto 48px;display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:24px}
+  .mech h3{font-family:var(--krs);font-weight:300;font-size:clamp(28px,3.6vw,44px);line-height:1.1;letter-spacing:-.01em}
+  .mech .head .num{font-family:var(--mono);font-size:11px;color:var(--brass);letter-spacing:.32em}
+  .mech-grid{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--ink-2)}
+  .mech-step{padding:28px 24px 32px;border-right:1px solid var(--bone-3)}
+  .mech-step:last-child{border-right:none}
+  .mech-step .n{font-family:var(--mono);font-size:11px;color:var(--brass);letter-spacing:.24em;margin-bottom:18px}
+  .mech-step h4{font-family:var(--serif);font-style:italic;font-size:30px;color:var(--ink);font-weight:500;margin-bottom:12px;line-height:1.05}
+  .mech-step p{font-family:var(--kr);font-size:14px;color:var(--ink-2);line-height:1.7}
+
+  /* ENDING */
+  .end{padding:140px 36px;text-align:center;background:var(--ink);color:var(--bone);position:relative}
+  .end .top{font-family:var(--mono);font-size:10px;color:var(--brass);letter-spacing:.32em;margin-bottom:32px}
+  .end h2{font-family:var(--krs);font-weight:200;font-size:clamp(60px,9vw,120px);line-height:.96;letter-spacing:-.04em;margin-bottom:32px}
+  .end h2 em{font-family:var(--serif);font-style:italic;color:var(--brass-b);font-weight:300}
+  .end .deck{font-family:var(--serif);font-style:italic;font-size:22px;color:#bcb6a6;margin-bottom:48px}
+  .end .btn-p{background:var(--brass);color:var(--ink)}
+  .end .meta{font-family:var(--mono);font-size:10px;color:#7d776a;letter-spacing:.28em;margin-top:32px}
+
+  /* FOOTER */
+  footer{padding:32px 36px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.18em}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">
+    <div class="mark">Au</div>
+    <div class="word">AURUM</div>
+    <div class="ser">EST. MMXXIV</div>
+  </div>
+  <div class="links"><a>왜</a><a>방법</a><a>등급</a><a>볼트</a><a>유산</a></div>
+  <a class="cta">Begin →</a>
+</nav>
+
+<section class="hero">
+  <div class="top">SINGAPORE · MMXXVI</div>
+  <div class="top-r">FOUNDING COHORT · 2,848 / 5,000</div>
+  <h1>매달<br><em>한 그램.</em></h1>
+  <p class="deck">Quietly compounds. Permanently stays.<br>매달 한 그램의 실물 금이 회원님 이름으로 쌓입니다.</p>
+  <div class="meta">
+    <div class="stat"><span class="lbl">KIMCHI 프리미엄</span><span class="v">+20.1<span>%</span></span></div>
+    <div class="stat"><span class="lbl">금 · 2000년 이후</span><span class="v">23<span>×</span></span></div>
+    <div class="cta">
+      <a class="btn-p">₩200K로 시작 →</a>
+      <a class="btn-g">Read the thesis ↓</a>
+    </div>
+  </div>
+  <div class="scroll-cue">SCROLL · §I — V</div>
+</section>
+
+<section class="thesis">
+  <div class="thesis-grid">
+    <div class="label">§I · WHY NOW</div>
+    <div>
+      <h2>네 개의 수치가<br>같은 <em>방향</em>을 가리킨다.</h2>
+      <p><strong>김치 프리미엄 +20.1%.</strong> 한국 소매로 사면 매 그램 약 20% 더 지불합니다. VAT 10% + 수입 + 딜러 마진 = 영구 차이.</p>
+      <p><strong>중앙은행 분기 매입 220톤.</strong> 2008년 이후 최고치. 중국 · 인도 · 폴란드 · 터키가 달러를 팔고 금을 사고 있습니다.</p>
+      <p><strong>원화 구매력 −45%.</strong> 2000년 10만원 = 오늘 5만 5천원 (CPI 기준). 같은 기간 <strong>금은 23배.</strong></p>
+      <p><strong>코스피 5년 +14% / 적금 2.8%.</strong> 안전자산이라 부르는 것의 산술. 같은 기간 금은 그 어떤 한국 자산보다 잘했습니다.</p>
+      <cite>SOURCES · KOREA HERALD · WGC · BANK OF KOREA · LBMA</cite>
+    </div>
+  </div>
+</section>
+
+<section class="mech">
+  <div class="head">
+    <h3>네 단계. <em style="font-family:var(--serif);font-style:italic;color:var(--brass)">레버리지 없이.</em></h3>
+    <span class="num">§II · MECHANISM</span>
+  </div>
+  <div class="mech-grid">
+    <div class="mech-step"><div class="n">01</div><h4>가입</h4><p>5분. 신분증, 계좌 연결. 본인인증 KFTC.</p></div>
+    <div class="mech-step"><div class="n">02</div><h4>자동이체</h4><p>매달 ₩200K~ 원하는 날. 토스페이먼츠 CMS.</p></div>
+    <div class="mech-step"><div class="n">03</div><h4>매입</h4><p>LBMA 오후 픽스에 999.9 금 매입. 그램 적립.</p></div>
+    <div class="mech-step"><div class="n">04</div><h4>금고</h4><p>Malca-Amit 싱가포르 FTZ 배분 보관.</p></div>
+  </div>
+</section>
+
+<section class="end">
+  <div class="top">FOUNDING COHORT · CLOSES PERMANENTLY AT 5,000</div>
+  <h2>한 그램.<br><em>지금.</em></h2>
+  <div class="deck">Quietly compounds. Permanently stays.</div>
+  <a class="btn-p" style="display:inline-block">₩200K로 시작 →</a>
+  <div class="meta">2,848 / 5,000 · ENDS IN 3D 14H · MALCA-AMIT SGP · LLOYD'S · BRINK'S</div>
+</section>
+
+<footer>
+  <span>© MMXXVI AURUM PTE. LTD.</span><span>SGP · MAS PSPM 2019</span><span>QUIETLY · FOREVER</span>
+</footer>
+
+</body>
+</html>

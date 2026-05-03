@@ -1,60 +1,81 @@
-# Goldpath / Aurum
+# GoldPath
 
-Two apps live here.
+A TACC Company. Singapore-incorporated precious metals dealer. Korean retail
+gold accumulation — monthly auto-debit buys 999.9 physical gold, vaulted
+allocated in Singapore in the customer's name.
 
-## `aurum-next/` — production target
+## Stack
 
-Next.js 16 App Router app. **This is what `tkjintls-projects/goldpath` on Vercel should deploy.**
+- **Next.js 16** (App Router, Turbopack, Server Actions, typed routes)
+- **TypeScript strict**, **Zod** for validation
+- **Postgres** (Neon via Vercel Marketplace) — Phase 2; JSONL fallback for Phase 1
+- Theme system with **7 directions** registered as token objects, **GP** locked as default
 
-Phase 1 surface: diaspora-positioned landing, heritage feature page, waitlist with
-deposit-intent capture, six trust/transparency pages, Korean-residents non-solicitation
-disclosure, `/ops` admin dashboard, sitemap, robots, OG image, illustrative calculator.
-
-```bash
-cd aurum-next
-npm install
-cp .env.example .env.local   # set ADMIN_TOKEN at minimum
-npm run dev                  # http://localhost:3000
-```
-
-See `aurum-next/README.md` for full Phase 1 scope, the 90-day kill criteria, and the
-Phase 2 roadmap.
-
-## `src/` (and root) — Vite mockup, design reference
-
-The original Korean-MZ drop-energy design exploration. Kept as a reference for the design
-system, not the production target. Ignore if you're working on the live product.
+## Run
 
 ```bash
 npm install
-npm run dev   # Vite dev server, original mockup
+cp .env.example .env.local
+npm run dev          # http://localhost:3000
+npm run build        # production build
+npm run typecheck    # tsc --noEmit
 ```
 
-## Vercel deploy posture
+## Surfaces
 
-The `tkjintls-projects/goldpath` Vercel project should be configured with:
+| Path | Purpose |
+|---|---|
+| `/` | Public landing — Ticker, Hero, WhyStrip, Mechanism, TierLadder, EndCTA |
+| `/why` | Why now — kimchi premium, central bank buying, KRW debasement, gold long run |
+| `/how` | Mechanism — sign up → debit → buy → vault |
+| `/tiers` | 5-tier founding cohort ladder |
+| `/vault` | Malca-Amit Singapore FTZ transparency |
+| `/heritage` | Beneficiary / gifting / inheritance feature |
+| `/faq` | Direct, MZ-register Q&A |
+| `/calculator` | Monthly → grams illustrative projector |
+| `/signup` | Onboarding entry (Phase 2 wires KYC + payments) |
+| `/insurance`, `/audits`, `/regulators`, `/contact`, `/legal` | Trust + footer surfaces |
 
-- **Root Directory:** `aurum-next`
-- **Framework Preset:** Next.js (auto-detected)
-- **Build / Install / Output:** defaults (`aurum-next/vercel.json` pins them)
+Customer portal `/app/*` and admin portal `/ops/*` follow in Phase 2.
 
-Once Root Directory is set, every push to `main` deploys `aurum-next/` to production.
-The Vite mockup at repo root is no longer the deploy target.
+## Live pricing
 
-## Environment variables (Vercel project settings)
+`lib/pricing.ts` pulls three feeds in parallel:
 
-Required for the Phase 1 waitlist surface:
+- **KRX gold market** (Korea Exchange public data) — institutional Korean spot
+- **LBMA international** (USD/oz + KRW FX) — what GoldPath actually buys at
+- **한국금거래소 retail** — for the kimchi-premium comparison
 
-| key | purpose | scope |
-|---|---|---|
-| `ADMIN_TOKEN` | gates `/ops` and `/api/waitlist` GET | Production + Preview |
-| `RESEND_API_KEY` | (optional) waitlist confirmation emails | Production |
-| `DATABASE_URL` | (Phase 2) Neon Postgres for waitlist persistence | all |
+5-minute server cache via Next's `unstable_cache`. Falls back to seeded values
+when any feed is down — UI surfaces `LIVE` vs `CACHED` rather than crashing.
 
-Without `DATABASE_URL`, waitlist entries fall back to a local JSONL file — fine for
-development, **not for production** (filesystem is ephemeral on Vercel Functions).
-Provision Neon via the Vercel Marketplace before any real traffic.
+## Theme system
 
-## Background work tracked elsewhere
+`lib/themes.ts` registers seven themes as token objects (`GP` + `A1`/`A2`/`B1`/
+`B2`/`C1`/`C2`). Components consume CSS variables only — never hardcoded values.
 
-- 30-day waitlist kill-criteria check is scheduled at <https://claude.ai/code/routines/trig_01BSQZi877nJ2deReZHDYK39> — update the placeholder URL/token before it fires on 2026-06-01.
+- **Default:** `GP` (GoldPath brand) — B2 magazine layout × A2 brass-gold palette
+- **Switch via cookie** in production (set by an authenticated admin tool — TBD)
+- **Switch via `?theme=A1`** in dev for QA
+- Hide/show the floating switcher with `NEXT_PUBLIC_THEME_SWITCHER=1`
+
+## Environment variables
+
+| key | purpose |
+|---|---|
+| `ADMIN_TOKEN` | gates `/ops` and `/api/admin/*` (Phase 2) |
+| `RESEND_API_KEY` | transactional email |
+| `DATABASE_URL` | Neon Postgres (Phase 2) |
+| `NEXT_PUBLIC_DEFAULT_THEME` | overrides default theme — leave as `GP` |
+| `NEXT_PUBLIC_THEME_SWITCHER` | `1` to show the dev switcher |
+
+## Vercel deploy
+
+Project: `tkjintls-projects/goldpath`. Root Directory: **repo root** (no
+subdirectory). Auto-deploys from `main`.
+
+## Status
+
+Phase 1 (public site) shipped. Next: customer portal shell + auth + KYC stub +
+payments scaffold. See `lib/pricing.ts` and the theme registry as the load-bearing
+foundations.

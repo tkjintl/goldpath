@@ -1,0 +1,131 @@
+import Link from 'next/link';
+import { Mark } from './Mark';
+
+export function Footer() {
+  return (
+    <footer
+      style={{
+        background: 'var(--bg-2)',
+        borderTop: '1px solid var(--rule)',
+        padding: '60px 28px 36px',
+      }}
+    >
+      <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+            gap: 36,
+            marginBottom: 36,
+          }}
+        >
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+              <Mark size={28} />
+              <span
+                style={{
+                  fontFamily: 'var(--font-sans)',
+                  fontWeight: 800,
+                  letterSpacing: '0.18em',
+                  fontSize: 14,
+                }}
+              >
+                GOLDPATH
+              </span>
+            </div>
+            <div
+              style={{
+                fontFamily: 'var(--font-serif)',
+                fontStyle: 'italic',
+                fontSize: 13,
+                color: 'var(--ink-3)',
+                lineHeight: 1.6,
+              }}
+            >
+              조용히 쌓이고,
+              <br />
+              영원히 남는다.
+            </div>
+          </div>
+
+          <FCol
+            title="제품"
+            links={[
+              { href: '/why', label: '왜 지금' },
+              { href: '/how', label: '방법' },
+              { href: '/tiers', label: '등급' },
+              { href: '/calculator', label: '계산기' },
+            ]}
+          />
+          <FCol
+            title="신뢰"
+            links={[
+              { href: '/vault', label: '금고' },
+              { href: '/insurance', label: '보험' },
+              { href: '/audits', label: '감사' },
+              { href: '/regulators', label: '규제' },
+            ]}
+          />
+          <FCol
+            title="지원"
+            links={[
+              { href: '/faq', label: 'FAQ' },
+              { href: '/heritage', label: '유산' },
+              { href: '/contact', label: '문의' },
+              { href: '/legal', label: '법적 고지' },
+            ]}
+          />
+        </div>
+
+        <div
+          style={{
+            paddingTop: 24,
+            borderTop: '1px solid var(--rule)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 14,
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            color: 'var(--ink-3)',
+            letterSpacing: '0.18em',
+          }}
+        >
+          <span>© MMXXVI TACC PTE. LTD.</span>
+          <span>SGP · MAS PSPM 2019 · MinLaw ACD</span>
+          <span style={{ color: 'var(--accent-dim)' }}>QUIETLY · FOREVER</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+function FCol({ title, links }: { title: string; links: { href: string; label: string }[] }) {
+  return (
+    <div>
+      <div
+        style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: 10,
+          color: 'var(--accent)',
+          letterSpacing: '0.24em',
+          marginBottom: 14,
+        }}
+      >
+        {title}
+      </div>
+      <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {links.map((l) => (
+          <li key={l.href}>
+            <Link
+              href={l.href as any}
+              style={{ fontFamily: 'var(--font-kr)', fontSize: 13, color: 'var(--ink-2)' }}
+            >
+              {l.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}

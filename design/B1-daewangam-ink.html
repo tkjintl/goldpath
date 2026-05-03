@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aurum · B1 · Daewangam / Ink</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=IBM+Plex+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+KR:wght@200;300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#EDE6D6; --cream-2:#E2D9C4; --cream-3:#CFC5AC;
+    --ink:#0F0F0F; --ink-2:#2A2A2A; --ink-3:#5C5C5C;
+    --celadon:#7B9583; --celadon-2:#A8BDB1; --celadon-d:#5A7A65;
+    --persimmon:#C95A3A;
+    --rule:#CFC5AC;
+    --serif:'Cormorant Garamond',Georgia,serif;
+    --sans:'Inter',system-ui,sans-serif;
+    --kr:'Noto Sans KR',sans-serif; --krs:'Noto Serif KR',serif;
+    --mono:'IBM Plex Mono',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--cream);color:var(--ink);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+
+  /* SUMI INK BACKGROUND */
+  .sumi{position:absolute;pointer-events:none;opacity:.55;mix-blend-mode:multiply}
+
+  /* NAV */
+  nav{display:flex;justify-content:space-between;align-items:center;padding:28px 40px;position:relative;z-index:5}
+  .brand{display:flex;align-items:baseline;gap:14px}
+  .word{font-family:var(--krs);font-weight:400;font-size:22px;letter-spacing:.18em;color:var(--ink)}
+  .seal{font-family:var(--krs);font-weight:300;color:var(--celadon-d);font-style:italic;font-size:14px;letter-spacing:.1em}
+  nav .links{display:flex;gap:32px;font-family:var(--krs);font-size:15px;color:var(--ink-2)}
+  nav .cta{font-family:var(--kr);font-weight:500;font-size:13px;color:var(--ink);border-bottom:1px solid var(--ink);padding-bottom:3px}
+
+  /* HERO */
+  .hero{position:relative;padding:80px 40px 100px;overflow:hidden}
+  .hero-grid{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr;gap:60px;align-items:center;position:relative;z-index:2}
+  .hero .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.32em;color:var(--celadon-d);margin-bottom:32px;text-transform:uppercase}
+  .hero h1{font-family:var(--krs);font-weight:300;font-size:clamp(72px,14vw,200px);line-height:.92;letter-spacing:-.04em;color:var(--ink);margin-bottom:8px}
+  .hero h1 em{font-style:italic;color:var(--persimmon);font-weight:400;font-family:var(--serif)}
+  .hero .deck{font-family:var(--serif);font-style:italic;font-size:clamp(22px,2.6vw,32px);font-weight:400;color:var(--celadon-d);line-height:1.4;margin-top:24px;margin-bottom:36px}
+  .hero .lede{font-family:var(--krs);font-weight:300;font-size:17px;line-height:1.85;color:var(--ink-2);max-width:540px;margin-bottom:36px}
+  .hero .lede strong{font-weight:500;color:var(--ink)}
+  .hero .cta-row{display:flex;gap:16px;flex-wrap:wrap}
+  .btn-p{background:var(--ink);color:var(--cream);padding:18px 30px;font-family:var(--kr);font-weight:600;font-size:13px;letter-spacing:.06em}
+  .btn-g{border:1px solid var(--ink);color:var(--ink);padding:18px 30px;font-family:var(--serif);font-style:italic;font-size:16px}
+
+  .hero-art{position:relative;height:480px;display:flex;align-items:center;justify-content:center}
+  .seal-stamp{width:280px;height:280px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#1a1a1a,var(--ink));display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--cream);position:relative}
+  .seal-stamp::before{content:'';position:absolute;inset:14px;border-radius:50%;border:1px solid rgba(237,230,214,.18)}
+  .seal-stamp .ko{font-family:var(--krs);font-weight:300;font-size:84px;line-height:1;letter-spacing:-.04em;margin-bottom:8px}
+  .seal-stamp .en{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--celadon-2)}
+  .seal-stamp .meta{position:absolute;bottom:36px;font-family:var(--mono);font-size:9px;letter-spacing:.32em;color:var(--celadon-2)}
+  .seal-side{position:absolute;left:-30px;top:30px;background:var(--persimmon);color:var(--cream);font-family:var(--krs);font-weight:500;writing-mode:vertical-rl;font-size:14px;letter-spacing:.32em;padding:14px 8px}
+
+  /* WHY */
+  .why{background:var(--cream-2);padding:120px 40px;position:relative;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+  .why-grid{max-width:1180px;margin:0 auto}
+  .why .label{font-family:var(--mono);font-size:11px;letter-spacing:.32em;color:var(--celadon-d);margin-bottom:24px}
+  .why h2{font-family:var(--krs);font-weight:300;font-size:clamp(40px,6vw,72px);line-height:1.05;letter-spacing:-.02em;margin-bottom:64px;max-width:900px}
+  .why h2 em{font-family:var(--serif);font-style:italic;color:var(--persimmon);font-weight:400}
+  .why-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:32px}
+  .wc{padding:32px 28px;background:var(--cream);border:1px solid var(--rule);border-top:3px solid var(--celadon-d);position:relative}
+  .wc.high{border-top-color:var(--persimmon)}
+  .wc .roman{font-family:var(--serif);font-style:italic;color:var(--celadon-d);font-size:36px;line-height:1;font-weight:400;margin-bottom:14px}
+  .wc.high .roman{color:var(--persimmon)}
+  .wc h3{font-family:var(--krs);font-weight:500;font-size:17px;color:var(--ink);margin-bottom:18px}
+  .wc .stat{font-family:var(--serif);font-style:italic;font-size:64px;line-height:1;color:var(--ink);font-weight:400;margin-bottom:14px}
+  .wc.high .stat{color:var(--persimmon)}
+  .wc p{font-family:var(--kr);font-size:13px;color:var(--ink-2);line-height:1.7}
+
+  /* HERITAGE */
+  .heritage{padding:120px 40px;background:var(--cream);position:relative;overflow:hidden}
+  .heritage-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;position:relative;z-index:2}
+  .heritage .label{font-family:var(--mono);font-size:11px;letter-spacing:.32em;color:var(--celadon-d);margin-bottom:24px}
+  .heritage h2{font-family:var(--krs);font-weight:300;font-size:clamp(36px,5vw,64px);line-height:1.05;margin-bottom:32px}
+  .heritage h2 em{font-family:var(--serif);font-style:italic;color:var(--persimmon)}
+  .heritage p{font-family:var(--krs);font-weight:300;font-size:17px;line-height:1.9;color:var(--ink-2);margin-bottom:18px}
+  .h-art{aspect-ratio:1;background:linear-gradient(135deg,var(--celadon) 0%,var(--celadon-d) 60%,#3F5448 100%);position:relative;display:flex;align-items:center;justify-content:center}
+  .h-art::after{content:'증서';position:absolute;font-family:var(--krs);font-weight:300;color:rgba(237,230,214,.92);font-size:140px;letter-spacing:.04em}
+  .h-art .stamp{position:absolute;bottom:24px;right:24px;width:72px;height:72px;border-radius:50%;background:var(--persimmon);color:var(--cream);font-family:var(--krs);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:300}
+
+  /* CTA */
+  .end{padding:140px 40px;background:var(--ink);color:var(--cream);text-align:center;position:relative;overflow:hidden}
+  .end::before{content:'金';position:absolute;font-family:var(--krs);font-weight:200;color:rgba(201,90,58,.05);font-size:780px;line-height:.8;top:-100px;left:50%;transform:translateX(-50%);pointer-events:none}
+  .end-inner{position:relative;z-index:2;max-width:760px;margin:0 auto}
+  .end .label{font-family:var(--mono);font-size:11px;letter-spacing:.32em;color:var(--persimmon);margin-bottom:32px}
+  .end h2{font-family:var(--krs);font-weight:200;font-size:clamp(64px,10vw,140px);line-height:.96;letter-spacing:-.04em;margin-bottom:32px}
+  .end h2 em{font-style:italic;color:var(--persimmon);font-family:var(--serif);font-weight:300}
+  .end .deck{font-family:var(--serif);font-style:italic;font-size:24px;color:var(--celadon-2);margin-bottom:48px}
+  .end .btn-p{background:var(--persimmon);color:var(--cream)}
+  .end .meta{font-family:var(--mono);font-size:10px;color:#7B7568;letter-spacing:.32em;margin-top:36px}
+
+  /* FOOTER */
+  footer{padding:36px 40px;background:#0a0a0a;color:#7B7568;display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;font-family:var(--mono);font-size:10px;letter-spacing:.22em}
+</style>
+</head>
+<body>
+
+<!-- Sumi ink wash background -->
+<svg class="sumi" style="top:-200px;right:-200px;width:900px;height:900px" viewBox="0 0 600 600">
+  <defs><radialGradient id="g1" cx="40%" cy="40%" r="60%"><stop offset="0%" stop-color="#0F0F0F" stop-opacity=".25"/><stop offset="60%" stop-color="#0F0F0F" stop-opacity=".06"/><stop offset="100%" stop-color="#0F0F0F" stop-opacity="0"/></radialGradient></defs>
+  <circle cx="300" cy="300" r="280" fill="url(#g1)"/>
+</svg>
+
+<nav>
+  <div class="brand">
+    <div class="word">AURUM 金</div>
+    <div class="seal">싱가포르 · MMXXVI</div>
+  </div>
+  <div class="links"><a>왜 지금</a><a>방법</a><a>등급</a><a>금고</a><a>유산</a></div>
+  <a class="cta">시작하기 →</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="eyebrow">§I · GoldPath · 매달 한 그램</div>
+      <h1>매달<br><em>한 그램.</em></h1>
+      <div class="deck">조용히 쌓이고,<br>세대를 넘어 남는다.</div>
+      <p class="lede"><strong>적금 2.8%. 코스피 5y +14%. 금 2000년 이후 23×.</strong> 한국 소매에서 사는 그 금을 싱가포르 국제 가격으로 쌓습니다. 매달 자동이체로 한 그램. 약정 없음. 5분 가입.</p>
+      <div class="cta-row">
+        <a class="btn-p">₩200K로 시작 →</a>
+        <a class="btn-g">왜 지금인가 ↓</a>
+      </div>
+    </div>
+    <div class="hero-art">
+      <div class="seal-side">파운더스</div>
+      <div class="seal-stamp">
+        <div class="ko">金</div>
+        <div class="en">Aurum</div>
+        <div class="meta">999.9 · #2848 · MMXXVI</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="why">
+  <div class="why-grid">
+    <div class="label">§II · 왜 지금 · WHY NOW</div>
+    <h2>네 개의 수치가 같은 <em>방향</em>을<br>가리키고 있습니다.</h2>
+    <div class="why-cards">
+      <div class="wc high">
+        <div class="roman">I</div>
+        <h3>김치 프리미엄</h3>
+        <div class="stat">+20.1%</div>
+        <p>한국 소매로 사면 매 그램 약 20% 더 지불합니다. VAT 10% + 수입 + 딜러 마진. 영구 차이.</p>
+      </div>
+      <div class="wc">
+        <div class="roman">II</div>
+        <h3>중앙은행 분기 매입</h3>
+        <div class="stat">220t</div>
+        <p>2008년 이후 분기 최고치. 중국 · 인도 · 폴란드 · 터키. 국가들은 달러를 팔고 있습니다.</p>
+      </div>
+      <div class="wc">
+        <div class="roman">III</div>
+        <h3>원화 구매력</h3>
+        <div class="stat">−45%</div>
+        <p>2000년 10만원 = 오늘 5만 5천원. CPI 기준. 같은 기간 금은 23배.</p>
+      </div>
+      <div class="wc">
+        <div class="roman">IV</div>
+        <h3>적금 vs 금</h3>
+        <div class="stat">2.8%</div>
+        <p>은행 정기예금 연 2.83%. 같은 기간 금은 한국 부동산보다 더 올랐습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="heritage">
+  <div class="heritage-grid">
+    <div>
+      <div class="label">§III · 유산 · HERITAGE</div>
+      <h2>금은 늘<br><em>가장 긴 편지</em>였습니다.</h2>
+      <p>돌잡이의 금반지. 결혼식의 한 돈. 회갑의 금두꺼비. 한국이 금과 맺어온 관계는 가격에 관한 것이 아니었습니다 — 그것은 조용히 무언가를 남기는 행위였습니다.</p>
+      <p>Aurum은 수혜자를 지정하고, 트리거를 설정하면 — 생일, 졸업, 특정 나이, 또는 직접 — 그날에 금을 전달합니다. 봉인된 증서와 함께. 오래 전부터 생각해왔다는 것을, 받는 순간 알 수 있도록.</p>
+    </div>
+    <div class="h-art">
+      <div class="stamp">印</div>
+    </div>
+  </div>
+</section>
+
+<section class="end">
+  <div class="end-inner">
+    <div class="label">파운더스 · 5,000명에서 영원히 마감</div>
+    <h2>한 그램.<br><em>지금.</em></h2>
+    <div class="deck">조용히 쌓이고, 영원히 남는다.</div>
+    <a class="btn-p" style="display:inline-block">₩200K로 시작 →</a>
+    <div class="meta">2,848 / 5,000 · ENDS IN 3D 14H · MALCA-AMIT SGP · LLOYD'S · BRINK'S</div>
+  </div>
+</section>
+
+<footer>
+  <span>© MMXXVI AURUM PTE. LTD.</span><span>SGP · MAS PSPM 2019 · 印</span><span>QUIETLY · FOREVER</span>
+</footer>
+
+</body>
+</html>

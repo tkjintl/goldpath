@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aurum · A1 · Vault / Data</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Noto+Sans+KR:wght@300;400;500;600;700&family=Noto+Serif+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bone:#F4F1EA; --bone-2:#E9E4D6; --ink:#1B1815; --ink-2:#2B2724;
+    --brass:#A67C3F; --brass-b:#C99857; --brass-d:#7A5A2C;
+    --green:#3F6B4D; --red:#9C3A2E; --rule:#2B2724;
+    --sans:'Inter Tight',system-ui,sans-serif; --serif:'Newsreader',Georgia,serif;
+    --kr:'Noto Sans KR',sans-serif; --krs:'Noto Serif KR',serif;
+    --mono:'JetBrains Mono',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--ink);color:var(--bone);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+
+  /* TICKER */
+  .tick{display:flex;gap:0;border-bottom:1px solid var(--rule);background:#13110F;font-family:var(--mono);font-size:11px;letter-spacing:.06em;overflow:hidden;white-space:nowrap}
+  .tick > div{padding:8px 16px;border-right:1px solid var(--rule);display:inline-flex;gap:8px;align-items:baseline}
+  .tick .lbl{color:var(--brass-d)}
+  .tick .val{color:var(--bone)}
+  .tick .up{color:var(--green)} .tick .dn{color:var(--red)}
+
+  /* NAV */
+  nav{display:flex;justify-content:space-between;align-items:center;padding:18px 28px;border-bottom:1px solid var(--rule)}
+  .brand{display:flex;align-items:center;gap:14px}
+  .mark{width:30px;height:30px;border:1px solid var(--brass);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-style:italic;color:var(--brass-b);font-size:18px}
+  .word{font-family:var(--sans);font-weight:800;letter-spacing:.18em;font-size:14px}
+  .ser{font-family:var(--mono);font-size:10px;color:var(--brass-d);letter-spacing:.22em}
+  nav .links{display:flex;gap:26px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:#9b9486}
+  nav .cta{font-family:var(--sans);font-weight:700;font-size:12px;letter-spacing:.06em;background:var(--brass);color:var(--ink);padding:10px 18px}
+
+  /* HERO */
+  .hero{display:grid;grid-template-columns:1.2fr 1fr;gap:0;border-bottom:1px solid var(--rule)}
+  .h-l{padding:64px 28px 56px;border-right:1px solid var(--rule)}
+  .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.32em;color:var(--brass);margin-bottom:28px}
+  h1{font-family:var(--krs);font-weight:300;font-size:clamp(40px,6vw,84px);line-height:1.05;letter-spacing:-.02em;margin-bottom:14px}
+  h1 em{font-family:var(--serif);font-style:italic;color:var(--brass-b);font-weight:400}
+  .sub{font-family:var(--serif);font-style:italic;color:#9b9486;font-size:clamp(18px,1.8vw,24px);margin-bottom:36px;font-weight:400}
+  .lede{font-family:var(--kr);font-size:15px;color:#bcb6a6;line-height:1.7;max-width:520px;margin-bottom:36px}
+  .h-cta{display:flex;gap:12px}
+  .btn-p{background:var(--brass);color:var(--ink);padding:14px 22px;font-family:var(--sans);font-weight:700;font-size:12px;letter-spacing:.08em}
+  .btn-g{border:1px solid var(--brass);color:var(--brass-b);padding:14px 22px;font-family:var(--serif);font-style:italic;font-size:14px}
+
+  .h-r{padding:36px 28px;background:#13110F;display:flex;flex-direction:column;gap:18px}
+  .panel{border:1px solid var(--rule);padding:18px}
+  .panel h4{font-family:var(--mono);font-size:10px;color:var(--brass);letter-spacing:.22em;margin-bottom:12px;display:flex;justify-content:space-between}
+  .panel h4 .live{display:inline-flex;gap:6px;align-items:center;color:var(--green)}
+  .panel h4 .live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:p 1.6s infinite}
+  @keyframes p{50%{opacity:.4}}
+  .price{font-family:var(--mono);font-weight:600}
+  .row{display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-top:1px dashed var(--rule);font-family:var(--mono);font-size:12px}
+  .row:first-of-type{border-top:none}
+  .lbl{color:#7d776a;letter-spacing:.14em;font-size:10px}
+  .val{font-size:14px}
+  .delta{font-size:10px;letter-spacing:.08em;margin-left:6px}
+
+  /* CHART */
+  .chart{height:120px;display:flex;align-items:flex-end;gap:2px}
+  .chart .b{flex:1;background:rgba(166,124,63,.32)}
+  .chart .b.hi{background:var(--brass-b)}
+
+  /* GRID DATA */
+  .four{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--rule)}
+  .four .c{padding:32px 28px;border-right:1px solid var(--rule)}
+  .four .c:last-child{border-right:none}
+  .four h3{font-family:var(--mono);font-size:10px;color:var(--brass);letter-spacing:.22em;margin-bottom:12px}
+  .four .big{font-family:var(--serif);font-style:italic;font-size:48px;line-height:1;color:var(--brass-b);font-weight:500}
+  .four .cap{font-family:var(--kr);font-size:13px;color:#bcb6a6;margin-top:12px;line-height:1.6}
+
+  /* TIERS */
+  .tiers-h{padding:44px 28px 12px;border-bottom:1px solid var(--rule)}
+  .tiers-h h2{font-family:var(--krs);font-weight:400;font-size:clamp(28px,3.4vw,40px);line-height:1.15;max-width:760px}
+  .tiers-h h2 em{font-family:var(--serif);font-style:italic;color:var(--brass-b)}
+  .tiers{display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid var(--rule)}
+  .tier{padding:28px 18px;border-right:1px solid var(--rule);font-family:var(--mono);font-size:11px}
+  .tier:last-child{border-right:none}
+  .tier .num{font-family:var(--serif);font-style:italic;font-size:34px;color:var(--brass);font-weight:500;line-height:1}
+  .tier .nm{font-family:var(--kr);color:var(--bone);font-size:14px;font-weight:600;margin-top:10px}
+  .tier .en{font-family:var(--serif);font-style:italic;color:var(--brass-d);font-size:11px;margin-bottom:14px}
+  .tier .min{color:#7d776a;letter-spacing:.18em;font-size:9px;margin-top:14px}
+  .tier .price-min{font-family:var(--mono);color:var(--bone);font-size:13px;margin-top:2px}
+  .tier .gift{color:var(--brass);letter-spacing:.18em;font-size:9px;margin-top:14px}
+  .tier .gift-v{font-family:var(--serif);font-style:italic;color:var(--brass-b);font-size:20px;margin-top:2px;font-weight:600}
+  .tier.fea{background:rgba(166,124,63,.06)}
+
+  /* CTA FINAL */
+  .cta-f{padding:80px 28px;text-align:center;border-bottom:1px solid var(--rule)}
+  .cta-f h2{font-family:var(--krs);font-weight:300;font-size:clamp(44px,7vw,84px);line-height:.96;margin-bottom:24px;letter-spacing:-.02em}
+  .cta-f h2 em{font-family:var(--serif);font-style:italic;color:var(--brass-b);font-weight:500}
+  .cta-f .meta{font-family:var(--mono);font-size:10px;color:#7d776a;letter-spacing:.24em;margin-top:18px}
+
+  /* FOOTER */
+  footer{padding:36px 28px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;font-family:var(--mono);font-size:10px;color:#7d776a;letter-spacing:.18em}
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="tick" id="ticker">
+  <div><span class="lbl">XAU/USD</span><span class="val">2,401.85</span><span class="up">+0.42%</span></div>
+  <div><span class="lbl">KRW/USD</span><span class="val">1,438.20</span><span class="dn">−0.18%</span></div>
+  <div><span class="lbl">1g KR RETAIL</span><span class="val">186,800</span><span class="dn">+VAT</span></div>
+  <div><span class="lbl">1g AURUM</span><span class="val">155,420</span><span class="up">−16.7%</span></div>
+  <div><span class="lbl">CB BUYING Q3</span><span class="val">220t</span><span class="up">+28% QoQ</span></div>
+  <div><span class="lbl">FOUNDERS</span><span class="val">2,848 / 5,000</span></div>
+  <div><span class="lbl">VAULT</span><span class="val">SGP · MALCA-AMIT</span></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="brand">
+    <div class="mark">Au</div>
+    <div class="word">AURUM</div>
+    <div class="ser">MMXXVI · 001</div>
+  </div>
+  <div class="links">
+    <a>WHY</a><a>HOW</a><a>TIERS</a><a>VAULT</a><a>HERITAGE</a><a>FAQ</a>
+  </div>
+  <a class="cta">시작 →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="h-l">
+    <div class="eyebrow">§I · GOLDPATH · 매달 한 그램</div>
+    <h1>매달<br><em>한 그램.</em></h1>
+    <p class="sub">Quietly compounds. <em>Permanently stays.</em></p>
+    <p class="lede"><strong style="color:var(--bone)">적금 2.8%. 코스피 5y +14%. 금 2000년 이후 23×.</strong> 매달 자동으로 한 그램의 실물 999.9 금이 싱가포르 금고에 회원님 이름으로 쌓입니다. 약정 없음. 5분 가입.</p>
+    <div class="h-cta">
+      <a class="btn-p">₩200K로 시작 →</a>
+      <a class="btn-g">Read the thesis</a>
+    </div>
+  </div>
+  <div class="h-r">
+    <div class="panel">
+      <h4><span>§ 01 · KIMCHI 프리미엄</span><span class="live">LIVE</span></h4>
+      <div class="row"><span class="lbl">VS SPOT</span><span><span class="val price" style="color:var(--red)">+20.1%</span><span class="delta" style="color:var(--red)">12mo high</span></span></div>
+      <div class="row"><span class="lbl">VS AURUM</span><span><span class="val price" style="color:var(--brass-b)">−16.7%</span></span></div>
+      <div class="chart" style="margin-top:12px">
+        <div class="b" style="height:38%"></div><div class="b" style="height:42%"></div><div class="b" style="height:46%"></div>
+        <div class="b" style="height:52%"></div><div class="b" style="height:55%"></div><div class="b" style="height:60%"></div>
+        <div class="b" style="height:64%"></div><div class="b" style="height:68%"></div><div class="b" style="height:72%"></div>
+        <div class="b" style="height:78%"></div><div class="b" style="height:84%"></div><div class="b hi" style="height:92%"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h4><span>§ 02 · 5,000 FOUNDERS COHORT</span><span class="live">LIVE</span></h4>
+      <div style="height:4px;background:rgba(166,124,63,.16);position:relative;margin:6px 0 12px">
+        <div style="height:100%;width:57%;background:var(--brass);box-shadow:0 0 8px var(--brass)"></div>
+      </div>
+      <div class="row"><span class="lbl">JOINED</span><span class="val price">2,848</span></div>
+      <div class="row"><span class="lbl">REMAINING</span><span class="val price" style="color:var(--brass-b)">2,152</span></div>
+      <div class="row"><span class="lbl">CLOSE</span><span class="val price">3D 14H</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUR NUMBERS -->
+<section class="four">
+  <div class="c"><h3>I · 김치 프리미엄</h3><div class="big">+20.1%</div><div class="cap">한국 소매는 국제 현물 + VAT + 수입료 = 영구 약 20%.</div></div>
+  <div class="c"><h3>II · 중앙은행 매입</h3><div class="big">220t</div><div class="cap">2008년 이후 분기 최고. 중국 · 인도 · 폴란드 · 터키.</div></div>
+  <div class="c"><h3>III · 원화 구매력</h3><div class="big">−45%</div><div class="cap">2000년 ₩100 = 오늘 ₩55. CPI 기준.</div></div>
+  <div class="c"><h3>IV · 금 · 2000년 이후</h3><div class="big">23×</div><div class="cap">같은 기간 금은 한국 부동산보다 더 올랐습니다.</div></div>
+</section>
+
+<!-- TIERS -->
+<div class="tiers-h"><h2>5,000명. <em>그다음은 없다.</em></h2></div>
+<section class="tiers">
+  <div class="tier"><div class="num">I</div><div class="nm">브론즈</div><div class="en">Bronze</div><div class="min">MIN MONTHLY</div><div class="price-min">₩200K+</div><div class="gift">FOUNDERS GIFT</div><div class="gift-v">₩50K</div></div>
+  <div class="tier"><div class="num">II</div><div class="nm">실버</div><div class="en">Silver</div><div class="min">MIN MONTHLY</div><div class="price-min">₩500K+</div><div class="gift">FOUNDERS GIFT</div><div class="gift-v">₩150K</div></div>
+  <div class="tier fea"><div class="num">III</div><div class="nm">골드</div><div class="en">Gold · APEX</div><div class="min">MIN MONTHLY</div><div class="price-min">₩1M+</div><div class="gift">FOUNDERS GIFT</div><div class="gift-v">₩400K</div></div>
+  <div class="tier"><div class="num">IV</div><div class="nm">플래티넘</div><div class="en">Platinum</div><div class="min">MIN MONTHLY</div><div class="price-min">₩2M+</div><div class="gift">FOUNDERS GIFT</div><div class="gift-v">₩1M</div></div>
+  <div class="tier"><div class="num">V</div><div class="nm">소브린</div><div class="en">Sovereign</div><div class="min">MIN MONTHLY</div><div class="price-min">₩5M+</div><div class="gift">FOUNDERS GIFT</div><div class="gift-v">₩2.5M</div></div>
+</section>
+
+<!-- CTA -->
+<section class="cta-f">
+  <h2>한 그램.<br><em>지금.</em></h2>
+  <a class="btn-p" style="display:inline-block">₩200K로 시작 →</a>
+  <div class="meta">2,848 / 5,000 · ENDS IN 3D 14H · MALCA-AMIT SGP · LLOYD'S · BRINK'S</div>
+</section>
+
+<footer>
+  <span>© MMXXVI AURUM PTE. LTD.</span><span>SGP · MAS PSPM 2019</span><span>QUIETLY · FOREVER</span>
+</footer>
+
+<script>
+// gentle ticker scroll
+const t=document.getElementById('ticker');t.style.cssText+=';animation:s 60s linear infinite';
+const sty=document.createElement('style');sty.innerHTML='@keyframes s{from{transform:translateX(0)}to{transform:translateX(-50%)}}';document.head.appendChild(sty);
+t.innerHTML=t.innerHTML+t.innerHTML;
+</script>
+
+</body>
+</html>
