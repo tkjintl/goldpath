@@ -151,44 +151,49 @@ input, textarea, select {
     box-sizing: border-box;
   }
 
-  /* ── Nav ─────────────────────────────────────────────────────── */
+  /* ── Nav — single row, links scroll horizontally ───────────────── */
   .gp-nav {
-    padding: 12px 14px !important;
+    padding: 10px 12px !important;
   }
   .gp-nav .gp-nav-row {
     gap: 10px !important;
-    flex-wrap: wrap !important;
-    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    min-width: 0 !important;
   }
   .gp-nav .gp-nav-brand {
-    gap: 10px !important;
+    gap: 8px !important;
+    flex: 0 0 auto !important;
+  }
+  .gp-nav .gp-nav-brand span:first-of-type {
+    font-size: 13px !important;
+    letter-spacing: 0.14em !important;
   }
   .gp-nav [data-mobile="nav-tagline"] {
     display: none !important;
   }
   .gp-nav [data-mobile="nav-links"] {
-    order: 3 !important;
-    width: 100% !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
     gap: 14px !important;
     overflow-x: auto !important;
     flex-wrap: nowrap !important;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    padding-bottom: 4px !important;
-    border-top: 1px solid var(--rule);
-    padding-top: 10px !important;
-    margin-top: 4px !important;
+    mask-image: linear-gradient(to right, transparent 0, black 12px, black calc(100% - 12px), transparent 100%);
   }
   .gp-nav [data-mobile="nav-links"]::-webkit-scrollbar { display: none; }
   .gp-nav [data-mobile="nav-links"] a {
     flex: 0 0 auto !important;
     white-space: nowrap !important;
-    font-size: 13px !important;
-    padding: 6px 4px !important;
+    font-size: 12px !important;
+    padding: 6px 0 !important;
   }
   .gp-nav [data-mobile="nav-cta"] {
-    padding: 10px 14px !important;
-    font-size: 12px !important;
+    padding: 8px 12px !important;
+    font-size: 11px !important;
+    letter-spacing: 0.04em !important;
     flex: 0 0 auto !important;
   }
 
