@@ -33,6 +33,7 @@ export function EndCTA() {
       <FlakeParticles count={6} tone="inv-accent" />
       <div style={{ position: 'relative', zIndex: 2, maxWidth: 760, margin: '0 auto' }}>
         <div
+          data-mobile="end-cta-eyebrow"
           style={{
             fontFamily: 'var(--font-mono)',
             fontSize: 11,
@@ -48,7 +49,7 @@ export function EndCTA() {
           style={{
             fontFamily: 'var(--font-krs)',
             fontWeight: 200,
-            fontSize: 'clamp(64px, 10vw, 140px)',
+            fontSize: 'clamp(64px, 8vw, 112px)',
             lineHeight: 0.96,
             letterSpacing: '-0.04em',
             marginBottom: 24,
@@ -67,6 +68,7 @@ export function EndCTA() {
           </span>
         </h2>
         <div
+          data-mobile="end-cta-sub"
           style={{
             fontFamily: 'var(--font-serif)',
             fontStyle: 'italic',

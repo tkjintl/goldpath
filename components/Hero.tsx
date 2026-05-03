@@ -16,7 +16,7 @@ export async function Hero() {
     <section
       className="gp-hero"
       style={{
-        padding: '80px 36px 100px',
+        padding: 'clamp(48px, 6vh, 80px) 36px clamp(60px, 7vh, 100px)',
         borderBottom: '1px solid var(--rule)',
         position: 'relative',
         overflow: 'hidden',
@@ -31,7 +31,7 @@ export async function Hero() {
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
           gap: 64,
-          alignItems: 'end',
+          alignItems: 'center',
           position: 'relative',
           zIndex: 1,
         }}
@@ -68,7 +68,7 @@ export async function Hero() {
             style={{
               fontFamily: 'var(--font-krs)',
               fontWeight: 300,
-              fontSize: 'clamp(56px, 8vw, 120px)',
+              fontSize: 'clamp(56px, 6.5vw, 96px)',
               lineHeight: 0.95,
               letterSpacing: '-0.03em',
               marginBottom: 16,
@@ -182,7 +182,8 @@ export async function Hero() {
             style={{
               position: 'relative',
               zIndex: 1,
-              aspectRatio: '3 / 4',
+              aspectRatio: '4 / 5',
+              maxHeight: 520,
               background:
                 'linear-gradient(170deg, var(--accent-bright) 0%, var(--accent) 50%, var(--accent-dim) 100%)',
               color: 'var(--inv-ink)',

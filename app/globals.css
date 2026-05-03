@@ -266,11 +266,15 @@ input, textarea, select {
     padding: 32px 16px !important;
   }
   .gp-why-strip [data-mobile="why-grid"] {
-    grid-template-columns: 1fr 1fr !important;
+    grid-template-columns: 1fr !important;
     gap: 20px !important;
   }
   .gp-why-strip [data-mobile="why-grid"] > div > div:nth-child(2) {
     font-size: clamp(28px, 8vw, 38px) !important;
+  }
+  .gp-why-strip p,
+  .gp-why-strip [data-mobile="why-grid"] > div > div:last-child {
+    word-break: keep-all !important;
   }
 
   /* ── Mechanism ───────────────────────────────────────────────── */
@@ -288,6 +292,9 @@ input, textarea, select {
   .gp-mechanism [data-mobile="mech-grid"] > div:last-child {
     border-bottom: none !important;
   }
+  .gp-mechanism p {
+    word-break: keep-all !important;
+  }
 
   /* ── Tier Ladder ─────────────────────────────────────────────── */
   .gp-tiers {
@@ -295,11 +302,13 @@ input, textarea, select {
   }
   .gp-tiers [data-mobile="tier-grid"] {
     grid-template-columns: 1fr !important;
+    overflow: visible !important;
   }
   .gp-tiers .gp-tier-card {
     padding: 24px 18px !important;
     border-right: none !important;
     border-bottom: 1px solid var(--rule) !important;
+    transform: none !important;
   }
   .gp-tiers .gp-tier-card:last-child {
     border-bottom: none !important;
@@ -317,6 +326,14 @@ input, textarea, select {
   .gp-end-cta [data-mobile="end-cta-headline"] {
     font-size: clamp(48px, 14vw, 80px) !important;
     line-height: 0.98 !important;
+  }
+  .gp-end-cta [data-mobile="end-cta-eyebrow"] {
+    font-size: 9px !important;
+    letter-spacing: 0.20em !important;
+  }
+  .gp-end-cta [data-mobile="end-cta-sub"] {
+    font-size: 17px !important;
+    line-height: 1.5 !important;
   }
   .gp-end-cta a {
     display: block !important;
