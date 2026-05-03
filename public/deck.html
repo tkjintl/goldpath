@@ -1,0 +1,2006 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GoldPath · Seed Round · MMXXVI · Confidential</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Jost:wght@200;300;400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Noto+Serif+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ─── TOKENS ──────────────────────────────────────────────── */
+:root {
+  --cream:    #F5EEDC;
+  --ink:      #1F1A14;
+  --ink-2:    #2E2720;
+  --ink-3:    #5C5245;
+  --brass:    #A67C3F;
+  --brass-l:  #C99857;
+  --brass-d:  #7A5A2C;
+  --celadon:  #7B9583;
+  --rule:     #D8CBA8;
+  --rule-d:   #3A3028;
+  --serif:    'Cormorant Garamond', Georgia, serif;
+  --mono:     'Space Mono', monospace;
+  --sans:     'Jost', system-ui, sans-serif;
+  --kr:       'Noto Serif KR', serif;
+}
+
+/* ─── RESET ───────────────────────────────────────────────── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+body {
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--sans);
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ─── SLIDE BASE ──────────────────────────────────────────── */
+.slide {
+  width: 100vw;
+  min-height: 100vh;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  scroll-snap-align: start;
+  overflow: hidden;
+  padding: 56px 72px 48px 72px;
+}
+.slide.dark  { background: var(--ink);   color: var(--cream); }
+.slide.light { background: var(--cream); color: var(--ink); }
+
+/* ─── SIDEBAR ─────────────────────────────────────────────── */
+#sidebar {
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100vh;
+  width: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  z-index: 100;
+  padding: 24px 0;
+}
+.sidebar-line {
+  position: absolute;
+  right: 23px;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  background: var(--rule-d);
+}
+.slide-num {
+  position: relative;
+  z-index: 1;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  color: var(--ink-3);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color .2s;
+  flex-shrink: 0;
+}
+.slide-num:hover { color: var(--brass-l); }
+.slide-num.active {
+  color: var(--brass);
+  font-weight: 600;
+}
+.slide-num.active::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  width: 4px;
+  height: 4px;
+  background: var(--brass);
+  border-radius: 50%;
+  left: 6px;
+}
+
+/* ─── EYEBROW ─────────────────────────────────────────────── */
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .42em;
+  text-transform: uppercase;
+  margin-bottom: 36px;
+  flex-shrink: 0;
+}
+.dark  .eyebrow { color: var(--brass); }
+.light .eyebrow { color: var(--brass-d); }
+
+/* ─── HEADLINES ───────────────────────────────────────────── */
+.headline {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -.01em;
+}
+.dark  .headline { color: var(--cream); }
+.light .headline { color: var(--ink); }
+
+/* ─── HORIZONTAL RULE ─────────────────────────────────────── */
+.rule {
+  width: 100%;
+  height: 1px;
+  flex-shrink: 0;
+}
+.dark  .rule { background: var(--rule-d); }
+.light .rule { background: var(--rule); }
+
+/* ─── FOOTER STRIP ────────────────────────────────────────── */
+.slide-footer {
+  margin-top: auto;
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+.footer-note {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .24em;
+  opacity: .5;
+}
+
+/* ─── FADE IN ─────────────────────────────────────────────── */
+.fade-in {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: none;
+}
+.fade-in:nth-child(2) { transition-delay: .1s; }
+.fade-in:nth-child(3) { transition-delay: .2s; }
+.fade-in:nth-child(4) { transition-delay: .3s; }
+.fade-in:nth-child(5) { transition-delay: .4s; }
+
+/* ══════════════════════════════════════════════════════════
+   SLIDE 1 — COVER
+══════════════════════════════════════════════════════════ */
+#s01 {
+  justify-content: space-between;
+  background: var(--ink);
+}
+.s01-logo .wordmark {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: .32em;
+  color: var(--brass-d);
+  opacity: .5;
+}
+.s01-logo .sub {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .24em;
+  color: var(--brass-d);
+  margin-top: 4px;
+  font-weight: 300;
+  opacity: .4;
+}
+.s01-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0;
+}
+.s01-brand-name {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(72px, 11vw, 148px);
+  letter-spacing: -.02em;
+  line-height: 1;
+  color: var(--brass);
+  margin-bottom: 10px;
+}
+.s01-brand-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .38em;
+  color: var(--brass-d);
+  margin-bottom: 36px;
+}
+.s01-rule-wide {
+  width: 100%;
+  max-width: 560px;
+  height: 1px;
+  background: var(--rule-d);
+  margin-bottom: 32px;
+}
+.s01-center .display {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(22px, 2.8vw, 38px);
+  line-height: 1.4;
+  color: var(--cream);
+  max-width: 640px;
+  margin-bottom: 32px;
+  opacity: .88;
+}
+.s01-center .display em {
+  color: var(--brass-l);
+  font-style: italic;
+}
+.s01-center .sub-display {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .42em;
+  color: var(--brass-d);
+}
+.s01-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 40px;
+}
+.s01-problem {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--cream);
+  opacity: .65;
+  max-width: 520px;
+  line-height: 1.6;
+}
+.s01-ecosystem {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .22em;
+  color: var(--brass-d);
+  text-align: right;
+  white-space: nowrap;
+}
+.s01-divider {
+  width: 48px;
+  height: 1px;
+  background: var(--brass-d);
+  margin: 20px auto;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SLIDE 2 — THE PROBLEM
+══════════════════════════════════════════════════════════ */
+#s02 { gap: 0; }
+.s02-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin-top: 32px;
+  overflow: hidden;
+}
+.s02-left {
+  padding-right: 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-right: 1px solid var(--rule);
+}
+.s02-stat {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+.s02-stat:first-child { padding-top: 0; }
+.s02-stat .num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 52px;
+  color: var(--brass-d);
+  line-height: 1;
+  font-weight: 400;
+}
+.s02-stat .stat-body .label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .36em;
+  color: var(--ink-3);
+  margin-bottom: 6px;
+}
+.s02-stat .stat-body p {
+  font-size: 13px;
+  color: var(--ink-2);
+  line-height: 1.65;
+}
+.s02-right {
+  padding-left: 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.callout-box {
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--cream);
+  padding: 36px 32px;
+}
+.callout-box .cb-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .36em;
+  color: var(--brass);
+  margin-bottom: 18px;
+}
+.callout-box .cb-quote {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 20px;
+  line-height: 1.55;
+  color: var(--cream);
+}
+.callout-box .cb-source {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .22em;
+  color: var(--brass-d);
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule-d);
+}
+
+/* ══════════════════════════════════════════════════════════
+   SLIDE 3 — MARKET OPPORTUNITY
+══════════════════════════════════════════════════════════ */
+#s03 { gap: 0; }
+.s03-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-top: 32px;
+}
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  flex: 1;
+}
+.stat-card {
+  padding: 36px 36px;
+  border-right: 1px solid var(--rule-d);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.stat-card:last-child { border-right: none; }
+.stat-card .card-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .36em;
+  color: var(--brass-d);
+}
+.stat-card .card-num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(52px, 6vw, 88px);
+  color: var(--brass-l);
+  line-height: 1;
+  font-weight: 300;
+}
+.stat-card .card-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .22em;
+  color: var(--cream);
+  opacity: .8;
+}
+.stat-card .card-desc {
+  font-size: 13px;
+  color: var(--cream);
+  opacity: .55;
+  line-height: 1.65;
+  margin-top: 6px;
+}
+.s03-editorial {
+  padding: 24px 32px;
+  border-top: 1px solid var(--rule-d);
+  border-left: 2px solid var(--brass-d);
+  margin-top: auto;
+}
+.s03-editorial p {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--cream);
+  opacity: .75;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SLIDE 4 — THE SOLUTION
+══════════════════════════════════════════════════════════ */
+#s04 { gap: 0; }
+.s04-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-top: 28px;
+}
+.flow-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 1px solid var(--rule);
+}
+.flow-step {
+  padding: 28px 24px;
+  border-right: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+}
+.flow-step:last-child { border-right: none; }
+.flow-step .step-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .32em;
+  color: var(--brass-d);
+}
+.flow-step .step-title {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.flow-step .step-desc {
+  font-size: 12px;
+  color: var(--ink-3);
+  line-height: 1.65;
+  margin-top: 4px;
+}
+.flow-step .arrow {
+  position: absolute;
+  right: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  background: var(--cream);
+  border: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--brass-d);
+  z-index: 1;
+}
+.flow-step:last-child .arrow { display: none; }
+
+.exits {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.exit-item {
+  padding: 18px 24px;
+  border-right: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.exit-item:last-child { border-right: none; }
+.exit-item .exit-dot {
+  width: 5px;
+  height: 5px;
+  background: var(--brass);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.exit-item span {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .12em;
+  color: var(--ink-2);
+}
+
+.differentiator {
+  background: var(--ink);
+  color: var(--cream);
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.differentiator .diff-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .36em;
+  color: var(--brass);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.differentiator .diff-text {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--cream);
+  line-height: 1.5;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SLIDE 5 — WHY SINGAPORE (CSS kept for completeness)
+══════════════════════════════════════════════════════════ */
+.s05-cols {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin-top: 32px;
+  border-top: 1px solid var(--rule-d);
+}
+.sg-col {
+  padding: 36px 36px;
+  border-right: 1px solid var(--rule-d);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.sg-col:last-child { border-right: none; }
+.sg-col .sg-stat {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(56px, 6vw, 88px);
+  color: var(--brass-l);
+  line-height: 1;
+  font-weight: 300;
+}
+.sg-col .sg-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .36em;
+  color: var(--brass-d);
+}
+.sg-col .sg-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .18em;
+  color: var(--cream);
+}
+.sg-col .sg-desc {
+  font-size: 13px;
+  color: var(--cream);
+  opacity: .55;
+  line-height: 1.7;
+  border-top: 1px solid var(--rule-d);
+  padding-top: 14px;
+  margin-top: 4px;
+}
+.s05-editorial {
+  margin-top: auto;
+  padding: 24px 32px;
+  border-top: 1px solid var(--rule-d);
+  border-left: 2px solid var(--brass-d);
+}
+.s05-editorial p {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--cream);
+  opacity: .65;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SLIDE 6 — WHY THE MODEL WORKS (collapsed s05+s06)
+══════════════════════════════════════════════════════════ */
+#s06 { gap: 0; }
+.s06-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 32px;
+  margin-top: 12px;
+  align-items: start;
+}
+.revenue-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.rev-row {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 24px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--rule-d);
+  align-items: start;
+}
+.rev-row:first-child { border-top: 1px solid var(--rule-d); }
+.rev-row .rev-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .24em;
+  color: var(--brass);
+}
+.rev-row .rev-title strong {
+  display: block;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--cream);
+  letter-spacing: 0;
+  font-weight: 400;
+  margin-bottom: 2px;
+}
+.rev-row .rev-desc {
+  font-size: 13px;
+  color: var(--cream);
+  opacity: .7;
+  line-height: 1.6;
+}
+.rev-sidebar {
+  background: rgba(166,124,63,.08);
+  color: var(--cream);
+  padding: 28px 24px;
+  align-self: start;
+  border: 1px solid var(--rule-d);
+}
+.rev-sidebar .rs-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .36em;
+  color: var(--brass);
+  margin-bottom: 16px;
+}
+.rev-sidebar .rs-calc {
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.85;
+  color: var(--cream);
+  opacity: .8;
+}
+.rev-sidebar .rs-result {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 28px;
+  color: var(--brass-l);
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule-d);
+}
+
+/* ══════════════════════════════════════════════════════════
+   SLIDE 7 — THE GROWTH ENGINE
+══════════════════════════════════════════════════════════ */
+#s07 { gap: 0; }
+.s07-cols {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin-top: 32px;
+  border-top: 1px solid var(--rule-d);
+}
+.growth-col {
+  padding: 32px 28px;
+  border-right: 1px solid var(--rule-d);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.growth-col:last-child { border-right: none; }
+.growth-col .gc-icon {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 40px;
+  color: var(--brass-l);
+  line-height: 1;
+}
+.growth-col .gc-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .28em;
+  color: var(--brass);
+}
+.growth-col .gc-points {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.growth-col .gc-points li {
+  font-size: 13px;
+  color: var(--cream);
+  opacity: .7;
+  line-height: 1.6;
+  padding-left: 14px;
+  position: relative;
+}
+.growth-col .gc-points li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--brass-d);
+  font-family: var(--mono);
+}
+.growth-col .gc-analogy {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule-d);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--celadon);
+  line-height: 1.6;
+}
+.s07-footer {
+  margin-top: auto;
+  padding: 20px 28px;
+  background: rgba(166,124,63,.1);
+  border-top: 1px solid var(--brass-d);
+}
+.s07-footer p {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--cream);
+  opacity: .65;
+  line-height: 1.6;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SLIDE 8 — UNIT ECONOMICS (CSS kept for any reuse)
+══════════════════════════════════════════════════════════ */
+.s08-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 16px;
+}
+.s08-metric {
+  padding: 16px 20px;
+  border-right: 1px solid var(--rule);
+}
+.s08-metric:last-child { border-right: none; }
+.sm-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: .36em;
+  color: var(--brass-d);
+  margin-bottom: 6px;
+}
+.sm-val {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(22px, 2.6vw, 34px);
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.sm-note {
+  font-size: 10px;
+  color: var(--ink-3);
+  line-height: 1.5;
+}
+.s08-float {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.s08-float-item {
+  padding: 20px 24px;
+  border-right: 1px solid var(--rule);
+}
+.s08-float-item:last-child { border-right: none; background: var(--ink); color: var(--cream); }
+.s08-float-item .fi-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .36em;
+  margin-bottom: 8px;
+}
+.dark-bg { background: var(--ink); color: var(--cream); }
+.dark-bg .fi-label { color: var(--brass); }
+.light-bg { background: var(--cream); color: var(--ink); }
+.light-bg .fi-label { color: var(--brass-d); }
+.s08-float-item p {
+  font-size: 12px;
+  line-height: 1.65;
+  opacity: .8;
+}
+.s08-float-item p strong {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .08em;
+}
+.s08-table-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-top: 16px;
+}
+.s08-table-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .36em;
+  color: var(--brass-d);
+  margin-bottom: 10px;
+}
+.s08-table {
+  width: 100%;
+  border-collapse: collapse;
+  flex: 1;
+}
+.s08-table th {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .3em;
+  color: var(--ink-3);
+  text-align: left;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--rule);
+  font-weight: 400;
+}
+.s08-table td {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+}
+.s08-table tr:last-child td { border-bottom: none; }
+.s08-table td:first-child { color: var(--ink-3); }
+.s08-table td.highlight {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--brass-d);
+}
+.s08-note {
+  margin-top: 16px;
+  padding: 16px 20px;
+  border-left: 2px solid var(--brass-d);
+  background: rgba(166,124,63,.06);
+}
+.s08-note p {
+  font-size: 12px;
+  color: var(--ink-3);
+  line-height: 1.65;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SLIDE 9 (was 9) — TACC PLATFORM
+══════════════════════════════════════════════════════════ */
+.s09-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  margin-top: 32px;
+  align-items: start;
+}
+.platform-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.platform-node {
+  padding: 24px 28px;
+  border: 1px solid var(--rule-d);
+  position: relative;
+}
+.platform-node + .platform-node { margin-top: -1px; }
+.platform-node.active-node {
+  border-color: var(--brass-d);
+  background: rgba(166,124,63,.08);
+}
+.pn-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .36em;
+  color: var(--brass);
+  margin-bottom: 8px;
+}
+.pn-title {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 24px;
+  color: var(--cream);
+  margin-bottom: 6px;
+}
+.pn-desc {
+  font-size: 12px;
+  color: var(--cream);
+  opacity: .55;
+  line-height: 1.65;
+}
+.platform-connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--brass-d);
+  letter-spacing: .18em;
+}
+.s09-narrative {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.s09-narrative p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--cream);
+  opacity: .65;
+}
+.s09-narrative p em {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--brass-l);
+  opacity: 1;
+  font-size: 16px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SLIDE 10 — INFRASTRUCTURE (was s10)
+══════════════════════════════════════════════════════════ */
+.s10-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-top: 28px;
+}
+.partner-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid var(--rule);
+  flex: 1;
+}
+.partner-cell {
+  padding: 28px 24px;
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.partner-cell:nth-child(3n) { border-right: none; }
+.partner-cell:nth-child(n+4) { border-bottom: none; }
+.partner-name {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .28em;
+  color: var(--brass-d);
+  font-weight: 600;
+}
+.partner-role {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.partner-desc {
+  font-size: 12px;
+  color: var(--ink-3);
+  line-height: 1.6;
+  margin-top: 4px;
+}
+.s10-moat {
+  padding: 20px 24px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--cream);
+}
+.s10-moat p {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--cream);
+  opacity: .75;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SLIDE 11 — TRACTION & ROADMAP (was s11)
+══════════════════════════════════════════════════════════ */
+.s11-body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin-top: 24px;
+  border-top: 1px solid var(--rule-d);
+}
+.s11-col {
+  padding: 18px 28px;
+  border-right: 1px solid var(--rule-d);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.s11-col:last-child { border-right: none; }
+.s11-col-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .36em;
+  color: var(--brass);
+  margin-bottom: 12px;
+}
+.traction-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.traction-item .tick {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--celadon);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.traction-item .arrow-right {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--brass);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.traction-item span {
+  font-size: 13px;
+  color: var(--cream);
+  opacity: .7;
+  line-height: 1.5;
+}
+.s11-timeline {
+  margin-top: 0;
+  padding-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--rule-d);
+  flex-shrink: 0;
+}
+.timeline-point {
+  padding: 10px 16px;
+  border-right: 1px solid var(--rule-d);
+}
+.timeline-point:last-child { border-right: none; }
+.tp-date {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .28em;
+  color: var(--brass-d);
+  margin-bottom: 4px;
+}
+.tp-label {
+  font-size: 12px;
+  color: var(--cream);
+  opacity: .6;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SLIDE 12 — THE ASK (was s12)
+══════════════════════════════════════════════════════════ */
+.s12-center {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  text-align: center;
+  padding-top: 12px;
+}
+.s12-round-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .5em;
+  color: var(--brass-d);
+  margin-bottom: 10px;
+}
+.s12-amount {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(64px, 9vw, 120px);
+  color: var(--ink);
+  line-height: 1;
+  font-weight: 300;
+  margin-bottom: 6px;
+}
+.s12-amount em { color: var(--brass); }
+.s12-use-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .36em;
+  color: var(--ink-3);
+  margin-top: 16px;
+  margin-bottom: 12px;
+}
+.s12-bars {
+  width: 100%;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.use-bar-row {
+  display: grid;
+  grid-template-columns: 220px 1fr 40px;
+  gap: 14px;
+  align-items: center;
+  text-align: left;
+}
+.use-bar-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .10em;
+  color: var(--ink-3);
+  line-height: 1.4;
+}
+.use-bar-track {
+  height: 3px;
+  background: var(--rule);
+  position: relative;
+  border-radius: 1px;
+}
+.use-bar-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: var(--brass);
+  border-radius: 1px;
+}
+.use-bar-pct {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--brass-d);
+  text-align: right;
+}
+.s12-bottom {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-top: 1px solid var(--rule);
+  margin-top: auto;
+  flex-shrink: 0;
+}
+.s12-bottom-col {
+  padding: 18px 24px;
+  border-right: 1px solid var(--rule);
+}
+.s12-bottom-col:last-child { border-right: none; }
+.s12-col-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .36em;
+  color: var(--brass-d);
+  margin-bottom: 14px;
+}
+.why-now-items {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.why-now-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.why-now-item .dot {
+  width: 4px;
+  height: 4px;
+  background: var(--brass);
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 7px;
+}
+.why-now-item span {
+  font-size: 13px;
+  color: var(--ink-2);
+  line-height: 1.55;
+}
+.contact-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.contact-line {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .12em;
+  color: var(--ink-3);
+  padding: 8px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.contact-line:last-child { border-bottom: none; }
+.contact-cta {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--brass-d);
+  margin-top: 8px;
+}
+
+/* ─── HIDE SCROLLBAR (prevents 17px width bleed in PDF export) ── */
+html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; }
+html { scrollbar-width: none; }
+
+/* ─── HIDE SIDEBAR IN PDF (fixed positioning breaks per-slide clip) */
+#sidebar { display: none !important; }
+
+/* ─── PRINT / PDF CLEAN ───────────────────────────────────── */
+@media print {
+  @page { margin: 0; }
+  html, body { scroll-snap-type: none; }
+  .slide {
+    page-break-after: always;
+    break-after: page;
+    height: 810px;
+    min-height: 810px;
+    max-height: 810px;
+    overflow: hidden;
+  }
+  .slide:last-child { page-break-after: avoid; break-after: avoid; }
+  #sidebar { display: none; }
+}
+
+/* ─── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .slide { padding: 40px 40px 36px 40px; }
+  #sidebar { display: none; }
+  .s02-body,
+  .s06-body,
+  .s09-body,
+  .s11-body,
+  .s12-bottom { grid-template-columns: 1fr; }
+  .stat-cards,
+  .s03-stat-cards,
+  .s05-cols,
+  .s07-cols,
+  .partner-grid { grid-template-columns: 1fr; }
+  .stat-card, .sg-col, .growth-col { border-right: none; border-bottom: 1px solid var(--rule-d); }
+  .partner-cell { border-right: none; }
+  .flow-steps { grid-template-columns: 1fr 1fr; }
+  .exits { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── FIXED SIDEBAR ────────────────────────────────────── -->
+<nav id="sidebar" aria-label="Slide navigation">
+  <div class="sidebar-line"></div>
+  <div class="slide-num active" data-slide="1" onclick="scrollToSlide(1)">01</div>
+  <div class="slide-num" data-slide="2" onclick="scrollToSlide(2)">02</div>
+  <div class="slide-num" data-slide="3" onclick="scrollToSlide(3)">03</div>
+  <div class="slide-num" data-slide="4" onclick="scrollToSlide(4)">04</div>
+  <div class="slide-num" data-slide="5" onclick="scrollToSlide(5)">05</div>
+  <div class="slide-num" data-slide="6" onclick="scrollToSlide(6)">06</div>
+  <div class="slide-num" data-slide="7" onclick="scrollToSlide(7)">07</div>
+  <div class="slide-num" data-slide="8" onclick="scrollToSlide(8)">08</div>
+  <div class="slide-num" data-slide="9" onclick="scrollToSlide(9)">09</div>
+  <div class="slide-num" data-slide="10" onclick="scrollToSlide(10)">10</div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 01 — COVER
+══════════════════════════════════════════════════════════ -->
+<section class="slide dark" id="s01" data-slide="1">
+  <div class="s01-logo fade-in">
+    <div class="wordmark">GOLDPATH</div>
+    <div class="sub">by TACC Pte. Ltd. · Singapore</div>
+  </div>
+
+  <div class="s01-center">
+    <div class="s01-brand-name fade-in">GoldPath</div>
+    <div class="s01-brand-sub fade-in">TACC PTE. LTD. &nbsp;·&nbsp; SINGAPORE &nbsp;·&nbsp; EST. MMXXVI</div>
+    <div class="s01-rule-wide fade-in"></div>
+    <p class="display fade-in">
+      Korea's gold market is 15–20% overpriced<br>
+      on every gram, every month.<br>
+      <em>GoldPath turns that into recurring revenue.</em>
+    </p>
+    <p class="s01-center sub-display fade-in">Seed Round &nbsp;·&nbsp; MMXXVI &nbsp;·&nbsp; Confidential</p>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 02 — TACC PLATFORM (was s09)
+══════════════════════════════════════════════════════════ -->
+<section class="slide dark" id="s02" data-slide="2">
+  <div class="eyebrow fade-in">§ 02 · The TACC Platform</div>
+  <h2 class="headline fade-in" style="font-size:clamp(28px,3.5vw,52px);">Most fintech companies build one product. TACC is building three.</h2>
+
+  <div class="s09-body">
+    <div class="platform-flow fade-in">
+      <div class="platform-node active-node">
+        <div class="pn-label">RETAIL ENTRY POINT</div>
+        <div class="pn-title">GoldPath</div>
+        <p class="pn-desc">Korean retail gold accumulation. Monthly subscription. We source at international spot, operate within Korea's 18% premium band, and retain margin on every transaction. The mass-market top of funnel.</p>
+      </div>
+      <div class="platform-connector">↓ &nbsp; members accumulate wealth &amp; trust &nbsp; ↓</div>
+      <div class="platform-node">
+        <div class="pn-label">NETWORK LAYER</div>
+        <div class="pn-title">Century Club</div>
+        <p class="pn-desc">High-value member network. Private deal access. Singapore-based relationships. GoldPath members graduate here.</p>
+      </div>
+      <div class="platform-connector">↓ &nbsp; deal flow + credibility &nbsp; ↓</div>
+      <div class="platform-node">
+        <div class="pn-label">DEAL PLATFORM</div>
+        <div class="pn-title">Prism</div>
+        <p class="pn-desc">Investment products. Institutional-grade access for TACC members. Gold that sits in a vault earns nothing. Gold deployed through TACC earns yield, carry, and network value.</p>
+      </div>
+    </div>
+
+    <div class="s09-narrative fade-in">
+      <p>GoldPath turns a ₩200K monthly debit into a relationship that eventually reaches Prism. <em>The customer acquisition cost for Prism is a GoldPath subscription.</em></p>
+      <p>Our relationships in Singapore and Western financial hubs are not just operational support — they are deal flow. The custody chain is the product. The vault is the distribution channel.</p>
+      <div style="margin-top:24px; padding:20px 24px; border:1px solid var(--rule-d); border-left:2px solid var(--brass-d);">
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:.36em;color:var(--brass-d);margin-bottom:10px;">STRATEGIC INSIGHT</div>
+        <p style="font-family:var(--serif);font-style:italic;font-size:16px;color:var(--brass-l);opacity:1;">We are not a gold app. We are a wealth platform that starts with gold because gold is the easiest yes in Korean retail finance right now.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer fade-in">
+    <span class="footer-note">GOLDPATH · CENTURY CLUB · PRISM — TACC PTE. LTD. SINGAPORE</span>
+    <span class="footer-note">GOLDPATH · SEED ROUND · MMXXVI</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 03 — THE PROBLEM (was s02)
+══════════════════════════════════════════════════════════ -->
+<section class="slide light" id="s03" data-slide="3">
+  <div class="eyebrow fade-in">§ 03 · The Problem</div>
+  <h2 class="headline fade-in" style="font-size:clamp(36px,4.5vw,64px);">Korean retail gold is broken.</h2>
+
+  <div class="s02-body">
+    <div class="s02-left fade-in">
+      <div class="s02-stat">
+        <div class="num">+18%</div>
+        <div class="stat-body">
+          <div class="label">VAT &amp; DEALER MARKUP</div>
+          <p>Korean retail gold trades 10% above spot due to VAT, plus 8% dealer margin. Buyers are structurally underwater from day one.</p>
+        </div>
+      </div>
+      <div class="s02-stat">
+        <div class="num">IOU</div>
+        <div class="stat-body">
+          <div class="label">KB / SHINHAN "GOLD ACCOUNTS"</div>
+          <p>Major Korean bank gold products are unallocated IOUs — not physical gold. In a bank failure, depositors are unsecured creditors.</p>
+        </div>
+      </div>
+      <div class="s02-stat" style="border-bottom:none;">
+        <div class="num">−45%</div>
+        <div class="stat-body">
+          <div class="label">KRW PURCHASING POWER SINCE 2000</div>
+          <p>World Bank CPI data. The Korean won has lost nearly half its real purchasing power in a generation. Gold in KRW terms: +2,100%.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="s02-right fade-in" style="display:flex; flex-direction:column; gap:16px; justify-content:center;">
+      <div class="callout-box">
+        <div class="cb-label">INSTITUTIONAL SIGNAL</div>
+        <p class="cb-quote">"Central banks bought 1,037 tonnes in 2023. They are not using KB Kookmin Gold Accounts."</p>
+        <div class="cb-source">WGC · LBMA · Bank of Korea · IRAS</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer fade-in">
+    <span class="footer-note">SOURCES: WGC · LBMA · BANK OF KOREA · WORLD BANK CPI · IRAS</span>
+    <span class="footer-note">GOLDPATH · SEED ROUND · MMXXVI</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 04 — MARKET OPPORTUNITY (was s03)
+══════════════════════════════════════════════════════════ -->
+<section class="slide dark" id="s04" data-slide="4">
+  <div class="eyebrow fade-in">§ 04 · Market Opportunity</div>
+  <h2 class="headline fade-in" style="font-size:clamp(28px,3.5vw,52px);">A $2.4B annual market with a structural price problem.</h2>
+
+  <div class="s03-body">
+    <div class="stat-cards fade-in" style="border-top:1px solid var(--rule-d); flex:1;">
+      <div class="stat-card">
+        <div class="card-label">KOREAN POPULATION</div>
+        <div class="card-num">51M</div>
+        <div class="card-title">18M active financial app users</div>
+        <p class="card-desc">The addressable market is the intersection of mobile-first Korean retail investors and gold awareness. Both are growing.</p>
+      </div>
+      <div class="stat-card">
+        <div class="card-label">TARGET COHORT</div>
+        <div class="card-num">MZ</div>
+        <div class="card-title">Ages 18–40 · highest app adoption</div>
+        <p class="card-desc">+22% gold interest YoY among MZ generation (KB Research). Post-crypto winter, alternative hard assets are in demand.</p>
+      </div>
+      <div class="stat-card">
+        <div class="card-label">CENTRAL BANK SIGNAL</div>
+        <div class="card-num">220t</div>
+        <div class="card-title">CB purchases Q3 2025</div>
+        <p class="card-desc">Gold at 20× KRW return over 25 years. Smart money is accumulating. Retail is still paying VAT at the jeweller.</p>
+      </div>
+    </div>
+
+    <div class="s03-editorial fade-in">
+      <p>Korea imports roughly 60 tonnes of retail gold annually. At current spot with an 18% retail premium, that is a ~$2.4B market — every dollar of which carries a structural tax that has persisted across every price level for a decade. Gold: +135% over 3 years ($1,960 → $4,600+/oz), LTM range $3,100–$5,600. The kimchi premium persists across the entire price band — retail buyers paid 18% over LBMA at $2,000 and still pay 18% over at $4,600. The arbitrage is structural, not cyclical. GoldPath is built specifically to capture it for Korean retail.</p>
+    </div>
+  </div>
+
+  <div class="slide-footer fade-in">
+    <span class="footer-note">SOURCES: KB RESEARCH · WGC · STATISTICS KOREA · LBMA · YAHOO FINANCE GC=F</span>
+    <span class="footer-note">GOLDPATH · SEED ROUND · MMXXVI</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 05 — THE SOLUTION (was s04)
+══════════════════════════════════════════════════════════ -->
+<section class="slide light" id="s05" data-slide="5">
+  <div class="eyebrow fade-in">§ 05 · The Solution</div>
+  <h2 class="headline fade-in" style="font-size:clamp(28px,3.5vw,52px);">Source at international spot. Operate within Korea's 18% premium. Win on every transaction.</h2>
+
+  <div class="s04-body">
+    <div class="flow-steps fade-in">
+      <div class="flow-step">
+        <div class="step-num">01</div>
+        <div class="step-title">Sign Up</div>
+        <p class="step-desc">5-minute KYC. Passport + liveness check via Persona. No branch visit. No paperwork.</p>
+        <div class="arrow">→</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">02</div>
+        <div class="step-title">Monthly Auto-Debit</div>
+        <p class="step-desc">₩200,000 minimum. Set once via Toss Payments CMS. No action required each month.</p>
+        <div class="arrow">→</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">03</div>
+        <div class="step-title">Buy at LBMA Fix</div>
+        <p class="step-desc">Sourced at LBMA PM fix D+1. Priced within Korea's 18% premium band — GoldPath retains the margin, members still save vs. any domestic alternative.</p>
+        <div class="arrow">→</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">04</div>
+        <div class="step-title">Malca-Amit Vault</div>
+        <p class="step-desc">Changi FTZ. Singapore FreePort. Allocated in your name. Segregated. Lloyd's insured.</p>
+      </div>
+    </div>
+
+    <div class="exits fade-in">
+      <div class="exit-item">
+        <div class="exit-dot"></div>
+        <span>Sell back in 72h · KRW</span>
+      </div>
+      <div class="exit-item">
+        <div class="exit-dot"></div>
+        <span>Withdraw 100g+ bar · physical delivery</span>
+      </div>
+      <div class="exit-item">
+        <div class="exit-dot"></div>
+        <span>Heritage designation · sealed certificate</span>
+      </div>
+    </div>
+
+    <div class="differentiator fade-in">
+      <div class="diff-label">KEY DIFFERENTIATOR</div>
+      <div class="diff-text">NOT paper gold. NOT an ETF. NOT a bank IOU. Allocated in your name. Lloyd's insured. Brink's audited quarterly.</div>
+    </div>
+  </div>
+
+  <div class="slide-footer fade-in">
+    <span class="footer-note">MALCA-AMIT · LLOYD'S · BRINK'S · LBMA GOOD DELIVERY</span>
+    <span class="footer-note">GOLDPATH · SEED ROUND · MMXXVI</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 06 — WHY THE MODEL WORKS (collapsed s05 + s06)
+══════════════════════════════════════════════════════════ -->
+<section class="slide dark" id="s06" data-slide="6">
+  <div class="eyebrow fade-in">§ 06 · Why the Model Works</div>
+  <h2 class="headline fade-in" style="font-size:clamp(28px,3.5vw,52px);">Singapore arbitrage. Korean premium. One monthly debit.</h2>
+
+  <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:0; border-top:1px solid var(--rule-d); border-bottom:1px solid var(--rule-d); margin:16px 0;" class="fade-in">
+    <div style="padding:14px 20px; border-right:1px solid var(--rule-d);">
+      <div style="font-family:var(--mono);font-size:8px;letter-spacing:.32em;color:var(--brass-d);margin-bottom:4px;">SINGAPORE VAT</div>
+      <div style="font-family:var(--serif);font-style:italic;font-size:28px;color:var(--brass-l);line-height:1;">0%</div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--cream);opacity:.6;margin-top:4px;">vs Korea's 10% VAT on gold</div>
+    </div>
+    <div style="padding:14px 20px; border-right:1px solid var(--rule-d);">
+      <div style="font-family:var(--mono);font-size:8px;letter-spacing:.32em;color:var(--brass-d);margin-bottom:4px;">REGULATORY LICENCE</div>
+      <div style="font-family:var(--serif);font-style:italic;font-size:28px;color:var(--brass-l);line-height:1;">ACD</div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--cream);opacity:.6;margin-top:4px;">MinLaw · PSPMD Act 2019</div>
+    </div>
+    <div style="padding:14px 20px;">
+      <div style="font-family:var(--mono);font-size:8px;letter-spacing:.32em;color:var(--brass-d);margin-bottom:4px;">CUSTODY ZONE</div>
+      <div style="font-family:var(--serif);font-style:italic;font-size:28px;color:var(--brass-l);line-height:1;">FTZ</div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--cream);opacity:.6;margin-top:4px;">Changi FreePort · Malca-Amit</div>
+    </div>
+  </div>
+
+  <div class="s06-body">
+    <div class="revenue-rows fade-in">
+      <div class="rev-row">
+        <div class="rev-title">
+          <strong>Spread</strong>
+          TRANSACTION FEE
+        </div>
+        <p class="rev-desc">We operate between LBMA spot (our cost) and Korean retail +18% (our ceiling). That 10–15% structural band is our margin to deploy. We price competitively within the band to drive volume — the higher the volume, the more of that spread we can extract. At scale, this is the primary profit engine.</p>
+      </div>
+      <div class="rev-row">
+        <div class="rev-title">
+          <strong>Storage Fees</strong>
+          AUM-BASED ANNUAL
+        </div>
+        <p class="rev-desc">After the free-storage threshold (50g for Bronze, unlimited for Sovereign). Annual percentage of gold AUM in custody. Scales with success.</p>
+      </div>
+      <div class="rev-row">
+        <div class="rev-title">
+          <strong>FX Margin</strong>
+          KRW → SGD
+        </div>
+        <p class="rev-desc">Embedded in the KRW-to-SGD conversion at settlement. Market rate plus margin. Invisible to member at point of transaction.</p>
+      </div>
+      <div class="rev-row">
+        <div class="rev-title">
+          <strong>Withdrawal Fee</strong>
+          PHYSICAL DELIVERY
+        </div>
+        <p class="rev-desc">100g minimum bar withdrawal. Fixed processing fee plus logistics cost. High-value event that converts a digital holding into a physical asset.</p>
+      </div>
+      <div class="rev-row" style="border-bottom:none;">
+        <div class="rev-title">
+          <strong>Platform Cross-sell</strong>
+          TACC ECOSYSTEM
+        </div>
+        <p class="rev-desc">Century Club membership. Prism deal access. High-value GoldPath members become TACC deal-flow customers. Gold is the acquisition channel.</p>
+      </div>
+    </div>
+
+    <div class="rev-sidebar fade-in">
+      <div class="rs-label">THE KIMCHI PREMIUM IS OUR MARGIN</div>
+      <div style="display:grid; grid-template-columns:auto 1fr; gap:6px 16px; margin-top:4px; font-family:var(--mono); font-size:11px; line-height:1.5;">
+        <span style="color:var(--brass-d); white-space:nowrap;">Korean retail</span>
+        <span style="color:var(--cream); opacity:.8;">LBMA + 18%</span>
+        <span style="color:var(--brass-d); white-space:nowrap;">GoldPath</span>
+        <span style="color:var(--cream); opacity:.8;">Within the premium band</span>
+        <span style="grid-column:1/-1; height:1px; background:var(--rule-d); margin:6px 0;"></span>
+        <span style="color:var(--brass-d); white-space:nowrap;">Customer benefit</span>
+        <span style="color:var(--cream); opacity:.8;">Major discount vs. all KR alternatives</span>
+        <span style="color:var(--brass-d); white-space:nowrap;">Our spread</span>
+        <span style="color:var(--brass-l); font-weight:600;">10–15% band to deploy</span>
+      </div>
+      <div style="margin-top:16px; padding:12px 14px; background:rgba(201,152,87,.12); border-left:2px solid var(--brass);">
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:.28em;color:var(--brass);margin-bottom:6px;">PRICING POWER</div>
+        <p style="font-size:12px;line-height:1.65;color:var(--cream);opacity:.85;">Korean retail is structurally 18% above international spot. We source at spot. Our margin lives inside that premium — customers get a substantial discount vs. any domestic option, and we capture the spread. We set the price. Volume does the rest.</p>
+      </div>
+      <div class="rs-result" style="font-size:18px; line-height:1.55;">At 5,000 members avg ₩400K →<br>₩7.2M/mo (~$5,100 USD) spread.<br><em style="color:var(--brass-l);">With volume, this prints.</em></div>
+    </div>
+  </div>
+
+  <div class="slide-footer fade-in">
+    <span class="footer-note">IRAS IPM EXEMPTION · MINLAW ACD · LBMA SPOT · 10–15% STRUCTURAL BAND</span>
+    <span class="footer-note">GOLDPATH · SEED ROUND · MMXXVI</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 07 — THE GROWTH ENGINE (was s07)
+══════════════════════════════════════════════════════════ -->
+<section class="slide dark" id="s07" data-slide="7">
+  <div class="eyebrow fade-in">§ 07 · Growth Engine</div>
+  <h2 class="headline fade-in" style="font-size:clamp(24px,3vw,44px);">Robinhood, Coinbase, Kakao Bank. Here's our playbook.</h2>
+
+  <div class="s07-cols fade-in">
+    <div class="growth-col">
+      <div class="gc-icon">I.</div>
+      <div class="gc-title">Credits at Signup</div>
+      <ul class="gc-points">
+        <li>Every new member gets a founding gold credit (₩50K–₩2.5M by tier)</li>
+        <li>Credit vests after 12 months of payments — drives retention, not just acquisition</li>
+        <li>High perceived value, real acquisition hook. Reduces net CAC.</li>
+      </ul>
+      <div class="gc-analogy">Like Robinhood's free stock: the mechanics are identical, the asset is gold.</div>
+    </div>
+    <div class="growth-col">
+      <div class="gc-icon">II.</div>
+      <div class="gc-title">Tier Competition</div>
+      <ul class="gc-points">
+        <li>5 public tiers (Bronze → Sovereign). Monthly accumulation visible on profile.</li>
+        <li>Nobody wants to be Bronze when Gold is available. Tier FOMO is structural.</li>
+        <li>12-month streak unlocks commemorative bar. Duolingo streak mechanic for wealth.</li>
+      </ul>
+      <div class="gc-analogy">Korean social psychology + public status signals = organic retention engine.</div>
+    </div>
+    <div class="growth-col">
+      <div class="gc-icon">III.</div>
+      <div class="gc-title">Friend Referrals</div>
+      <ul class="gc-points">
+        <li>Referring member: gold credits. Referred member: starting balance jump.</li>
+        <li>Coinbase give-$10-get-$10 — GoldPath version: give ₩50K gold, get ₩50K gold.</li>
+        <li>"My friend stores gold in Singapore" is a status signal in Korean retail finance.</li>
+      </ul>
+      <div class="gc-analogy">Referral-as-social-proof. The product sells itself when the story is right.</div>
+    </div>
+  </div>
+
+  <div class="s07-footer fade-in">
+    <p>Founding cohort of 5,000 is capped and communicated as limited. Scarcity + FOMO is the oldest acquisition lever in Korean retail finance — and gold is the only product that earns it credibly.</p>
+  </div>
+
+  <div class="slide-footer fade-in">
+    <span class="footer-note">ROBINHOOD · COINBASE · KAKAO BANK · DUOLINGO — PLAYBOOK SYNTHESIS</span>
+    <span class="footer-note">GOLDPATH · SEED ROUND · MMXXVI</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 08 — INFRASTRUCTURE / MOAT (was s10)
+══════════════════════════════════════════════════════════ -->
+<section class="slide light" id="s08" data-slide="8">
+  <div class="eyebrow fade-in">§ 08 · Infrastructure &amp; Relationships</div>
+  <h2 class="headline fade-in" style="font-size:clamp(28px,3.5vw,52px);">Six relationships that took years to build. None can be replicated in six months.</h2>
+
+  <div class="s10-body">
+    <div class="partner-grid fade-in">
+      <div class="partner-cell">
+        <div class="partner-name">MALCA-AMIT</div>
+        <div class="partner-role">Singapore FTZ Vault</div>
+        <p class="partner-desc">Changi Airport FreePort operator. Global bullion logistics. Segregated allocated storage. Asia's premier precious metals custody infrastructure.</p>
+      </div>
+      <div class="partner-cell">
+        <div class="partner-name">LLOYD'S OF LONDON</div>
+        <div class="partner-role">Specie Insurance</div>
+        <p class="partner-desc">Full coverage from refinery to withdrawal. Specie policy covers gold in transit and in vault. The world's reference insurer for physical precious metals.</p>
+      </div>
+      <div class="partner-cell">
+        <div class="partner-name">BRINK'S</div>
+        <div class="partner-role">Independent Audit</div>
+        <p class="partner-desc">Quarterly physical verification of vault holdings. Independent of Malca-Amit. Members can request their allocation certificate at any time.</p>
+      </div>
+      <div class="partner-cell">
+        <div class="partner-name">LBMA</div>
+        <div class="partner-role">Good Delivery Standard</div>
+        <p class="partner-desc">999.9 purity. International benchmark pricing. LBMA PM fix is the world reference price. All GoldPath purchases are executed at this standard.</p>
+      </div>
+      <div class="partner-cell">
+        <div class="partner-name">MINLAW ACD</div>
+        <div class="partner-role">Singapore Regulatory</div>
+        <p class="partner-desc">PSPMD Act 2019. All precious metals dealer activity supervised by MinLaw. AML/KYC compliance framework mandated by statute, not elective.</p>
+      </div>
+      <div class="partner-cell">
+        <div class="partner-name">KINEBAR</div>
+        <div class="partner-role">Bar Standard</div>
+        <p class="partner-desc">1kg and 100g bar standard. Tamper-evident holographic technology. Each bar traceable to refinery of origin. The reference for physical withdrawal bars.</p>
+      </div>
+    </div>
+
+    <div class="s10-moat fade-in">
+      <p>These relationships took years to establish in Singapore and Western financial hubs. A competitor cannot replicate this custody chain in 6 months. The app is a commodity. The infrastructure is the moat.</p>
+    </div>
+  </div>
+
+  <div class="slide-footer fade-in">
+    <span class="footer-note">MALCA-AMIT · LLOYD'S · BRINK'S · LBMA · MINLAW · KINEBAR</span>
+    <span class="footer-note">GOLDPATH · SEED ROUND · MMXXVI</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 09 — TRACTION + FOUNDERS (was s11)
+══════════════════════════════════════════════════════════ -->
+<section class="slide dark" id="s09" data-slide="9">
+  <div class="eyebrow fade-in">§ 09 · Where We Are</div>
+  <h2 class="headline fade-in" style="font-size:clamp(28px,3.5vw,52px);">Built. Regulated. Ready to launch.</h2>
+
+  <div class="s11-body">
+    <div class="s11-col fade-in">
+      <div class="s11-col-label">PHASE 1 — READY TO LAUNCH</div>
+      <div class="traction-item">
+        <span class="tick">✓</span>
+        <span>GoldPath platform built — full customer, ops &amp; investor portals complete</span>
+      </div>
+      <div class="traction-item">
+        <span class="tick">✓</span>
+        <span>5-tier founding cohort structure, credit system &amp; referral mechanics designed</span>
+      </div>
+      <div class="traction-item">
+        <span class="tick">✓</span>
+        <span>TACC Pte. Ltd. Singapore entity registered — corporate &amp; fund structure in place</span>
+      </div>
+      <div class="traction-item">
+        <span class="tick">✓</span>
+        <span>Singapore backend &amp; custody chain being finalized — on-site team visits May 2026</span>
+      </div>
+      <div class="traction-item">
+        <span class="tick">✓</span>
+        <span>Malca-Amit vault, Lloyd's insurance &amp; Brink's audit relationships established</span>
+      </div>
+      <div class="traction-item">
+        <span class="tick">✓</span>
+        <span>Korean regulatory approval pathway identified — cross-ministry engagement underway</span>
+      </div>
+    </div>
+
+    <div class="s11-col fade-in">
+      <div class="s11-col-label">PHASE 2 — SEED-FUNDED</div>
+      <div class="traction-item">
+        <span class="arrow-right">→</span>
+        <span>Korean regulatory approvals — MOTIE gold dealer licence, 통신판매업 신고 (e-commerce registration), domestic legal representative appointment</span>
+      </div>
+      <div class="traction-item">
+        <span class="arrow-right">→</span>
+        <span>AML/KYC stack — Persona ID verification, PMCA-compliant transaction monitoring, Korean PIPA data handling</span>
+      </div>
+      <div class="traction-item">
+        <span class="arrow-right">→</span>
+        <span>Korean payment rail — Toss Payments CMS auto-debit, KRW settlement, FX conversion to SGD</span>
+      </div>
+      <div class="traction-item">
+        <span class="arrow-right">→</span>
+        <span>MinLaw ACD dealer registration final — Singapore precious metals licence confirmed</span>
+      </div>
+      <div class="traction-item">
+        <span class="arrow-right">→</span>
+        <span>Launch campaign — founding 5,000 cohort, MZ acquisition via KakaoTalk, Instagram, financial communities</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="s11-timeline fade-in">
+    <div class="timeline-point">
+      <div class="tp-date">Q3 2026</div>
+      <div class="tp-label">First paying member</div>
+    </div>
+    <div class="timeline-point">
+      <div class="tp-date">Q1 2027</div>
+      <div class="tp-label">Break-even on opex</div>
+    </div>
+    <div class="timeline-point" style="border-right:none;">
+      <div class="tp-date">Q4 2027</div>
+      <div class="tp-label">5,000 founders · cap closed</div>
+    </div>
+  </div>
+
+  <div style="margin-top:8px; padding:10px 16px; border-top:1px solid var(--rule-d); display:grid; grid-template-columns:1fr 1fr; gap:0; flex-shrink:0;" class="fade-in">
+    <div style="padding-right:24px; border-right:1px solid var(--rule-d);">
+      <div style="font-family:var(--mono);font-size:8px;letter-spacing:.32em;color:var(--brass-d);margin-bottom:8px;">FOUNDING TEAM</div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--cream);margin-bottom:4px;">J. Chung &nbsp;·&nbsp; <a href="mailto:jwc@theaurmcc.com" style="color:var(--brass-d);text-decoration:none;">jwc@theaurumcc.com</a></div>
+      <div style="font-size:12px;color:var(--cream);opacity:.6;line-height:1.5;">Singapore financial markets. Institutional deal structuring. Cross-border asset management.</div>
+    </div>
+    <div style="padding-left:24px;">
+      <div style="font-family:var(--mono);font-size:8px;letter-spacing:.32em;color:var(--brass-d);margin-bottom:8px;">&nbsp;</div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--cream);margin-bottom:4px;">B. Lee &nbsp;·&nbsp; <a href="mailto:wsl@theaurumcc.com" style="color:var(--brass-d);text-decoration:none;">wsl@theaurumcc.com</a></div>
+      <div style="font-size:12px;color:var(--cream);opacity:.6;line-height:1.5;">Korean market distribution. Consumer fintech. MZ audience development and brand.</div>
+    </div>
+  </div>
+
+  <div class="slide-footer fade-in">
+    <span class="footer-note">PERSONA · TOSS PAYMENTS · MINLAW ACD · NEON POSTGRES</span>
+    <span class="footer-note">GOLDPATH · SEED ROUND · MMXXVI</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 10 — THE ASK (was s12)
+══════════════════════════════════════════════════════════ -->
+<section class="slide light" id="s10" data-slide="10">
+  <div class="eyebrow fade-in">§ 10 · The Ask</div>
+
+  <div class="s12-center fade-in">
+    <div class="s12-round-label">SEED ROUND · MMXXVI · CONFIDENTIAL</div>
+    <div class="s12-amount"><em>$3.5</em>M</div>
+
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:0; width:100%; max-width:480px; border:1px solid var(--rule); margin:12px 0;">
+      <div style="padding:14px 16px; border-right:1px solid var(--rule); text-align:center;">
+        <div style="font-family:var(--mono); font-size:8px; letter-spacing:.32em; color:var(--brass-d); margin-bottom:6px;">PRE-MONEY</div>
+        <div style="font-family:var(--serif); font-style:italic; font-size:22px; color:var(--ink);">$15M</div>
+      </div>
+      <div style="padding:14px 16px; border-right:1px solid var(--rule); text-align:center;">
+        <div style="font-family:var(--mono); font-size:8px; letter-spacing:.32em; color:var(--brass-d); margin-bottom:6px;">POST-MONEY</div>
+        <div style="font-family:var(--serif); font-style:italic; font-size:22px; color:var(--ink);">$18.5M</div>
+      </div>
+      <div style="padding:14px 16px; text-align:center;">
+        <div style="font-family:var(--mono); font-size:8px; letter-spacing:.32em; color:var(--brass-d); margin-bottom:6px;">INVESTOR STAKE</div>
+        <div style="font-family:var(--serif); font-style:italic; font-size:22px; color:var(--ink);">~19%</div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:0; width:100%; max-width:480px; border:1px solid var(--rule); border-top:none; margin-bottom:12px;">
+      <div style="padding:12px 16px; border-right:1px solid var(--rule); text-align:center;">
+        <div style="font-family:var(--mono); font-size:8px; letter-spacing:.28em; color:var(--ink-3); margin-bottom:4px;">FOUNDERS</div>
+        <div style="font-family:var(--mono); font-size:13px; color:var(--ink);">~73%</div>
+      </div>
+      <div style="padding:12px 16px; border-right:1px solid var(--rule); text-align:center;">
+        <div style="font-family:var(--mono); font-size:8px; letter-spacing:.28em; color:var(--ink-3); margin-bottom:4px;">ESOP POOL</div>
+        <div style="font-family:var(--mono); font-size:13px; color:var(--ink);">~8%</div>
+      </div>
+      <div style="padding:12px 16px; text-align:center;">
+        <div style="font-family:var(--mono); font-size:8px; letter-spacing:.28em; color:var(--ink-3); margin-bottom:4px;">INVESTORS</div>
+        <div style="font-family:var(--mono); font-size:13px; color:var(--ink);">~19%</div>
+      </div>
+    </div>
+
+    <div class="s12-use-label">USE OF FUNDS</div>
+    <div class="s12-bars">
+      <div class="use-bar-row">
+        <div class="use-bar-label">Working Capital / Gold Buffer</div>
+        <div class="use-bar-track"><div class="use-bar-fill" style="width:35%"></div></div>
+        <div class="use-bar-pct">35%</div>
+      </div>
+      <div class="use-bar-row">
+        <div class="use-bar-label">Marketing &amp; Acquisition</div>
+        <div class="use-bar-track"><div class="use-bar-fill" style="width:25%"></div></div>
+        <div class="use-bar-pct">25%</div>
+      </div>
+      <div class="use-bar-row">
+        <div class="use-bar-label">Tech / KYC / Payments</div>
+        <div class="use-bar-track"><div class="use-bar-fill" style="width:22%"></div></div>
+        <div class="use-bar-pct">22%</div>
+      </div>
+      <div class="use-bar-row">
+        <div class="use-bar-label">Operations / Legal / Compliance</div>
+        <div class="use-bar-track"><div class="use-bar-fill" style="width:18%"></div></div>
+        <div class="use-bar-pct">18%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="s12-bottom">
+    <div class="s12-bottom-col fade-in">
+      <div class="s12-col-label">WHY NOW</div>
+      <div class="why-now-items">
+        <div class="why-now-item">
+          <div class="dot"></div>
+          <span>Kimchi premium at 3-year high — arbitrage window is structurally wide</span>
+        </div>
+        <div class="why-now-item">
+          <div class="dot"></div>
+          <span>Gold up ~135% over 3 years ($1,960→$4,600+ / oz) — structural demand shift, not a spike</span>
+        </div>
+        <div class="why-now-item">
+          <div class="dot"></div>
+          <span>LTM gold range: $3,100–$5,600/oz — premium window for Korea retail persists across the full range</span>
+        </div>
+        <div class="why-now-item">
+          <div class="dot"></div>
+          <span>MZ generation actively seeking alternative assets post-crypto winter</span>
+        </div>
+        <div class="why-now-item">
+          <div class="dot"></div>
+          <span>Korean financial regulators warming to Singapore-structured cross-border products</span>
+        </div>
+      </div>
+    </div>
+    <div class="s12-bottom-col fade-in">
+      <div class="s12-col-label">NEXT STEPS</div>
+      <div class="contact-block">
+        <div class="contact-line">Founder — <a href="mailto:jwc@theaurmcc.com" style="color:var(--brass-d);text-decoration:none;">jwc@theaurmcc.com</a></div>
+        <div class="contact-line">Founder — <a href="mailto:wsl@theaurumcc.com" style="color:var(--brass-d);text-decoration:none;">wsl@theaurumcc.com</a></div>
+        <div class="contact-cta">30-minute call + NDA + Phase 2 data room</div>
+        <div style="margin-top:14px; padding-top:14px; border-top:1px solid var(--rule);">
+          <a href="https://goldpath.vercel.app/" target="_blank" rel="noopener" style="display:inline-block; font-family:var(--mono); font-size:10px; letter-spacing:.28em; color:var(--cream); background:var(--ink); padding:10px 20px; text-decoration:none; border:1px solid var(--brass-d); transition:background .2s;">VISIT GOLDPATH →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SCRIPT ───────────────────────────────────────────── -->
+<script>
+(function () {
+  'use strict';
+
+  /* ── Scroll to slide ─────────────────────────── */
+  function scrollToSlide(n) {
+    var el = document.getElementById('s' + (n < 10 ? '0' : '') + n);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  }
+  window.scrollToSlide = scrollToSlide;
+
+  /* ── Sidebar active state ─────────────────────────── */
+  var slides = Array.from(document.querySelectorAll('.slide'));
+  var nums   = Array.from(document.querySelectorAll('.slide-num'));
+
+  function setActive(index) {
+    nums.forEach(function (el, i) {
+      el.classList.toggle('active', i === index);
+    });
+  }
+
+  /* IntersectionObserver: whichever slide is ≥50% visible wins */
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        var idx = slides.indexOf(entry.target);
+        if (idx !== -1) setActive(idx);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  slides.forEach(function (slide) { observer.observe(slide); });
+
+  /* ── Fade-in on scroll ───────────────────────────── */
+  var fadeObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        fadeObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  Array.from(document.querySelectorAll('.fade-in')).forEach(function (el) {
+    fadeObserver.observe(el);
+  });
+
+  /* ── Keyboard navigation ─────────────────────────── */
+  var current = 0;
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      current = Math.min(current + 1, slides.length - 1);
+      slides[current].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      current = Math.max(current - 1, 0);
+      slides[current].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  /* Keep current in sync with IntersectionObserver */
+  var syncObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        current = slides.indexOf(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  slides.forEach(function (slide) { syncObserver.observe(slide); });
+
+})();
+</script>
+
+</body>
+</html>
