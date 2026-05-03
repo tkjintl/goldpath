@@ -230,6 +230,9 @@ input, textarea, select {
   .gp-hero {
     padding: 20px 16px 40px !important;
   }
+  section.gp-hero {
+    padding-top: 0 !important;
+  }
   .gp-hero-eyebrow {
     flex-wrap: nowrap !important;
     overflow: hidden !important;
