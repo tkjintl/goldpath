@@ -29,7 +29,8 @@ const SIGNUPS_FILE = path.join(DATA_DIR, 'signups.jsonl');
 export const SignupSchema = z.object({
   email: z.string().email().max(254),
   name: z.string().min(1).max(120),
-  phoneE164: z.string().min(8).max(20).regex(/^\+\d+$/, 'must start with + and digits only').optional(),
+  // Permissive in Phase 1 — Phase 2 KFTC 본인인증 normalizes to E.164.
+  phoneE164: z.string().min(0).max(30).optional(),
   residenceIso: z.enum(['KR', 'US', 'CA', 'SG', 'HK', 'JP', 'OTHER']),
   tier: z.enum(['I', 'II', 'III', 'IV', 'V']),
   monthlyKrw: z.number().int().positive(),

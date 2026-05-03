@@ -131,21 +131,44 @@ export function getCustomers(limit = 20): Customer[] {
   });
 }
 
-// ─── Aggregate stats ──────────────────────────────────────────────────
+// ─── Aggregate stats — derived from queue arrays so counts always match ──
 export function getOpsStats() {
+  const kyc = getKycQueue();
+  const settlement = getSettlementQueue();
+  const withdrawals = getWithdrawalQueue();
+  const compliance = getComplianceHits();
+  const customers = getCustomers(20);
+
+  const pendingKyc = kyc.filter((k) =>
+    k.status === 'pending' || k.status === 'in_review' || k.status === 'edd_required',
+  ).length;
+  const pendingSettlement = settlement.filter((s) =>
+    s.status === 'pending' || s.status === 'fix_taken',
+  ).length;
+  const pendingWithdrawals = withdrawals.filter((w) => w.status !== 'completed').length;
+  const flaggedComplianceHits = compliance.filter((c) =>
+    c.severity === 'critical' && (c.status === 'open' || c.status === 'investigating'),
+  ).length;
+
+  // Aggregate AUM/MRR from the customer demo list
+  const activeCustomers = customers.filter((c) => c.status === 'active').length;
+  const aumKrw = customers.reduce((s, c) => s + c.cumulativeKRW, 0);
+  const aumGrams = customers.reduce((s, c) => s + c.gramsOwned, 0);
+  const mrr = customers.filter((c) => c.status === 'active').reduce((s, c) => s + c.monthlyKRW, 0);
+
   return {
-    aumKrw: 12_482_000_000,        // ~$8.7M USD
-    aumGrams: 75_648,
-    activeCustomers: 2848,
-    capRemaining: 5000 - 2848,
-    mrr: 1_842_000_000,
-    pendingKyc: 4,
-    pendingSettlement: 1,
-    pendingWithdrawals: 2,
-    flaggedComplianceHits: 1,
-    grossMarginPct: 0.61,
-    cacKrw: 28_500,
-    monthly12RetentionPct: 0.94,
+    aumKrw,
+    aumGrams: Math.round(aumGrams),
+    activeCustomers,
+    capRemaining: 5000 - activeCustomers,
+    mrr,
+    pendingKyc,
+    pendingSettlement,
+    pendingWithdrawals,
+    flaggedComplianceHits,
+    grossMarginPct: 0.61,        // Phase 2: derive from financials ledger
+    cacKrw: 28_500,              // Phase 2: track marketing spend
+    monthly12RetentionPct: 0.94, // Phase 2: cohort analysis
   };
 }
 export { fmtKRW };

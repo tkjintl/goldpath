@@ -1,3 +1,6 @@
+import { getSignupCount } from '@/lib/db/store';
+import { foundersDisplayCount, FOUNDERS_CAP } from '@/lib/founders';
+
 // Tier ladder — 5 tiers with launch credit + spread + storage cap.
 // Magazine-style table feel with editorial accent on the apex (Gold · III).
 export type Tier = {
@@ -72,7 +75,9 @@ export const TIERS: readonly Tier[] = [
   },
 ];
 
-export function TierLadder() {
+export async function TierLadder() {
+  const signupCount = await getSignupCount();
+  const founders = foundersDisplayCount(signupCount);
   return (
     <section
       style={{
@@ -134,7 +139,7 @@ export function TierLadder() {
               letterSpacing: '0.2em',
             }}
           >
-            2,848 / 5,000
+            {founders.toLocaleString()} / {FOUNDERS_CAP.toLocaleString()}
           </div>
         </div>
 

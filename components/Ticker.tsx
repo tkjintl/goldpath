@@ -1,8 +1,11 @@
 import { getPriceSnapshot, fmtKRW, fmtPct } from '@/lib/pricing';
+import { getSignupCount } from '@/lib/db/store';
+import { foundersDisplayCount, FOUNDERS_CAP } from '@/lib/founders';
 
 // Live ticker strip. Server-rendered, refreshes every 5 min via cache.
 export async function Ticker() {
-  const p = await getPriceSnapshot();
+  const [p, signupCount] = await Promise.all([getPriceSnapshot(), getSignupCount()]);
+  const founders = foundersDisplayCount(signupCount);
   const items = [
     { l: 'LBMA USD/oz', v: '$' + p.lbmaUsdPerOz.toFixed(2), tone: '' as const, status: p.sources.gold },
     { l: 'KRW/USD', v: p.fxKrwPerUsd.toFixed(2), tone: '' as const, status: p.sources.fx },
@@ -11,7 +14,7 @@ export async function Ticker() {
     { l: 'GOLDPATH 1g', v: fmtKRW(p.aurumKrwPerGram), tone: 'good' as const, status: 'live' as const },
     { l: '김치 프리미엄', v: fmtPct(p.kimchiPremiumPct), tone: 'warn' as const },
     { l: 'GP vs RETAIL', v: fmtPct(p.aurumDiscountPct), tone: 'good' as const },
-    { l: 'FOUNDERS', v: '2,848 / 5,000', tone: '' as const },
+    { l: 'FOUNDERS', v: `${founders.toLocaleString()} / ${FOUNDERS_CAP.toLocaleString()}`, tone: '' as const },
   ];
 
   const allLive = p.sources.gold === 'live' && p.sources.fx === 'live';

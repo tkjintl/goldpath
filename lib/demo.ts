@@ -1,15 +1,19 @@
 // ─────────────────────────────────────────────────────────────────────
-// Phase 1 demo data
+// Phase 1 account builder
 //
-// Deterministic mock account derived from a session email. Phase 2 reads
-// real ledger entries from Postgres via lib/db.ts — same shape, same call sites.
+// Two paths:
+//   1. Real signup record exists → fresh account, 0 grams, awaiting first debit
+//   2. No signup record (demo / test session) → deterministic fake history
+//
+// Phase 2 reads real ledger entries from Postgres via lib/db.ts.
 // ─────────────────────────────────────────────────────────────────────
 
-import { TIERS } from '@/components/TierLadder';
+import { TIERS, type Tier } from '@/components/TierLadder';
+import { getSignupByEmail, type Signup } from '@/lib/db/store';
 
 export type DemoAccount = {
   founderNumber: number;
-  tier: typeof TIERS[number];
+  tier: Tier;
   gramsOwned: number;
   monthlyKRW: number;
   streakMonths: number;
@@ -17,6 +21,8 @@ export type DemoAccount = {
   nextDebitDate: string;
   cumulativeKRW: number;
   pendingCreditKRW: number;
+  isNewMember: boolean;
+  awaitingKyc: boolean;
   recent: { date: string; type: string; grams: number; krw: number }[];
 };
 
@@ -28,6 +34,40 @@ function hash(s: string): number {
   return Math.abs(h);
 }
 
+// Real signup → fresh account state. Used immediately after /signup completes.
+function buildAccountFromSignup(s: Signup): DemoAccount {
+  const tier = TIERS.find((t) => t.n === s.tier) ?? TIERS[0];
+  const now = new Date();
+  // Next debit on the 5th of next month (or this month if before the 5th)
+  const nextDebit = new Date(now.getFullYear(), now.getMonth() + (now.getDate() < 5 ? 0 : 1), 5);
+  const giftKRW = parseFloat(tier.gift.replace(/[₩K M]/g, (m) =>
+    m === 'K' ? '000' : m === 'M' ? '000000' : '',
+  )) || 0;
+  return {
+    founderNumber: s.founderNumber,
+    tier,
+    gramsOwned: 0,
+    monthlyKRW: s.monthlyKrw,
+    streakMonths: 0,
+    joinDate: s.createdAt.slice(0, 10),
+    nextDebitDate: nextDebit.toISOString().slice(0, 10),
+    cumulativeKRW: 0,
+    pendingCreditKRW: giftKRW,
+    isNewMember: true,
+    awaitingKyc: s.status === 'kyc_required',
+    recent: [],
+  };
+}
+
+export async function buildAccount(email: string): Promise<DemoAccount> {
+  const real = await getSignupByEmail(email);
+  if (real) return buildAccountFromSignup(real);
+  return buildDemoAccount(email);
+}
+
+// Demo path — used only for test/dev sessions where no signup exists.
+// Generates a plausible 15-month-old account so the portal looks alive
+// when you're just clicking through to verify the UI.
 export function buildDemoAccount(email: string): DemoAccount {
   const h = hash(email);
   const founderNumber = (h % 5000) + 1;
@@ -76,6 +116,8 @@ export function buildDemoAccount(email: string): DemoAccount {
     pendingCreditKRW: parseFloat(tier.gift.replace(/[₩K M]/g, (m) =>
       m === 'K' ? '000' : m === 'M' ? '000000' : '',
     )) || 0,
+    isNewMember: false,
+    awaitingKyc: false,
     recent,
   };
 }

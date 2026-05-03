@@ -1,11 +1,14 @@
 import Link from 'next/link';
 import { getPriceSnapshot, fmtKRW, fmtPct } from '@/lib/pricing';
+import { getSignupCount } from '@/lib/db/store';
+import { foundersDisplayCount } from '@/lib/founders';
 
 // Hero — B2 magazine layout, GP brass-gold palette.
 // Left: editorial-issue eyebrow → giant Korean serif headline → italic deck →
 //   bilingual lede → CTAs. Right: product card with seal/serial/specimen.
 export async function Hero() {
-  const p = await getPriceSnapshot();
+  const [p, signupCount] = await Promise.all([getPriceSnapshot(), getSignupCount()]);
+  const founderNumber = foundersDisplayCount(signupCount) + 1;
 
   return (
     <section
@@ -102,12 +105,11 @@ export async function Hero() {
             }}
           >
             <strong style={{ color: 'var(--ink)', fontWeight: 600 }}>
-              한국 소매 vs GoldPath 오늘 1g.
+              오늘 1g. 한국 소매 vs GoldPath.
             </strong>{' '}
-            오늘 한국 소매에서 1g을 사면 {fmtKRW(p.retailKrwPerGram)}, GoldPath은{' '}
-            {fmtKRW(p.aurumKrwPerGram)} — {fmtPct(p.aurumDiscountPct)}. 매달 자동이체로
-            999.9 실물 금이 싱가포르 금고에 회원님 이름으로 쌓입니다. 약정 없음. 5분
-            가입.
+            한국 소매 {fmtKRW(p.retailKrwPerGram)} vs GoldPath {fmtKRW(p.aurumKrwPerGram)}{' '}
+            ({fmtPct(p.aurumDiscountPct)}). 매달 자동이체로 999.9 실물 금이 싱가포르
+            금고에 회원님 이름으로 쌓입니다. 약정 없음. 5분 가입.
           </p>
 
           <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
@@ -224,7 +226,7 @@ export async function Hero() {
                 justifyContent: 'space-between',
               }}
             >
-              <span>#2848</span>
+              <span>#{founderNumber.toString().padStart(4, '0')}</span>
               <span>1g · MMXXVI</span>
               <span>SGP</span>
             </div>

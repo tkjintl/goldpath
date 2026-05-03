@@ -1,5 +1,5 @@
 import { requireSession } from '@/lib/auth';
-import { buildDemoAccount } from '@/lib/demo';
+import { buildAccount } from "@/lib/demo";
 import { getPriceSnapshot, fmtKRW } from '@/lib/pricing';
 import { PortalSection, PortalCard } from '@/components/portal/Section';
 
@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function WithdrawPage() {
   const session = await requireSession();
-  const acct = buildDemoAccount(session.email);
+  const acct = await buildAccount(session.email);
   const price = await getPriceSnapshot();
   const krwValue = Math.round(acct.gramsOwned * price.aurumKrwPerGram);
 

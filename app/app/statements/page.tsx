@@ -1,5 +1,5 @@
 import { requireSession } from '@/lib/auth';
-import { buildDemoAccount } from '@/lib/demo';
+import { buildAccount } from "@/lib/demo";
 import { fmtKRW } from '@/lib/pricing';
 import { PortalSection, PortalCard } from '@/components/portal/Section';
 
@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function StatementsPage() {
   const session = await requireSession();
-  const acct = buildDemoAccount(session.email);
+  const acct = await buildAccount(session.email);
 
   // Generate 12 months of demo statements
   const months = Array.from({ length: Math.min(12, acct.streakMonths) }, (_, i) => {

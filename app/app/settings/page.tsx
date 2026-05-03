@@ -1,12 +1,12 @@
 import { requireSession } from '@/lib/auth';
-import { buildDemoAccount } from '@/lib/demo';
+import { buildAccount } from "@/lib/demo";
 import { PortalSection, PortalCard } from '@/components/portal/Section';
 
 export const dynamic = 'force-dynamic';
 
 export default async function SettingsPage() {
   const session = await requireSession();
-  const acct = buildDemoAccount(session.email);
+  const acct = await buildAccount(session.email);
 
   return (
     <>
