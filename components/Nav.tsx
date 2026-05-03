@@ -124,7 +124,7 @@ export function Nav() {
               borderRadius: 2,
             }}
           >
-            시작 →
+            시작→
           </Link>
         </div>
       </div>
