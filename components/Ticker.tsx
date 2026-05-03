@@ -1,23 +1,20 @@
 import { getPriceSnapshot, fmtKRW, fmtPct } from '@/lib/pricing';
 
-// Live KRX + retail + Aurum strip. Server-rendered, refreshes every 5 min via
-// Next's unstable_cache. The ornament is the same across themes — only colors
-// and fonts change via CSS variables.
+// Live ticker strip. Server-rendered, refreshes every 5 min via cache.
 export async function Ticker() {
   const p = await getPriceSnapshot();
   const items = [
-    { l: 'KRX 1g', v: fmtKRW(p.krxKrwPerGram), s: '' },
-    { l: 'KOREA RETAIL 1g', v: fmtKRW(p.retailKrwPerGram), s: 'tone-warn' },
-    { l: 'GOLDPATH 1g', v: fmtKRW(p.aurumKrwPerGram), s: 'tone-good' },
-    { l: '김치 프리미엄', v: fmtPct(p.kimchiPremiumPct), s: 'tone-warn' },
-    { l: 'GOLDPATH vs RETAIL', v: fmtPct(p.aurumDiscountPct), s: 'tone-good' },
-    { l: 'LBMA USD/oz', v: '$' + p.lbmaUsdPerOz.toFixed(2), s: '' },
-    { l: 'FX KRW/USD', v: p.fxKrwPerUsd.toFixed(2), s: '' },
-    { l: 'FOUNDERS', v: '2,848 / 5,000', s: '' },
+    { l: 'LBMA USD/oz', v: '$' + p.lbmaUsdPerOz.toFixed(2), tone: '' as const, status: p.sources.gold },
+    { l: 'KRW/USD', v: p.fxKrwPerUsd.toFixed(2), tone: '' as const, status: p.sources.fx },
+    { l: 'KRX 1g', v: fmtKRW(p.lbmaKrwPerGram), tone: '' as const, status: p.sources.gold },
+    { l: 'KOREA RETAIL 1g', v: fmtKRW(p.retailKrwPerGram), tone: 'warn' as const, status: p.sources.retail },
+    { l: 'GOLDPATH 1g', v: fmtKRW(p.aurumKrwPerGram), tone: 'good' as const, status: 'live' as const },
+    { l: '김치 프리미엄', v: fmtPct(p.kimchiPremiumPct), tone: 'warn' as const },
+    { l: 'GP vs RETAIL', v: fmtPct(p.aurumDiscountPct), tone: 'good' as const },
+    { l: 'FOUNDERS', v: '2,848 / 5,000', tone: '' as const },
   ];
 
-  const stale =
-    p.sources.krx === 'seed' || p.sources.lbma === 'seed' || p.sources.retail === 'seed';
+  const allLive = p.sources.gold === 'live' && p.sources.fx === 'live';
 
   return (
     <div
@@ -45,9 +42,9 @@ export async function Ticker() {
               gap: 8,
               alignItems: 'baseline',
               color:
-                it.s === 'tone-good'
+                it.tone === 'good'
                   ? 'var(--green)'
-                  : it.s === 'tone-warn'
+                  : it.tone === 'warn'
                   ? 'var(--red)'
                   : 'var(--inv-ink)',
             }}
@@ -58,11 +55,12 @@ export async function Ticker() {
         ))}
       </div>
       <span
+        title={`gold:${p.sources.gold} fx:${p.sources.fx} retail:${p.sources.retail} (as of ${p.retailAsOf})`}
         style={{
           display: 'inline-flex',
           gap: 8,
           alignItems: 'center',
-          color: stale ? 'var(--red)' : 'var(--inv-accent)',
+          color: allLive ? 'var(--inv-accent)' : 'var(--accent-dim)',
           opacity: 0.85,
         }}
       >
@@ -75,7 +73,7 @@ export async function Ticker() {
             animation: 'pulse 1.6s ease-in-out infinite',
           }}
         />
-        {stale ? 'CACHED' : 'LIVE'}
+        {allLive ? 'LIVE' : 'PARTIAL'}
       </span>
     </div>
   );

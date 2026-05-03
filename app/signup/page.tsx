@@ -1,21 +1,86 @@
 import { Ticker } from '@/components/Ticker';
 import { Nav } from '@/components/Nav';
 import { Footer } from '@/components/Footer';
-import { Stub } from '@/components/Stub';
+import { SignupForm } from './SignupForm';
+import { getSignupCount } from '@/lib/db/store';
 
 export const metadata = { title: '가입 · GoldPath' };
+export const dynamic = 'force-dynamic';
 
-export default function SignupPage() {
+export default async function SignupPage() {
+  const joined = await getSignupCount();
+  const remaining = 5000 - joined;
+
   return (
     <>
       <Ticker />
       <Nav />
-      <Stub
-        eyebrow="가입 · SIGN UP"
-        title="5분. 신분증, 계좌 연결. 끝."
-        body="휴대폰 본인인증 (KFTC) → 거주 확인 → 자금 출처 → 자동이체 설정. KYC 통과 후 첫 매입은 다음 LBMA 픽스에 실행됩니다."
-        primary={{ label: '곧 공개됩니다 — 대기열 합류', href: '/' }}
-      />
+      <section style={{ padding: '64px 36px 24px' }}>
+        <div style={{ maxWidth: 760, margin: '0 auto' }}>
+          <div
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 11,
+              letterSpacing: '0.32em',
+              color: 'var(--accent)',
+              marginBottom: 14,
+              textAlign: 'center',
+            }}
+          >
+            파운더스 · {joined.toLocaleString()} / 5,000 · {remaining.toLocaleString()} 남음
+          </div>
+          <h1
+            style={{
+              fontFamily: 'var(--font-krs)',
+              fontWeight: 300,
+              fontSize: 'clamp(40px, 6vw, 72px)',
+              lineHeight: 1.05,
+              letterSpacing: '-0.02em',
+              textAlign: 'center',
+              marginBottom: 16,
+            }}
+          >
+            매달{' '}
+            <em
+              style={{
+                fontFamily: 'var(--font-serif)',
+                fontStyle: 'italic',
+                color: 'var(--accent)',
+                fontWeight: 400,
+              }}
+            >
+              한 그램.
+            </em>
+          </h1>
+          <p
+            style={{
+              fontFamily: 'var(--font-serif)',
+              fontStyle: 'italic',
+              fontSize: 18,
+              color: 'var(--ink-2)',
+              textAlign: 'center',
+              maxWidth: 560,
+              margin: '0 auto 24px',
+            }}
+          >
+            5분이면 끝납니다. 본인인증과 자동이체 설정은 가입 후 안내됩니다.
+          </p>
+        </div>
+      </section>
+
+      <section style={{ padding: '24px 24px 80px' }}>
+        <div
+          style={{
+            maxWidth: 720,
+            margin: '0 auto',
+            background: 'var(--bg-2)',
+            border: '1px solid var(--rule)',
+            padding: 'clamp(24px, 4vw, 48px)',
+          }}
+        >
+          <SignupForm />
+        </div>
+      </section>
       <Footer />
     </>
   );

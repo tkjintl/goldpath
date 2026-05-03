@@ -1,167 +1,129 @@
 // ─────────────────────────────────────────────────────────────────────
 // GoldPath pricing oracle
 //
-// Three feeds:
-//   1. KRX gold market spot (KRW/g)            — institutional Korean spot
-//   2. LBMA / international (USD/oz → KRW/g)   — Aurum's actual buy price
-//   3. Korea Gold Exchange retail (KRW/g)      — kimchi-premium comparison
+// Three numbers we need:
+//   1. LBMA / international gold (USD/oz)        — what GoldPath actually buys at
+//   2. FX rate (KRW per USD)                     — to express gold in KRW
+//   3. Korea Gold Exchange retail (KRW/g)        — for kimchi-premium comparison
 //
-// All fetches are server-side only, cached for 5 minutes via unstable_cache.
-// Phase 1 falls back to seeded values if any feed is down — surface latency
-// in the UI rather than throwing.
+// Approach (Phase 1):
+//   - FX:    Frankfurter.app — open, no key, ECB rates
+//   - Gold:  Stooq daily quote (XAUUSD index) — open CSV, no key
+//   - Retail: weekly-updated seed in code; Phase 2 ops portal lets staff
+//            update this manually until we license a real feed
+//
+// Cached 5 min via Next's unstable_cache. Falls back to honest seed
+// values when any feed misbehaves; surfaces `LIVE` vs `CACHED` in UI.
 // ─────────────────────────────────────────────────────────────────────
 
 import { unstable_cache } from 'next/cache';
 
+export type FeedStatus = 'live' | 'seed';
+
 export type PriceSnapshot = {
   // KRW per gram
-  krxKrwPerGram: number;
   retailKrwPerGram: number;
   aurumKrwPerGram: number;
+  lbmaKrwPerGram: number;
   // Reference
   lbmaUsdPerOz: number;
   fxKrwPerUsd: number;
+  // Compatibility (kept so existing components keep working)
+  krxKrwPerGram: number;
   // Derived
-  kimchiPremiumPct: number;       // (retail - lbma_in_krw) / lbma_in_krw
-  aurumDiscountPct: number;       // (aurum - retail) / retail (negative)
+  kimchiPremiumPct: number; // (retail − lbma_in_krw) / lbma_in_krw
+  aurumDiscountPct: number; // (aurum − retail) / retail (negative is good)
   // Meta
   timestamp: string;
-  sources: { krx: 'live' | 'cached' | 'seed'; retail: 'live' | 'cached' | 'seed'; lbma: 'live' | 'cached' | 'seed' };
+  retailAsOf: string;
+  sources: { gold: FeedStatus; fx: FeedStatus; retail: FeedStatus };
 };
 
 const OZ_TO_G = 31.1034768;
-const AURUM_SPREAD_PCT = 0.02;       // GoldPath spot+2% headline
-const SEED_LBMA_USD_OZ = 2401.85;
-const SEED_FX = 1438.20;
-const SEED_RETAIL_KRW_G = 186_800;   // Korea Gold Exchange retail benchmark
+const AURUM_SPREAD_PCT = 0.02;
 
-// ─── KRX gold market — KOFIA / KRX public daily ──────────────────────
-// http://data.krx.co.kr publishes daily gold close. Free, no key.
-// We hit the public JSON endpoint used by the data.krx.co.kr web UI.
-async function fetchKrxKrwPerGram(): Promise<{ value: number; ok: boolean }> {
-  try {
-    const res = await fetch(
-      'http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'User-Agent': 'GoldPathPricer/0.1',
-          'Referer': 'http://data.krx.co.kr/contents/MDC/MDI/mdiLoader/',
-        },
-        body: new URLSearchParams({
-          bld: 'dbms/MDC/STAT/standard/MDCSTAT13701',
-          mktId: 'GD',
-          locale: 'ko_KR',
-          isuCd: 'KRD040200000',         // 99.99K 1g spot
-          // KRX returns trailing days; we just want the last close
-          strtDd: yyyymmdd(daysAgo(7)),
-          endDd: yyyymmdd(new Date()),
-        }).toString(),
-        // KRX caching is short — let Next.js cache at the unstable_cache layer
-        cache: 'no-store',
-      },
-    );
-    if (!res.ok) return { value: 0, ok: false };
-    const data = (await res.json()) as { output?: Array<{ TDD_CLSPRC?: string }> };
-    const rows = data.output ?? [];
-    const last = rows[0]?.TDD_CLSPRC;
-    if (!last) return { value: 0, ok: false };
-    const value = Number(String(last).replace(/[, ]/g, ''));
-    if (!isFinite(value) || value <= 0) return { value: 0, ok: false };
-    return { value, ok: true };
-  } catch {
-    return { value: 0, ok: false };
-  }
-}
+// ─── Honest seeds (update on each weekly check) ───────────────────────
+// Last updated: 2026-05-02 — gold rally context, late KRW weakness.
+const SEED_LBMA_USD_OZ = 4842.10;
+const SEED_FX = 1440.20;
+const SEED_RETAIL_KRW_G = 269_500;        // ~20% kimchi premium snapshot
+const SEED_RETAIL_AS_OF = '2026-05-02';
 
-// ─── LBMA / international gold — exchangerate.host or similar free feed ──
-// We use a metals-prices public feed. Phase 2 swaps to LBMA AM/PM fix via
-// our bullion bank's API.
-async function fetchLbmaUsdPerOz(): Promise<{ value: number; fx: number; ok: boolean }> {
+// ─── FX — Frankfurter (ECB, free, no key) ─────────────────────────────
+async function fetchFx(): Promise<{ value: number; ok: boolean }> {
   try {
-    // exchangerate.host serves XAU and KRW from the same endpoint
-    const res = await fetch(
-      'https://api.exchangerate.host/live?source=USD&currencies=KRW,XAU',
-      { cache: 'no-store' },
-    );
-    if (!res.ok) return { value: 0, fx: 0, ok: false };
-    const data = (await res.json()) as {
-      success?: boolean;
-      quotes?: { USDKRW?: number; USDXAU?: number };
-    };
-    const fx = data.quotes?.USDKRW ?? 0;
-    const xau = data.quotes?.USDXAU ?? 0;
-    if (!fx || !xau) return { value: 0, fx: 0, ok: false };
-    // USDXAU is troy ounces of gold per USD → invert for USD/oz
-    const usdPerOz = 1 / xau;
-    if (!isFinite(usdPerOz) || usdPerOz <= 0) return { value: 0, fx: 0, ok: false };
-    return { value: usdPerOz, fx, ok: true };
-  } catch {
-    return { value: 0, fx: 0, ok: false };
-  }
-}
-
-// ─── Korea Gold Exchange retail — scrape current 1g sell price ─────────
-// 한국금거래소 publishes today's retail buy/sell prices. Free, public.
-// Phase 1 uses the daily-snapshot endpoint; Phase 2 ingests via partner API.
-async function fetchRetailKrwPerGram(): Promise<{ value: number; ok: boolean }> {
-  try {
-    const res = await fetch('https://www.koreagoldx.co.kr/api/today-price', {
-      headers: { 'User-Agent': 'GoldPathPricer/0.1' },
+    const res = await fetch('https://api.frankfurter.app/latest?from=USD&to=KRW', {
       cache: 'no-store',
+      next: { revalidate: 300 },
     });
     if (!res.ok) return { value: 0, ok: false };
-    const data = (await res.json()) as { sell_per_gram?: number };
-    const value = Number(data.sell_per_gram);
-    if (!isFinite(value) || value <= 0) return { value: 0, ok: false };
-    return { value, ok: true };
+    const data = (await res.json()) as { rates?: { KRW?: number } };
+    const v = Number(data.rates?.KRW);
+    if (!isFinite(v) || v <= 0) return { value: 0, ok: false };
+    return { value: v, ok: true };
   } catch {
     return { value: 0, ok: false };
   }
 }
 
-// ─── Composer — runs every feed in parallel, falls back gracefully ────
-async function fetchSnapshot(): Promise<PriceSnapshot> {
-  const [krx, lbma, retail] = await Promise.all([
-    fetchKrxKrwPerGram(),
-    fetchLbmaUsdPerOz(),
-    fetchRetailKrwPerGram(),
-  ]);
+// ─── Gold — Stooq XAUUSD daily close (free, no key, CSV) ──────────────
+async function fetchGoldUsdOz(): Promise<{ value: number; ok: boolean }> {
+  try {
+    const res = await fetch('https://stooq.com/q/l/?s=xauusd&f=sd2t2ohlcv&h&e=csv', {
+      cache: 'no-store',
+      next: { revalidate: 300 },
+      headers: { 'User-Agent': 'GoldPathPricer/0.1' },
+    });
+    if (!res.ok) return { value: 0, ok: false };
+    const csv = await res.text();
+    // Header line + one data line: Symbol,Date,Time,Open,High,Low,Close,Volume
+    const lines = csv.trim().split('\n');
+    if (lines.length < 2) return { value: 0, ok: false };
+    const cols = lines[1].split(',');
+    const close = Number(cols[6]);
+    if (!isFinite(close) || close <= 0) return { value: 0, ok: false };
+    return { value: close, ok: true };
+  } catch {
+    return { value: 0, ok: false };
+  }
+}
 
-  const lbmaUsdPerOz = lbma.ok ? lbma.value : SEED_LBMA_USD_OZ;
-  const fxKrwPerUsd = lbma.ok && lbma.fx ? lbma.fx : SEED_FX;
+// ─── Composer ─────────────────────────────────────────────────────────
+async function fetchSnapshot(): Promise<PriceSnapshot> {
+  const [gold, fx] = await Promise.all([fetchGoldUsdOz(), fetchFx()]);
+
+  const lbmaUsdPerOz = gold.ok ? gold.value : SEED_LBMA_USD_OZ;
+  const fxKrwPerUsd = fx.ok ? fx.value : SEED_FX;
   const lbmaKrwPerGram = (lbmaUsdPerOz * fxKrwPerUsd) / OZ_TO_G;
 
-  const krxKrwPerGram = krx.ok ? krx.value : Math.round(lbmaKrwPerGram);
-  const retailKrwPerGram = retail.ok ? retail.value : SEED_RETAIL_KRW_G;
+  const retailKrwPerGram = SEED_RETAIL_KRW_G;
   const aurumKrwPerGram = Math.round(lbmaKrwPerGram * (1 + AURUM_SPREAD_PCT));
 
   const kimchiPremiumPct = (retailKrwPerGram - lbmaKrwPerGram) / lbmaKrwPerGram;
   const aurumDiscountPct = (aurumKrwPerGram - retailKrwPerGram) / retailKrwPerGram;
 
   return {
-    krxKrwPerGram,
     retailKrwPerGram,
     aurumKrwPerGram,
+    lbmaKrwPerGram: Math.round(lbmaKrwPerGram),
+    krxKrwPerGram: Math.round(lbmaKrwPerGram), // KRX gold market trades very close to LBMA in KRW
     lbmaUsdPerOz,
     fxKrwPerUsd,
     kimchiPremiumPct,
     aurumDiscountPct,
     timestamp: new Date().toISOString(),
+    retailAsOf: SEED_RETAIL_AS_OF,
     sources: {
-      krx: krx.ok ? 'live' : 'seed',
-      retail: retail.ok ? 'live' : 'seed',
-      lbma: lbma.ok ? 'live' : 'seed',
+      gold: gold.ok ? 'live' : 'seed',
+      fx: fx.ok ? 'live' : 'seed',
+      retail: 'seed', // licensed feed wires in Phase 2
     },
   };
 }
 
-// 5-minute server cache via Next's unstable_cache.
-// Tag for on-demand revalidation when we add a manual override admin tool.
 export const getPriceSnapshot = unstable_cache(
   fetchSnapshot,
-  ['gp-price-snapshot-v1'],
+  ['gp-price-snapshot-v2'],
   { revalidate: 300, tags: ['pricing'] },
 );
 
@@ -171,13 +133,4 @@ export function fmtKRW(n: number): string {
 }
 export function fmtPct(n: number, digits = 1): string {
   return (n >= 0 ? '+' : '') + (n * 100).toFixed(digits) + '%';
-}
-
-function yyyymmdd(d: Date): string {
-  return d.toISOString().slice(0, 10).replace(/-/g, '');
-}
-function daysAgo(n: number): Date {
-  const d = new Date();
-  d.setDate(d.getDate() - n);
-  return d;
 }
