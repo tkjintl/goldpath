@@ -14,15 +14,11 @@ export type Sentiment = 'bullish' | 'bearish' | 'neutral';
 // L1 primary categories — shown as feed filter pills
 export const SIGNAL_CATEGORIES = [
   'Price Action',
-  'Macro Drivers',
   'Geopolitics',
   'Central Banks',
   'Physical Market',
-  'Paper Markets',
   'Portfolio Strategy',
   'Korea & Asia',
-  'Regulation',
-  'Platform',
 ] as const;
 
 export type SignalCategory = (typeof SIGNAL_CATEGORIES)[number];

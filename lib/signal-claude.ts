@@ -1,54 +1,42 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// signal-claude.ts
-//
-// Calls Claude (Haiku) to generate bilingual headline, summary, L1 category,
-// L2 subcategory tags, and sentiment from raw post text.
-// ─────────────────────────────────────────────────────────────────────────────
-
 import Anthropic from '@anthropic-ai/sdk';
 import type { SignalCategory } from './signal-store';
 
-// ── Two-level taxonomy ────────────────────────────────────────────────────────
+// ── Two-level taxonomy: L2 subcategories scoped to their L1 parent ────────────
 
 export const CATEGORY_MAP: Record<SignalCategory, string[]> = {
   'Price Action': [
     'Spot price move',
     'KRW price',
-    'SGD price',
-    'USD price',
+    'SGD / USD price',
     'Technical breakout',
     'Support / resistance',
     'Premium to spot',
+    'ETF price impact',
+    'Futures / backwardation',
     'Seasonal pattern',
-  ],
-  'Macro Drivers': [
-    'Fed policy',
-    'Real interest rates',
-    'Dollar index',
-    'Inflation / CPI',
-    'Fiscal deficit',
-    'Yield curve',
-    'Currency debasement',
-    'Liquidity cycle',
   ],
   'Geopolitics': [
     'War / conflict',
-    'Trade policy',
+    'Trade policy / tariffs',
     'Sanctions',
     'De-dollarization',
     'Reserve currency shift',
     'US–China tensions',
     'Middle East',
-    'Europe',
+    'European risk',
+    'Fed / dollar policy',
+    'Real interest rates',
+    'Inflation / CPI',
+    'Fiscal deficit',
   ],
   'Central Banks': [
-    'CB net purchases',
+    'Net purchases',
     'Reserve composition',
     'EM central bank rotation',
     'BIS / IMF signals',
+    'Fed / ECB / BOJ',
     'Bank of Korea',
     'PBoC / China',
-    'Fed / ECB / BOJ',
     'MAS Singapore',
   ],
   'Physical Market': [
@@ -56,24 +44,17 @@ export const CATEGORY_MAP: Record<SignalCategory, string[]> = {
     'Middle East demand',
     'Western demand',
     'Jewellery demand',
-    'Bar & coin demand',
+    'Bar & coin retail',
     'Mine supply',
     'Recycling flows',
     'LBMA mechanics',
     'SGE mechanics',
     'KRX mechanics',
     'Physical shortage',
-    'Refinery standards',
     'Vaulting / custody',
-  ],
-  'Paper Markets': [
+    'Refinery standards',
     'ETF flows',
     'COT positioning',
-    'Comex open interest',
-    'Futures backwardation',
-    'Lease rates',
-    'OTC market',
-    'Speculative positioning',
     'Paper vs physical divergence',
   ],
   'Portfolio Strategy': [
@@ -91,35 +72,12 @@ export const CATEGORY_MAP: Record<SignalCategory, string[]> = {
     'KRX gold market',
     'Korean retail demand',
     'Korean institutional / pension',
-    'Japan / APAC',
-    'China SGE',
+    'Japan / APAC demand',
+    'China SGE / PBoC',
     'Southeast Asia',
-    'Hong Kong',
-  ],
-  'Regulation': [
-    'MAS regulation',
-    'Korean FSC / FSS',
-    'SEC / CFTC',
-    'Capital gains tax',
-    'VAT treatment',
-    'AML / KYC',
-    'Eligible gold standards',
-    'Cross-border reporting',
-  ],
-  'Platform': [
-    'New deal listing',
-    'Vault update',
-    'Pricing update',
-    'Feature release',
-    'Educational guide',
-    'Company news',
+    'Hong Kong market',
   ],
 };
-
-const ALLOWED_CATEGORIES = Object.keys(CATEGORY_MAP).join(', ');
-const ALL_SUBCATEGORIES = Object.values(CATEGORY_MAP).flat().join(', ');
-
-// ── Output type ───────────────────────────────────────────────────────────────
 
 export interface SignalContent {
   headline_en: string;
@@ -131,35 +89,33 @@ export interface SignalContent {
   sentiment: 'bullish' | 'bearish' | 'neutral';
 }
 
-// ── Prompt ────────────────────────────────────────────────────────────────────
+// Build a compact per-category subcategory reference for the prompt
+const TAXONOMY_BLOCK = Object.entries(CATEGORY_MAP)
+  .map(([cat, subs]) => `${cat}:\n  ${subs.join(', ')}`)
+  .join('\n');
 
 const SYSTEM_PROMPT = `You are a bilingual (English / Korean) financial editor specialising in gold markets.
-Given a social-media post or news excerpt, return ONLY a JSON object — no markdown fences, no preamble, no trailing text.
+Given a social-media post or news excerpt, return ONLY a JSON object — no markdown, no preamble.
 
 JSON shape:
 {
   "headline_en": "<1-line English headline, max 12 words>",
   "headline_ko": "<1-line Korean headline>",
-  "summary_en": "<2-3 sentence English summary explaining why this matters for gold investors>",
-  "summary_ko": "<2-3 sentence Korean summary explaining why this matters for gold investors>",
-  "category": "<exactly one L1 category from the allowed list>",
+  "summary_en": "<2-3 sentence English summary: why this matters for gold investors>",
+  "summary_ko": "<2-3 sentence Korean summary: why this matters for gold investors>",
+  "category": "<one L1 category>",
   "tags": ["<subcategory1>", "<subcategory2>"],
   "sentiment": "<bullish|bearish|neutral>"
 }
 
-L1 CATEGORY (pick exactly one):
-${ALLOWED_CATEGORIES}
-
-L2 SUBCATEGORY TAGS (pick 2–3 from this list only):
-${ALL_SUBCATEGORIES}
+TAXONOMY — pick one L1 category, then pick 2-3 subcategory tags ONLY from that category's list:
+${TAXONOMY_BLOCK}
 
 Rules:
-- category must be exactly one string from the L1 list
-- tags must be 2–3 items chosen ONLY from the L2 subcategory list above
-- sentiment must be exactly one of: bullish, bearish, neutral — relative to gold price direction
-- Do NOT include any text outside the JSON object`;
-
-// ── Public function ───────────────────────────────────────────────────────────
+- category must be exactly one of the L1 names above
+- tags must be 2-3 items chosen ONLY from the subcategory list of the chosen L1 category
+- sentiment: bullish/bearish/neutral relative to gold price direction
+- Return raw JSON only — no text outside the object`;
 
 export async function generateSignalContent(
   postText: string,
@@ -169,7 +125,6 @@ export async function generateSignalContent(
   if (!apiKey) throw new Error('ANTHROPIC_API_KEY is not set');
 
   const client = new Anthropic({ apiKey });
-
   const userContent = sourceUrl
     ? `Source URL: ${sourceUrl}\n\nPost text:\n${postText}`
     : `Post text:\n${postText}`;
@@ -182,8 +137,8 @@ export async function generateSignalContent(
   });
 
   const rawText = message.content
-    .filter((block) => block.type === 'text')
-    .map((block) => (block as { type: 'text'; text: string }).text)
+    .filter((b) => b.type === 'text')
+    .map((b) => (b as { type: 'text'; text: string }).text)
     .join('');
 
   let parsed: unknown;
@@ -199,8 +154,6 @@ export async function generateSignalContent(
 
   return parsed;
 }
-
-// ── Type guard ────────────────────────────────────────────────────────────────
 
 function isSignalContent(v: unknown): v is SignalContent {
   if (typeof v !== 'object' || v === null) return false;

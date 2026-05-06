@@ -6,16 +6,13 @@ import type { SignalPost, SignalCategory } from '@/lib/signal-store';
 
 // L1 category filter pills — bilingual labels
 const FILTER_PILLS: { label: string; ko: string; value: SignalCategory | '' }[] = [
-  { label: 'All',              ko: '전체',       value: '' },
-  { label: 'Price Action',     ko: '가격 동향',   value: 'Price Action' },
-  { label: 'Macro Drivers',    ko: '거시 경제',   value: 'Macro Drivers' },
-  { label: 'Geopolitics',      ko: '지정학',     value: 'Geopolitics' },
-  { label: 'Central Banks',    ko: '중앙은행',    value: 'Central Banks' },
-  { label: 'Physical Market',  ko: '실물 시장',   value: 'Physical Market' },
-  { label: 'Paper Markets',    ko: '금융 상품',   value: 'Paper Markets' },
-  { label: 'Portfolio',        ko: '포트폴리오',  value: 'Portfolio Strategy' },
-  { label: 'Korea & Asia',     ko: '한국·아시아', value: 'Korea & Asia' },
-  { label: 'Regulation',       ko: '규제·정책',   value: 'Regulation' },
+  { label: 'All',             ko: '전체',       value: '' },
+  { label: 'Price Action',    ko: '가격 동향',   value: 'Price Action' },
+  { label: 'Geopolitics',     ko: '지정학',     value: 'Geopolitics' },
+  { label: 'Central Banks',   ko: '중앙은행',    value: 'Central Banks' },
+  { label: 'Physical Market', ko: '실물 시장',   value: 'Physical Market' },
+  { label: 'Portfolio',       ko: '포트폴리오',  value: 'Portfolio Strategy' },
+  { label: 'Korea & Asia',    ko: '한국·아시아', value: 'Korea & Asia' },
 ];
 
 type FilterValue = SignalCategory | '';
