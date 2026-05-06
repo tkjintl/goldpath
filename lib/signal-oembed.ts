@@ -50,25 +50,32 @@ export async function fetchXEmbed(url: string): Promise<XEmbedResult | null> {
   };
 }
 
+function extractTweetHandle(url: string): string | null {
+  const m = url.match(/(?:x|twitter)\.com\/([^/]+)\/status\//);
+  return m ? m[1] : null;
+}
+
 function extractTweetId(url: string): string | null {
   const m = url.match(/\/status\/(\d+)/);
   return m ? m[1] : null;
 }
 
 async function fetchTweetImage(tweetUrl: string): Promise<string | null> {
+  const handle = extractTweetHandle(tweetUrl);
   const id = extractTweetId(tweetUrl);
-  if (!id) return null;
+  if (!handle || !id) return null;
   try {
     const res = await fetch(
-      `https://cdn.syndication.twimg.com/tweet-result?id=${id}&lang=en`,
-      { signal: AbortSignal.timeout(5_000) }
+      `https://api.fxtwitter.com/${handle}/status/${id}`,
+      { signal: AbortSignal.timeout(6_000) }
     );
     if (!res.ok) return null;
     const data = (await res.json()) as Record<string, unknown>;
-    const media = data.mediaDetails as Array<Record<string, unknown>> | undefined;
-    if (!Array.isArray(media) || media.length === 0) return null;
-    const photo = media.find((m) => m.type === 'photo') ?? media[0];
-    return (photo?.media_url_https as string) ?? null;
+    const tweet = data.tweet as Record<string, unknown> | undefined;
+    const media = tweet?.media as Record<string, unknown> | undefined;
+    const photos = media?.photos as Array<Record<string, unknown>> | undefined;
+    if (!Array.isArray(photos) || photos.length === 0) return null;
+    return (photos[0].url as string) ?? null;
   } catch {
     return null;
   }
