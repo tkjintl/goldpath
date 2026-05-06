@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { Mark } from './Mark';
 
 const links = [
+  { href: '/signal', label: 'SIGNAL', live: true },
   { href: '/promo', label: 'DROP', live: true },
   { href: '/why', label: '왜 지금' },
   { href: '/how', label: '방법' },
