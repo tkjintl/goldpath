@@ -88,7 +88,6 @@ function isOEmbedResponse(v: unknown): v is OEmbedResponse {
 }
 
 function stripHtmlTags(html: string): string {
-  // Remove HTML tags and collapse whitespace
   return html
     .replace(/<[^>]+>/g, ' ')
     .replace(/&amp;/g, '&')
@@ -99,4 +98,48 @@ function stripHtmlTags(html: string): string {
     .replace(/&nbsp;/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+// ── Article text extractor ────────────────────────────────────────────────────
+
+const SKIP_URL = /https?:\/\/(www\.)?(x\.com|twitter\.com|t\.co|pic\.twitter\.com)/i;
+
+export function extractArticleUrls(tweetText: string): string[] {
+  const matches = tweetText.match(/https?:\/\/[^\s]+/g) ?? [];
+  return matches.filter((u) => !SKIP_URL.test(u));
+}
+
+export async function fetchArticleText(url: string): Promise<string | null> {
+  try {
+    const res = await fetch(url, {
+      signal: AbortSignal.timeout(8_000),
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; GoldPathBot/1.0)' },
+    });
+    if (!res.ok) return null;
+
+    const ct = res.headers.get('content-type') ?? '';
+    if (!ct.includes('html')) return null;
+
+    const html = await res.text();
+
+    // Extract the most content-dense block: prefer <article>, then <main>, then <body>
+    const articleMatch = html.match(/<article[^>]*>([\s\S]*?)<\/article>/i);
+    const mainMatch    = html.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
+    const bodyMatch    = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+    const raw = articleMatch?.[1] ?? mainMatch?.[1] ?? bodyMatch?.[1] ?? html;
+
+    // Strip scripts, styles, nav, header, footer noise
+    const cleaned = raw
+      .replace(/<(script|style|nav|header|footer|aside)[^>]*>[\s\S]*?<\/\1>/gi, ' ')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    // Cap at 4000 chars — enough for Claude to work with
+    return cleaned.length > 4000 ? cleaned.slice(0, 4000) + '…' : cleaned;
+  } catch {
+    return null;
+  }
 }

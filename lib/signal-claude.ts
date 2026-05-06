@@ -119,15 +119,19 @@ Rules:
 
 export async function generateSignalContent(
   postText: string,
-  sourceUrl?: string
+  sourceUrl?: string,
+  articleText?: string | null
 ): Promise<SignalContent> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) throw new Error('ANTHROPIC_API_KEY is not set');
 
   const client = new Anthropic({ apiKey });
-  const userContent = sourceUrl
-    ? `Source URL: ${sourceUrl}\n\nPost text:\n${postText}`
-    : `Post text:\n${postText}`;
+
+  const parts: string[] = [];
+  if (sourceUrl) parts.push(`Source URL: ${sourceUrl}`);
+  parts.push(`Post text:\n${postText}`);
+  if (articleText) parts.push(`\nLinked article content (use this for a richer summary):\n${articleText}`);
+  const userContent = parts.join('\n\n');
 
   const message = await client.messages.create({
     model: 'claude-haiku-4-5-20251001',

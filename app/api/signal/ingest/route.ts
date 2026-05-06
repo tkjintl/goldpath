@@ -10,7 +10,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { generateSignalContent } from '@/lib/signal-claude';
-import { fetchXEmbed } from '@/lib/signal-oembed';
+import { fetchXEmbed, extractArticleUrls, fetchArticleText } from '@/lib/signal-oembed';
 import { insertSignalPost } from '@/lib/signal-store';
 
 // ── Kakao request / response shapes ──────────────────────────────────────────
@@ -88,6 +88,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     let sourceUrl: string | null = null;
     let embedHtml: string | null = null;
     let imageUrl: string | null = null;
+    let articleText: string | null = null;
 
     if (isXUrl(utterance)) {
       sourceUrl = extractUrl(utterance);
@@ -98,8 +99,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           postText = embed.text;
           embedHtml = embed.html;
           imageUrl = embed.imageUrl;
+
+          // Try to fetch any linked article for richer Claude context
+          const articleUrls = extractArticleUrls(embed.text);
+          if (articleUrls.length > 0) {
+            articleText = await fetchArticleText(articleUrls[0]);
+          }
         } else {
-          // oEmbed failed — use URL as context for Claude
           postText = `Tweet URL: ${sourceUrl}`;
         }
       } else {
@@ -111,7 +117,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     // Generate bilingual content via Claude
-    const content = await generateSignalContent(postText, sourceUrl ?? undefined);
+    const content = await generateSignalContent(postText, sourceUrl ?? undefined, articleText);
 
     // Persist to Neon
     await insertSignalPost({
