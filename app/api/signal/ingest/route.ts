@@ -87,6 +87,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     let postText: string;
     let sourceUrl: string | null = null;
     let embedHtml: string | null = null;
+    let imageUrl: string | null = null;
 
     if (isXUrl(utterance)) {
       sourceUrl = extractUrl(utterance);
@@ -96,6 +97,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         if (embed) {
           postText = embed.text;
           embedHtml = embed.html;
+          imageUrl = embed.imageUrl;
         } else {
           // oEmbed failed — use URL as context for Claude
           postText = `Tweet URL: ${sourceUrl}`;
@@ -116,6 +118,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       source_url: sourceUrl,
       post_text: postText,
       embed_html: embedHtml,
+      image_url: imageUrl,
       headline_en: content.headline_en,
       headline_ko: content.headline_ko,
       summary_en: content.summary_en,

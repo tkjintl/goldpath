@@ -9,6 +9,7 @@ export interface XEmbedResult {
   html: string;
   authorName: string;
   text: string;
+  imageUrl: string | null;
 }
 
 export async function fetchXEmbed(url: string): Promise<XEmbedResult | null> {
@@ -39,11 +40,38 @@ export async function fetchXEmbed(url: string): Promise<XEmbedResult | null> {
 
   if (!isOEmbedResponse(body)) return null;
 
+  const imageUrl = await fetchTweetImage(url);
+
   return {
     html: body.html,
     authorName: body.author_name,
     text: stripHtmlTags(body.html),
+    imageUrl,
   };
+}
+
+function extractTweetId(url: string): string | null {
+  const m = url.match(/\/status\/(\d+)/);
+  return m ? m[1] : null;
+}
+
+async function fetchTweetImage(tweetUrl: string): Promise<string | null> {
+  const id = extractTweetId(tweetUrl);
+  if (!id) return null;
+  try {
+    const res = await fetch(
+      `https://cdn.syndication.twimg.com/tweet-result?id=${id}&lang=en`,
+      { signal: AbortSignal.timeout(5_000) }
+    );
+    if (!res.ok) return null;
+    const data = (await res.json()) as Record<string, unknown>;
+    const media = data.mediaDetails as Array<Record<string, unknown>> | undefined;
+    if (!Array.isArray(media) || media.length === 0) return null;
+    const photo = media.find((m) => m.type === 'photo') ?? media[0];
+    return (photo?.media_url_https as string) ?? null;
+  } catch {
+    return null;
+  }
 }
 
 // ── internal helpers ──────────────────────────────────────────────────────────

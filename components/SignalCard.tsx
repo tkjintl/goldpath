@@ -50,6 +50,7 @@ export function SignalCard({ post }: { post: SignalPost }) {
   const s = SENTIMENT[post.sentiment];
   const [embedOpen, setEmbedOpen] = useState(false);
   const hasEmbed = Boolean(post.embed_html);
+  const hasImage = Boolean(post.image_url);
 
   useTwitterWidgets(hasEmbed && embedOpen);
 
@@ -60,53 +61,71 @@ export function SignalCard({ post }: { post: SignalPost }) {
         className="sc-card"
         style={{ '--border-color': s.border } as React.CSSProperties}
       >
+        <div className="sc-inner">
 
-        {/* top meta */}
-        <div className="sc-meta">
-          <span className="sc-category">{CATEGORY_KO[post.category]}</span>
-          {post.tags.slice(0, 2).map((t) => (
-            <span key={t} className="sc-tag">{t}</span>
-          ))}
-          <span className="sc-sentiment" style={{ color: s.color }}>
-            {s.ko}
-          </span>
-        </div>
+          {/* left: text content */}
+          <div className="sc-body">
+            {/* top meta */}
+            <div className="sc-meta">
+              <span className="sc-category">{CATEGORY_KO[post.category]}</span>
+              {post.tags.slice(0, 2).map((t) => (
+                <span key={t} className="sc-tag">{t}</span>
+              ))}
+              <span className="sc-sentiment" style={{ color: s.color }}>
+                {s.ko}
+              </span>
+            </div>
 
-        {/* Korean headline */}
-        <h2 className="sc-headline">{post.headline_ko}</h2>
+            {/* Korean headline */}
+            <h2 className="sc-headline">{post.headline_ko}</h2>
 
-        {/* Korean summary */}
-        <p className="sc-summary">{post.summary_ko}</p>
+            {/* Korean summary */}
+            <p className="sc-summary">{post.summary_ko}</p>
 
-        {/* footer */}
-        <div className="sc-footer">
-          <time className="sc-time" dateTime={post.created_at}>
-            {relativeTime(post.created_at)}
-          </time>
-          <div className="sc-actions">
-            {hasEmbed && (
-              <button
-                className="sc-expand-btn"
-                onClick={() => setEmbedOpen((v) => !v)}
-                aria-expanded={embedOpen}
-              >
-                {embedOpen ? '접기' : '원문 보기 →'}
-              </button>
-            )}
-            {!hasEmbed && post.source_url && (
-              <a
-                href={post.source_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="sc-source-link"
-              >
-                원문 보기 →
-              </a>
-            )}
+            {/* footer */}
+            <div className="sc-footer">
+              <time className="sc-time" dateTime={post.created_at}>
+                {relativeTime(post.created_at)}
+              </time>
+              <div className="sc-actions">
+                {hasEmbed ? (
+                  <button
+                    className="sc-expand-btn"
+                    onClick={() => setEmbedOpen((v) => !v)}
+                    aria-expanded={embedOpen}
+                  >
+                    {embedOpen ? '접기' : '원문 보기 →'}
+                  </button>
+                ) : post.source_url ? (
+                  <a
+                    href={post.source_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="sc-source-link"
+                  >
+                    원문 보기 →
+                  </a>
+                ) : null}
+              </div>
+            </div>
           </div>
+
+          {/* right: image */}
+          {hasImage && (
+            <div className="sc-image-wrap">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={post.image_url!}
+                alt=""
+                className="sc-image"
+                loading="lazy"
+              />
+            </div>
+          )}
+
         </div>
 
-        {/* embed — collapsed by default */}
+        {/* embed — collapsed, full width below */}
         {hasEmbed && embedOpen && (
           <div className="sc-embed" dangerouslySetInnerHTML={{ __html: post.embed_html! }} />
         )}
@@ -123,10 +142,34 @@ const CSS = `
     background: transparent;
     transition: background 150ms;
     border-left: 3px solid var(--border-color, var(--accent));
-    margin-left: 0;
   }
   .sc-card:hover {
     background: color-mix(in srgb, var(--ink) 3%, transparent);
+  }
+
+  /* two-column inner */
+  .sc-inner {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .sc-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* image */
+  .sc-image-wrap {
+    flex-shrink: 0;
+    width: 180px;
+  }
+  .sc-image {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
+    background: color-mix(in srgb, var(--ink) 6%, transparent);
   }
 
   /* meta row */
@@ -237,6 +280,16 @@ const CSS = `
   @media (max-width: 480px) {
     .sc-card {
       padding: 16px 16px 16px 20px;
+    }
+    .sc-inner {
+      flex-direction: column-reverse;
+      gap: 12px;
+    }
+    .sc-image-wrap {
+      width: 100%;
+    }
+    .sc-image {
+      height: 160px;
     }
     .sc-headline {
       font-size: 17px;

@@ -28,6 +28,7 @@ export interface SignalPost {
   source_url: string | null;
   post_text: string | null;
   embed_html: string | null;
+  image_url: string | null;
   headline_en: string;
   headline_ko: string;
   summary_en: string;
@@ -43,6 +44,7 @@ export interface SignalPostInsert {
   source_url?: string | null;
   post_text?: string | null;
   embed_html?: string | null;
+  image_url?: string | null;
   headline_en: string;
   headline_ko: string;
   summary_en: string;
@@ -91,6 +93,7 @@ async function ensureSchema(): Promise<void> {
       published   BOOLEAN     DEFAULT true
     )
   `;
+  await db`ALTER TABLE signal_posts ADD COLUMN IF NOT EXISTS image_url TEXT`;
   bootstrapped = true;
 }
 
@@ -102,7 +105,7 @@ export async function insertSignalPost(post: SignalPostInsert): Promise<SignalPo
 
   const rows = await db`
     INSERT INTO signal_posts (
-      source_url, post_text, embed_html,
+      source_url, post_text, embed_html, image_url,
       headline_en, headline_ko,
       summary_en, summary_ko,
       category, tags, sentiment, published
@@ -110,6 +113,7 @@ export async function insertSignalPost(post: SignalPostInsert): Promise<SignalPo
       ${post.source_url ?? null},
       ${post.post_text ?? null},
       ${post.embed_html ?? null},
+      ${post.image_url ?? null},
       ${post.headline_en},
       ${post.headline_ko},
       ${post.summary_en},
@@ -151,6 +155,7 @@ function rowToSignalPost(row: Record<string, unknown>): SignalPost {
     source_url: (row.source_url as string | null) ?? null,
     post_text: (row.post_text as string | null) ?? null,
     embed_html: (row.embed_html as string | null) ?? null,
+    image_url: (row.image_url as string | null) ?? null,
     headline_en: row.headline_en as string,
     headline_ko: row.headline_ko as string,
     summary_en: row.summary_en as string,
