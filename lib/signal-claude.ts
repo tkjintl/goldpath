@@ -141,9 +141,11 @@ export async function generateSignalContent(
     .map((b) => (b as { type: 'text'; text: string }).text)
     .join('');
 
+  const cleanText = rawText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+
   let parsed: unknown;
   try {
-    parsed = JSON.parse(rawText);
+    parsed = JSON.parse(cleanText);
   } catch {
     throw new Error(`Claude returned non-JSON: ${rawText}`);
   }
