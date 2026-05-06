@@ -120,6 +120,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       headline_ko: content.headline_ko,
       summary_en: content.summary_en,
       summary_ko: content.summary_ko,
+      category: content.category,
       tags: content.tags,
       sentiment: content.sentiment,
     });

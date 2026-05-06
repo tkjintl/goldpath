@@ -79,7 +79,7 @@ export function SignalCard({ post }: { post: SignalPost }) {
     <>
       <style>{CARD_CSS}</style>
       <article className="sig-card" aria-label={post.headline_en}>
-        {/* ── Top row: sentiment + tags ── */}
+        {/* ── Top row: sentiment + L1 category + L2 tags ── */}
         <div className="sig-meta-row">
           <span
             className="sig-pill sig-pill--sentiment"
@@ -88,7 +88,10 @@ export function SignalCard({ post }: { post: SignalPost }) {
             {sentiment.label}
             <span className="sig-pill__ko">{sentiment.ko}</span>
           </span>
-          {post.tags.slice(0, 4).map((tag) => (
+          <span className="sig-pill sig-pill--category">
+            {post.category}
+          </span>
+          {post.tags.slice(0, 3).map((tag) => (
             <span key={tag} className="sig-pill sig-pill--tag">
               {tag}
             </span>
@@ -200,10 +203,18 @@ const CARD_CSS = `
     letter-spacing: 0;
     opacity: 0.8;
   }
+  .sig-pill--category {
+    color: color-mix(in srgb, var(--accent) 90%, var(--ink));
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+  }
   .sig-pill--tag {
     color: var(--ink-3);
     background: color-mix(in srgb, var(--ink) 6%, transparent);
     letter-spacing: 0.06em;
+    font-size: 9px;
   }
 
   /* Headlines */

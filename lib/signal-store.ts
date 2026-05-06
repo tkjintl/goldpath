@@ -11,6 +11,22 @@ import { neon } from '@neondatabase/serverless';
 
 export type Sentiment = 'bullish' | 'bearish' | 'neutral';
 
+// L1 primary categories — shown as feed filter pills
+export const SIGNAL_CATEGORIES = [
+  'Price Action',
+  'Macro Drivers',
+  'Geopolitics',
+  'Central Banks',
+  'Physical Market',
+  'Paper Markets',
+  'Portfolio Strategy',
+  'Korea & Asia',
+  'Regulation',
+  'Platform',
+] as const;
+
+export type SignalCategory = (typeof SIGNAL_CATEGORIES)[number];
+
 export interface SignalPost {
   id: string;
   source_url: string | null;
@@ -20,9 +36,10 @@ export interface SignalPost {
   headline_ko: string;
   summary_en: string;
   summary_ko: string;
-  tags: string[];
+  category: SignalCategory;  // L1 primary category
+  tags: string[];            // L2 subcategory tags
   sentiment: Sentiment;
-  created_at: string; // ISO-8601 string from Neon
+  created_at: string;
   published: boolean;
 }
 
@@ -34,6 +51,7 @@ export interface SignalPostInsert {
   headline_ko: string;
   summary_en: string;
   summary_ko: string;
+  category?: SignalCategory;
   tags?: string[];
   sentiment?: Sentiment;
   published?: boolean;
@@ -69,6 +87,7 @@ async function ensureSchema(): Promise<void> {
       headline_ko TEXT        NOT NULL,
       summary_en  TEXT        NOT NULL,
       summary_ko  TEXT        NOT NULL,
+      category    TEXT        NOT NULL DEFAULT 'Macro Drivers',
       tags        TEXT[]      DEFAULT '{}',
       sentiment   TEXT        DEFAULT 'neutral'
                               CHECK (sentiment IN ('bullish', 'bearish', 'neutral')),
@@ -90,7 +109,7 @@ export async function insertSignalPost(post: SignalPostInsert): Promise<SignalPo
       source_url, post_text, embed_html,
       headline_en, headline_ko,
       summary_en, summary_ko,
-      tags, sentiment, published
+      category, tags, sentiment, published
     ) VALUES (
       ${post.source_url ?? null},
       ${post.post_text ?? null},
@@ -99,6 +118,7 @@ export async function insertSignalPost(post: SignalPostInsert): Promise<SignalPo
       ${post.headline_ko},
       ${post.summary_en},
       ${post.summary_ko},
+      ${post.category ?? 'Macro Drivers'},
       ${post.tags ?? []},
       ${post.sentiment ?? 'neutral'},
       ${post.published ?? true}
@@ -139,6 +159,7 @@ function rowToSignalPost(row: Record<string, unknown>): SignalPost {
     headline_ko: row.headline_ko as string,
     summary_en: row.summary_en as string,
     summary_ko: row.summary_ko as string,
+    category: ((row.category as string) ?? 'Macro Drivers') as SignalCategory,
     tags: (row.tags as string[]) ?? [],
     sentiment: (row.sentiment as Sentiment) ?? 'neutral',
     created_at:
