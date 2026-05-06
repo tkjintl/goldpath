@@ -1,56 +1,27 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { SignalPost } from '@/lib/signal-store';
 
-// Re-export so the page/feed can import it from one place
 export type { SignalPost };
 
-// ─── Relative time ────────────────────────────────────────────────────────────
-
-function relativeTime(iso: string): { en: string; ko: string } {
+function relativeTime(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
   const mins = Math.floor(diff / 60_000);
   const hrs = Math.floor(diff / 3_600_000);
   const days = Math.floor(diff / 86_400_000);
-
-  if (mins < 1) return { en: 'just now', ko: '방금 전' };
-  if (mins < 60) return { en: `${mins}m ago`, ko: `${mins}분 전` };
-  if (hrs < 24) return { en: `${hrs}h ago`, ko: `${hrs}시간 전` };
-  if (days < 7) return { en: `${days}d ago`, ko: `${days}일 전` };
-  const date = new Date(iso);
-  const label = date.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' });
-  return { en: label, ko: label };
+  if (mins < 1) return '방금 전';
+  if (mins < 60) return `${mins}분 전`;
+  if (hrs < 24) return `${hrs}시간 전`;
+  if (days < 7) return `${days}일 전`;
+  return new Date(iso).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' });
 }
 
-// ─── Sentiment config ─────────────────────────────────────────────────────────
-
-const SENTIMENT: Record<
-  SignalPost['sentiment'],
-  { label: string; ko: string; color: string; bg: string }
-> = {
-  bullish: {
-    label: 'BULLISH',
-    ko: '강세',
-    color: '#15803d',
-    bg: 'rgba(21,128,61,0.10)',
-  },
-  bearish: {
-    label: 'BEARISH',
-    ko: '약세',
-    color: '#b91c1c',
-    bg: 'rgba(185,28,28,0.10)',
-  },
-  neutral: {
-    label: 'NEUTRAL',
-    ko: '중립',
-    color: '#92400e',
-    bg: 'rgba(146,64,14,0.10)',
-  },
+const SENTIMENT: Record<SignalPost['sentiment'], { ko: string; color: string; border: string }> = {
+  bullish: { ko: '강세',  color: '#15803d', border: '#16a34a' },
+  bearish: { ko: '약세',  color: '#b91c1c', border: '#dc2626' },
+  neutral: { ko: '중립',  color: '#92400e', border: '#A67C3F' },
 };
-
-// ─── Twitter widget loader ────────────────────────────────────────────────────
-// Loaded once per page when at least one card has embed_html.
 
 let twitterScriptLoaded = false;
 
@@ -58,272 +29,211 @@ function useTwitterWidgets(hasEmbed: boolean) {
   useEffect(() => {
     if (!hasEmbed || twitterScriptLoaded) return;
     twitterScriptLoaded = true;
-    const script = document.createElement('script');
-    script.src = 'https://platform.twitter.com/widgets.js';
-    script.async = true;
-    script.charset = 'utf-8';
-    document.body.appendChild(script);
+    const s = document.createElement('script');
+    s.src = 'https://platform.twitter.com/widgets.js';
+    s.async = true;
+    s.charset = 'utf-8';
+    document.body.appendChild(s);
   }, [hasEmbed]);
 }
 
-// ─── SignalCard ───────────────────────────────────────────────────────────────
-
 export function SignalCard({ post }: { post: SignalPost }) {
-  const sentiment = SENTIMENT[post.sentiment];
-  const time = relativeTime(post.created_at);
+  const s = SENTIMENT[post.sentiment];
+  const [embedOpen, setEmbedOpen] = useState(false);
   const hasEmbed = Boolean(post.embed_html);
 
-  useTwitterWidgets(hasEmbed);
+  useTwitterWidgets(hasEmbed && embedOpen);
 
   return (
     <>
-      <style>{CARD_CSS}</style>
-      <article className="sig-card" aria-label={post.headline_en}>
-        {/* ── Top row: sentiment + L1 category + L2 tags ── */}
-        <div className="sig-meta-row">
-          <span
-            className="sig-pill sig-pill--sentiment"
-            style={{ color: sentiment.color, background: sentiment.bg }}
-          >
-            {sentiment.label}
-            <span className="sig-pill__ko">{sentiment.ko}</span>
-          </span>
-          <span className="sig-pill sig-pill--category">
-            {post.category}
-          </span>
-          {post.tags.slice(0, 3).map((tag) => (
-            <span key={tag} className="sig-pill sig-pill--tag">
-              {tag}
-            </span>
+      <style>{CSS}</style>
+      <article
+        className="sc-card"
+        style={{ '--border-color': s.border } as React.CSSProperties}
+      >
+
+        {/* top meta */}
+        <div className="sc-meta">
+          <span className="sc-category">{post.category}</span>
+          {post.tags.slice(0, 2).map((t) => (
+            <span key={t} className="sc-tag">{t}</span>
           ))}
+          <span className="sc-sentiment" style={{ color: s.color }}>
+            {s.ko}
+          </span>
         </div>
 
-        {/* ── Headlines ── */}
-        <h2 className="sig-headline-en">{post.headline_en}</h2>
-        <h3 className="sig-headline-ko">{post.headline_ko}</h3>
+        {/* Korean headline */}
+        <h2 className="sc-headline">{post.headline_ko}</h2>
 
-        {/* ── Summaries ── */}
-        <p className="sig-summary-en">{post.summary_en}</p>
-        <p className="sig-summary-ko">{post.summary_ko}</p>
+        {/* Korean summary */}
+        <p className="sc-summary">{post.summary_ko}</p>
 
-        {/* ── Divider ── */}
-        <hr className="sig-rule" />
-
-        {/* ── Embed or source link ── */}
-        {hasEmbed ? (
-          <div
-            className="sig-embed"
-            dangerouslySetInnerHTML={{ __html: post.embed_html! }}
-          />
-        ) : post.source_url ? (
-          <a
-            href={post.source_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="sig-source-link"
-          >
-            View source →
-          </a>
-        ) : null}
-
-        {/* ── Footer row ── */}
-        <div className="sig-footer">
-          <time
-            className="sig-timestamp"
-            dateTime={post.created_at}
-            title={new Date(post.created_at).toLocaleString('ko-KR')}
-          >
-            {time.en} · {time.ko}
+        {/* footer */}
+        <div className="sc-footer">
+          <time className="sc-time" dateTime={post.created_at}>
+            {relativeTime(post.created_at)}
           </time>
-          {post.source_url && (
-            <a
-              href={post.source_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="sig-source-footer"
-            >
-              Source →
-            </a>
-          )}
+          <div className="sc-actions">
+            {hasEmbed && (
+              <button
+                className="sc-expand-btn"
+                onClick={() => setEmbedOpen((v) => !v)}
+                aria-expanded={embedOpen}
+              >
+                {embedOpen ? '접기' : '원문 보기 →'}
+              </button>
+            )}
+            {!hasEmbed && post.source_url && (
+              <a
+                href={post.source_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="sc-source-link"
+              >
+                원문 보기 →
+              </a>
+            )}
+          </div>
         </div>
+
+        {/* embed — collapsed by default */}
+        {hasEmbed && embedOpen && (
+          <div className="sc-embed" dangerouslySetInnerHTML={{ __html: post.embed_html! }} />
+        )}
+
       </article>
     </>
   );
 }
 
-// ─── Scoped styles — no globals.css touch ────────────────────────────────────
-
-const CARD_CSS = `
-  .sig-card {
-    background: var(--bg);
-    border: 1px solid var(--rule);
-    border-radius: 10px;
-    padding: clamp(18px, 4vw, 24px);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
-    transition: box-shadow 180ms ease, transform 180ms ease;
-    width: 100%;
-    display: block;
+const CSS = `
+  .sc-card {
+    position: relative;
+    padding: 20px 20px 20px 28px;
+    background: transparent;
+    transition: background 150ms;
+    border-left: 3px solid var(--border-color, var(--accent));
+    margin-left: 0;
   }
-  .sig-card:hover {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.09), 0 8px 28px rgba(0,0,0,0.07);
-    transform: translateY(-1px);
+  .sc-card:hover {
+    background: color-mix(in srgb, var(--ink) 3%, transparent);
   }
 
-  /* Meta row */
-  .sig-meta-row {
+  /* meta row */
+  .sc-meta {
     display: flex;
+    align-items: center;
     flex-wrap: wrap;
     gap: 6px;
-    margin-bottom: 14px;
-    align-items: center;
+    margin-bottom: 10px;
   }
-
-  /* Pills */
-  .sig-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 3px 9px;
-    border-radius: 999px;
+  .sc-category {
     font-family: var(--font-mono);
     font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    line-height: 1.4;
-    white-space: nowrap;
-  }
-  .sig-pill--sentiment {
     font-weight: 600;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    text-transform: uppercase;
   }
-  .sig-pill__ko {
-    font-family: var(--font-kr);
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0;
-    opacity: 0.8;
-  }
-  .sig-pill--category {
-    color: color-mix(in srgb, var(--accent) 90%, var(--ink));
-    background: color-mix(in srgb, var(--accent) 12%, transparent);
-    border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
-    font-weight: 600;
-    letter-spacing: 0.1em;
-  }
-  .sig-pill--tag {
-    color: var(--ink-3);
-    background: color-mix(in srgb, var(--ink) 6%, transparent);
-    letter-spacing: 0.06em;
+  .sc-tag {
+    font-family: var(--font-mono);
     font-size: 9px;
+    letter-spacing: 0.08em;
+    color: var(--ink-3);
+    background: color-mix(in srgb, var(--ink) 7%, transparent);
+    padding: 2px 7px;
+    border-radius: 3px;
+  }
+  .sc-sentiment {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    margin-left: auto;
   }
 
-  /* Headlines */
-  .sig-headline-en {
-    font-family: var(--font-sans);
-    font-size: clamp(16px, 2.4vw, 19px);
-    font-weight: 600;
-    line-height: 1.35;
-    color: var(--ink);
-    margin-bottom: 5px;
-    letter-spacing: -0.01em;
-  }
-  .sig-headline-ko {
+  /* headline */
+  .sc-headline {
     font-family: var(--font-kr);
-    font-size: clamp(14px, 2vw, 16px);
-    font-weight: 500;
+    font-size: clamp(17px, 2.2vw, 20px);
+    font-weight: 700;
     line-height: 1.4;
+    color: var(--ink);
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+
+  /* summary */
+  .sc-summary {
+    font-family: var(--font-kr);
+    font-size: 14px;
+    line-height: 1.75;
     color: var(--ink-2);
     margin-bottom: 14px;
     letter-spacing: -0.01em;
   }
 
-  /* Summaries */
-  .sig-summary-en {
-    font-family: var(--font-sans);
-    font-size: 13px;
-    line-height: 1.65;
-    color: var(--ink-3);
-    margin-bottom: 6px;
-  }
-  .sig-summary-ko {
-    font-family: var(--font-kr);
-    font-size: 12px;
-    line-height: 1.7;
-    color: var(--ink-3);
-    margin-bottom: 0;
-  }
-
-  /* Rule */
-  .sig-rule {
-    border: none;
-    border-top: 1px solid var(--rule);
-    margin: 16px 0;
-  }
-
-  /* Embed */
-  .sig-embed {
-    overflow: hidden;
-    border-radius: 6px;
-    margin-bottom: 14px;
-    container-type: inline-size;
-  }
-  /* Prevent Twitter iframe from exceeding card width on mobile */
-  .sig-embed iframe {
-    max-width: 100% !important;
-  }
-
-  /* Source link (no embed fallback) */
-  .sig-source-link {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    color: var(--accent);
-    border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
-    padding-bottom: 1px;
-    margin-bottom: 14px;
-    transition: border-color 140ms;
-  }
-  .sig-source-link:hover {
-    border-color: var(--accent);
-  }
-
-  /* Footer */
-  .sig-footer {
+  /* footer */
+  .sc-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    flex-wrap: wrap;
-    margin-top: 2px;
   }
-  .sig-timestamp {
+  .sc-time {
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
     color: var(--ink-3);
-    letter-spacing: 0.08em;
   }
-  .sig-source-footer {
+  .sc-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .sc-expand-btn {
     font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.12em;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
     color: var(--accent);
-    opacity: 0.75;
-    transition: opacity 140ms;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: opacity 120ms;
   }
-  .sig-source-footer:hover {
-    opacity: 1;
+  .sc-expand-btn:hover { opacity: 0.75; }
+  .sc-source-link {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    transition: opacity 120ms;
+  }
+  .sc-source-link:hover { opacity: 0.75; }
+
+  /* embed */
+  .sc-embed {
+    margin-top: 16px;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .sc-embed iframe {
+    max-width: 100% !important;
   }
 
   @media (max-width: 480px) {
-    .sig-card {
-      border-radius: 8px;
+    .sc-card {
+      padding: 16px 16px 16px 20px;
     }
-    .sig-headline-en {
-      font-size: 16px;
+    .sc-headline {
+      font-size: 17px;
     }
-    .sig-headline-ko {
-      font-size: 14px;
+    .sc-summary {
+      font-size: 13px;
     }
   }
 `;
