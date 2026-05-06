@@ -17,6 +17,15 @@ function relativeTime(iso: string): string {
   return new Date(iso).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' });
 }
 
+const CATEGORY_KO: Record<SignalPost['category'], string> = {
+  'Price Action':       '가격 동향',
+  'Geopolitics':        '지정학',
+  'Central Banks':      '중앙은행',
+  'Physical Market':    '실물 시장',
+  'Portfolio Strategy': '포트폴리오',
+  'Korea & Asia':       '한국·아시아',
+};
+
 const SENTIMENT: Record<SignalPost['sentiment'], { ko: string; color: string; border: string }> = {
   bullish: { ko: '강세',  color: '#15803d', border: '#16a34a' },
   bearish: { ko: '약세',  color: '#b91c1c', border: '#dc2626' },
@@ -54,7 +63,7 @@ export function SignalCard({ post }: { post: SignalPost }) {
 
         {/* top meta */}
         <div className="sc-meta">
-          <span className="sc-category">{post.category}</span>
+          <span className="sc-category">{CATEGORY_KO[post.category]}</span>
           {post.tags.slice(0, 2).map((t) => (
             <span key={t} className="sc-tag">{t}</span>
           ))}

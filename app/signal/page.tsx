@@ -1,3 +1,6 @@
+import { Ticker } from '@/components/Ticker';
+import { Nav } from '@/components/Nav';
+import { Footer } from '@/components/Footer';
 import { SignalFeed } from '@/components/SignalFeed';
 import type { SignalPost } from '@/lib/signal-store';
 
@@ -25,5 +28,12 @@ async function fetchPosts(): Promise<SignalPost[]> {
 
 export default async function SignalPage() {
   const posts = await fetchPosts();
-  return <SignalFeed posts={posts} />;
+  return (
+    <>
+      <Ticker />
+      <Nav />
+      <SignalFeed posts={posts} />
+      <Footer />
+    </>
+  );
 }
