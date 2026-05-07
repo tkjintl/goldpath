@@ -25,7 +25,7 @@ export async function Hero() {
       <FlakeParticles count={4} />
 
       {/* ── Mobile-only card-first layout ── */}
-      <div data-mobile="hero-mobile-block" style={{ display: 'none' }}>
+      <div data-mobile="hero-mobile-block" style={{ display: 'none', minHeight: 'calc(100dvh - 97px)', boxSizing: 'border-box' }}>
         <HeroCard founderNumber={founderNumber} />
 
         {/* Editorial + price table + founder bar */}
