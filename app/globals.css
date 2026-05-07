@@ -123,6 +123,12 @@ input, textarea, select {
    Desktop is untouched — every rule is media-query-scoped.
    ───────────────────────────────────────────────────────────────── */
 
+/* Mobile-only elements — hidden on desktop, revealed by media query below */
+[data-mobile="nav-hamburger"] { display: none; }
+[data-mobile="nav-drawer"] { display: none; }
+[data-mobile="hero-mobile-block"] { display: none; }
+[data-mobile="why-mobile"] { display: none; }
+
 /* Touch-device tap targets — coarse pointer only, harmless on desktop */
 @media (hover: none) and (pointer: coarse) {
   a, button, summary, input[type="submit"], input[type="button"] {
@@ -152,16 +158,15 @@ input, textarea, select {
     box-sizing: border-box;
   }
 
-  /* ── Nav — single row, links scroll horizontally ───────────────── */
+  /* ── Nav — hamburger drawer on mobile ──────────────────────────── */
   .gp-nav {
-    padding: 10px 12px !important;
+    padding: 10px 16px !important;
   }
   .gp-nav .gp-nav-row {
     gap: 10px !important;
     flex-wrap: nowrap !important;
-    justify-content: flex-start !important;
+    justify-content: space-between !important;
     align-items: center !important;
-    min-width: 0 !important;
   }
   .gp-nav .gp-nav-brand {
     gap: 8px !important;
@@ -174,38 +179,27 @@ input, textarea, select {
   .gp-nav [data-mobile="nav-tagline"] {
     display: none !important;
   }
+  /* Hide inline links on mobile */
   .gp-nav [data-mobile="nav-links"] {
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
-    gap: 14px !important;
-    overflow-x: auto !important;
-    flex-wrap: nowrap !important;
-    align-items: center !important;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    mask-image: linear-gradient(to right, transparent 0, black 12px, black calc(100% - 12px), transparent 100%);
+    display: none !important;
   }
-  .gp-nav [data-mobile="nav-links"]::-webkit-scrollbar { display: none; }
-  .gp-nav [data-mobile="nav-links"] a {
-    flex: 0 0 auto !important;
-    white-space: nowrap !important;
-    font-size: 12px !important;
-    padding: 0 !important;
-    line-height: 1 !important;
-    align-self: center !important;
+  /* Show hamburger on mobile */
+  [data-mobile="nav-hamburger"] {
+    display: flex !important;
+  }
+  /* Show drawer on mobile */
+  [data-mobile="nav-drawer"] {
+    display: block !important;
   }
   .gp-nav [data-mobile="nav-cta"] {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    text-align: center !important;
     padding: 0 12px !important;
     height: 30px !important;
     font-size: 11px !important;
-    line-height: 1 !important;
     letter-spacing: 0.04em !important;
     flex: 0 0 auto !important;
-    align-self: center !important;
   }
 
   /* ── Footer ──────────────────────────────────────────────────── */
@@ -227,71 +221,33 @@ input, textarea, select {
     font-size: 9px !important;
   }
 
-  /* ── Hero ────────────────────────────────────────────────────── */
+  /* ── Hero — card-first mobile layout ────────────────────────── */
   .gp-hero {
-    padding: 20px 16px 40px !important;
+    padding: 0 !important;
+    overflow: hidden;
   }
-  section.gp-hero {
-    padding-top: 16px !important;
-  }
-  .gp-hero-eyebrow {
-    flex-wrap: nowrap !important;
-    overflow: hidden !important;
-    gap: 6px !important;
-  }
-  .gp-hero-eyebrow > span {
-    font-size: 9px !important;
-    letter-spacing: 0.1em !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    min-width: 0 !important;
+  /* Show mobile block, hide desktop grid */
+  .gp-hero [data-mobile="hero-mobile-block"] {
+    display: block !important;
   }
   .gp-hero [data-mobile="hero-grid"] {
-    grid-template-columns: 1fr !important;
-    gap: 36px !important;
-    align-items: stretch !important;
+    display: none !important;
   }
-  .gp-hero [data-mobile="hero-headline"] {
-    font-size: clamp(40px, 11vw, 64px) !important;
-    line-height: 0.98 !important;
-    margin-bottom: 12px !important;
-  }
-  .gp-hero p {
-    font-size: 14px !important;
-  }
-  .gp-hero [data-mobile="hero-ctas"] {
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 10px !important;
-  }
-  .gp-hero [data-mobile="hero-ctas"] a {
-    text-align: center !important;
-    padding: 16px 20px !important;
-    font-size: 14px !important;
-  }
-  .gp-hero [data-mobile="hero-card"] {
-    padding: 24px !important;
-    aspect-ratio: 4 / 5 !important;
-  }
-  .gp-hero [data-mobile="hero-card"] > div:nth-child(2) > div:first-child {
-    font-size: clamp(72px, 28vw, 120px) !important;
+  /* Hide eyebrow + particles glow on mobile hero */
+  .gp-hero .gp-breathe {
+    display: none !important;
   }
 
-  /* ── WhyStrip ────────────────────────────────────────────────── */
+  /* ── WhyStrip — accordion on mobile ─────────────────────────── */
   .gp-why-strip {
-    padding: 32px 16px !important;
+    padding: 40px 16px !important;
+  }
+  /* Show accordion, hide desktop grid */
+  .gp-why-strip [data-mobile="why-mobile"] {
+    display: block !important;
   }
   .gp-why-strip [data-mobile="why-grid"] {
-    grid-template-columns: 1fr !important;
-    gap: 20px !important;
-  }
-  .gp-why-strip [data-mobile="why-grid"] > div > div:nth-child(2) {
-    font-size: clamp(28px, 8vw, 38px) !important;
-  }
-  .gp-why-strip p,
-  .gp-why-strip [data-mobile="why-grid"] > div > div:last-child {
-    word-break: keep-all !important;
+    display: none !important;
   }
 
   /* ── Mechanism ───────────────────────────────────────────────── */

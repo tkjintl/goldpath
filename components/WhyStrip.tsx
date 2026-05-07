@@ -1,5 +1,6 @@
 import { getPriceSnapshot } from '@/lib/pricing';
 import { CountUp } from './CountUp';
+import { WhyAccordion, type WhyItem } from './WhyAccordion';
 
 // Four-up data strip — uses live snapshot for the kimchi-premium tile.
 // Big numbers count up on viewport-enter for editorial gravitas.
@@ -71,6 +72,37 @@ export async function WhyStrip() {
     },
   ];
 
+  const accordionItems: WhyItem[] = [
+    {
+      n: 'I',
+      lbl: '김치 프리미엄',
+      num: `${kimchiSign}${kimchiAbs.toFixed(1)}%`,
+      cap: `한국 소매가 vs LBMA 국제 현물. GoldPath는 국제 현물가 직매입으로 이 프리미엄을 없앱니다. ${p.sources.retail === 'live' ? '실시간 데이터.' : ''}`,
+      tone: 'warn',
+    },
+    {
+      n: 'II',
+      lbl: '중앙은행 매입 2025 Q3',
+      num: '220톤',
+      cap: '전 분기 대비 +28% · 누적 634톤. 세계 중앙은행들이 달러 대신 금으로 보유고를 채우고 있습니다.',
+      tone: 'accent',
+    },
+    {
+      n: 'III',
+      lbl: '원화 구매력',
+      num: '−45%',
+      cap: '2000년 ₩100은 오늘 ₩55의 가치. World Bank CPI 기준. 금은 같은 기간 원화 기준 약 20배 상승했습니다.',
+      tone: 'warn',
+    },
+    {
+      n: 'IV',
+      lbl: '금 vs 부동산 · 25년',
+      num: '약 20×',
+      cap: '원화 기준 금 25년 수익률 약 20×. 같은 기간 KB 전국 아파트 약 2.4×. 세금, 대출 없이.',
+      tone: 'accent',
+    },
+  ];
+
   return (
     <section
       className="gp-why-strip"
@@ -80,72 +112,83 @@ export async function WhyStrip() {
         borderBottom: '1px solid var(--rule)',
       }}
     >
-      <div
-        data-mobile="why-grid"
-        style={{
-          maxWidth: 1280,
-          margin: '0 auto',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: 28,
-        }}
-      >
-        {items.map((it, i) => (
-          <div
-            key={it.n}
-            className={`gp-fade-up gp-fade-up-delay-${i + 1}`}
-          >
-            <div
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: 10,
-                letterSpacing: '0.28em',
-                color: 'var(--ink-3)',
-                marginBottom: 8,
-              }}
-            >
-              {it.n} · {it.lbl}
-            </div>
-            <div
-              style={{
-                fontFamily: 'var(--font-serif)',
-                fontStyle: 'italic',
-                fontSize: 'clamp(40px, 4.4vw, 52px)',
-                color: it.tone === 'warn' ? 'var(--red)' : 'var(--accent)',
-                fontWeight: 500,
-                lineHeight: 1,
-                fontVariantNumeric: 'tabular-nums oldstyle-nums',
-              }}
-            >
-              {it.render()}
-            </div>
-            <div
-              style={{
-                fontFamily: 'var(--font-kr)',
-                fontSize: 13,
-                color: 'var(--ink-2)',
-                marginTop: 10,
-                lineHeight: 1.6,
-              }}
-            >
-              {it.cap}
-            </div>
-          </div>
-        ))}
+      {/* Mobile accordion */}
+      <div data-mobile="why-mobile" style={{ display: 'none' }}>
+        <div style={{ marginBottom: 24 }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.28em', color: 'var(--accent)', textTransform: 'uppercase', display: 'block' }}>§ I · 왜 지금</span>
+          <div style={{ fontFamily: 'var(--font-krs)', fontSize: 22, fontWeight: 600, color: 'var(--ink)', lineHeight: 1.2, marginTop: 8 }}>지금이어야 하는 네 가지 이유.</div>
+        </div>
+        <WhyAccordion items={accordionItems} />
+        <div style={{ marginTop: 16, fontFamily: 'var(--font-mono)', fontSize: 8.5, letterSpacing: '0.06em', color: 'rgba(31,26,20,0.35)', lineHeight: 1.7 }}>
+          출처: LBMA, World Bank CPI, World Gold Council 2025 Q3 CBT Report, KB 부동산 통계
+        </div>
       </div>
-      <div
-        style={{
-          maxWidth: 1280,
-          margin: '24px auto 0',
-          fontFamily: 'var(--font-mono)',
-          fontSize: 10,
-          color: 'var(--ink-3)',
-          letterSpacing: '0.18em',
-          textAlign: 'right',
-        }}
-      >
-        SOURCES · KRX · 한국금거래소 · WGC · BANK OF KOREA · LBMA · UPDATED{' '}
-        {new Date(p.timestamp).toLocaleString('ko-KR', { hour12: false })}
+
+      {/* Desktop 4-up grid */}
+      <div data-mobile="why-grid" style={{ maxWidth: 1280, margin: '0 auto' }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: 28,
+          }}
+        >
+          {items.map((it, i) => (
+            <div
+              key={it.n}
+              className={`gp-fade-up gp-fade-up-delay-${i + 1}`}
+            >
+              <div
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 10,
+                  letterSpacing: '0.28em',
+                  color: 'var(--ink-3)',
+                  marginBottom: 8,
+                }}
+              >
+                {it.n} · {it.lbl}
+              </div>
+              <div
+                style={{
+                  fontFamily: 'var(--font-serif)',
+                  fontStyle: 'italic',
+                  fontSize: 'clamp(40px, 4.4vw, 52px)',
+                  color: it.tone === 'warn' ? 'var(--red)' : 'var(--accent)',
+                  fontWeight: 500,
+                  lineHeight: 1,
+                  fontVariantNumeric: 'tabular-nums oldstyle-nums',
+                }}
+              >
+                {it.render()}
+              </div>
+              <div
+                style={{
+                  fontFamily: 'var(--font-kr)',
+                  fontSize: 13,
+                  color: 'var(--ink-2)',
+                  marginTop: 10,
+                  lineHeight: 1.6,
+                }}
+              >
+                {it.cap}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div
+          style={{
+            margin: '24px 0 0',
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            color: 'var(--ink-3)',
+            letterSpacing: '0.18em',
+            textAlign: 'right',
+          }}
+        >
+          SOURCES · KRX · 한국금거래소 · WGC · BANK OF KOREA · LBMA · UPDATED{' '}
+          {new Date(p.timestamp).toLocaleString('ko-KR', { hour12: false })}
+        </div>
       </div>
     </section>
   );
