@@ -1,6 +1,6 @@
 'use client';
 
-import { useLayoutEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import type { PriceSnapshot } from '@/lib/pricing';
 
 type Tier = {
@@ -91,15 +91,22 @@ function fmtManFromKrw(krw: number): string {
 export function CreditsLadder({ snapshot }: { snapshot: PriceSnapshot }) {
   const trackRef = useRef<HTMLDivElement>(null);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
-    const card = track.children[2] as HTMLElement | undefined;
-    if (!card) return;
-    // index × (cardWidth + gap) puts the Gold card's left edge into view;
-    // scroll-snap-align:center then snaps it to the center of the viewport.
-    const gap = 14;
-    track.scrollLeft = 2 * (card.offsetWidth + gap);
+    let done = false;
+    const tryScroll = () => {
+      const card = track.children[2] as HTMLElement | undefined;
+      if (!card || card.offsetWidth === 0) return;
+      if (done) return;
+      done = true;
+      track.scrollLeft = 2 * (card.offsetWidth + 14);
+      ro.disconnect();
+    };
+    const ro = new ResizeObserver(tryScroll);
+    ro.observe(track);
+    tryScroll();
+    return () => ro.disconnect();
   }, []);
 
   return (

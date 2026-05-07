@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { TIERS, type Tier } from './tiers-data';
 
 // Tier-specific palette — bronze → silver → gold → platinum → sovereign
@@ -64,8 +64,25 @@ export function MobileTierCarousel() {
     }
   };
 
-  useLayoutEffect(() => {
-    scrollTo(2, false);
+  // Carousel is hidden (display:none) on desktop so offsetWidth = 0 at mount.
+  // ResizeObserver fires when the element gains real dimensions (mobile CSS kicks in).
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    let done = false;
+    const tryScroll = () => {
+      const card = track.children[2] as HTMLElement | undefined;
+      if (!card || card.offsetWidth === 0) return;
+      if (done) return;
+      done = true;
+      const stride = card.offsetWidth + 12;
+      track.scrollLeft = 4 + 2 * stride;
+      ro.disconnect();
+    };
+    const ro = new ResizeObserver(tryScroll);
+    ro.observe(track);
+    tryScroll(); // handles the case where it's already visible on load
+    return () => ro.disconnect();
   }, []);
 
   useEffect(() => {
