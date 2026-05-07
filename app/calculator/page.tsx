@@ -49,7 +49,7 @@ export default async function CalculatorPage() {
             <br />
             <em
               style={{
-                fontFamily: 'var(--font-display)',
+                fontFamily: 'var(--font-serif)',
                 fontStyle: 'italic',
                 color: 'var(--accent)',
                 fontWeight: 400,
@@ -60,9 +60,10 @@ export default async function CalculatorPage() {
           </h1>
           <p
             style={{
-              fontFamily: 'var(--font-krs)',
+              fontFamily: 'var(--font-kr)',
+              fontWeight: 300,
               fontSize: 16,
-              lineHeight: 1.75,
+              lineHeight: 1.8,
               color: 'var(--ink-2)',
               maxWidth: 620,
               margin: '0 0 2.4rem',

@@ -139,9 +139,9 @@ export default function FaqPage() {
       >
         <p
           style={{
-            fontFamily: 'var(--font-sans)',
+            fontFamily: 'var(--font-mono)',
             fontSize: '0.75rem',
-            letterSpacing: '0.18em',
+            letterSpacing: '0.28em',
             textTransform: 'uppercase',
             color: 'var(--accent)',
             marginBottom: '1rem',
@@ -151,10 +151,11 @@ export default function FaqPage() {
         </p>
         <h1
           style={{
-            fontFamily: 'var(--font-display)',
-            fontStyle: 'italic',
+            fontFamily: 'var(--font-krs)',
+            fontWeight: 300,
             fontSize: 'clamp(2.4rem, 5vw, 3.6rem)',
-            lineHeight: 1.1,
+            lineHeight: 1.05,
+            letterSpacing: '-0.02em',
             margin: '0 0 1rem',
           }}
         >
@@ -162,9 +163,10 @@ export default function FaqPage() {
         </h1>
         <p
           style={{
-            fontFamily: 'var(--font-sans)',
+            fontFamily: 'var(--font-kr)',
+            fontWeight: 300,
             fontSize: '1rem',
-            lineHeight: 1.7,
+            lineHeight: 1.75,
             opacity: 0.78,
             marginBottom: '3rem',
           }}
@@ -197,9 +199,9 @@ export default function FaqPage() {
                 <span>{it.q}</span>
                 <span
                   style={{
-                    fontFamily: 'var(--font-sans)',
+                    fontFamily: 'var(--font-mono)',
                     fontSize: '0.7rem',
-                    letterSpacing: '0.14em',
+                    letterSpacing: '0.18em',
                     textTransform: 'uppercase',
                     color: 'var(--accent)',
                     flexShrink: 0,
@@ -211,16 +213,17 @@ export default function FaqPage() {
               <div
                 style={{
                   marginTop: '1rem',
-                  fontFamily: 'var(--font-sans)',
+                  fontFamily: 'var(--font-kr)',
+                  fontWeight: 300,
                   fontSize: '0.95rem',
-                  lineHeight: 1.75,
+                  lineHeight: 1.8,
                   opacity: 0.85,
                 }}
               >
                 {it.en && (
                   <p
                     style={{
-                      fontFamily: 'var(--font-display)',
+                      fontFamily: 'var(--font-serif)',
                       fontStyle: 'italic',
                       fontSize: '0.85rem',
                       opacity: 0.6,

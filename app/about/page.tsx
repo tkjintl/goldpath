@@ -98,11 +98,12 @@ export default function AboutPage() {
           </h1>
           <p
             style={{
-              fontFamily: 'var(--font-display)',
-              fontStyle: 'italic',
+              fontFamily: 'var(--font-krs)',
+              fontWeight: 300,
               fontSize: 'clamp(20px, 2.4vw, 28px)',
               color: 'var(--ink-2)',
               maxWidth: 720,
+              lineHeight: 1.4,
             }}
             lang="ko"
           >

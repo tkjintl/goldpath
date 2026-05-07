@@ -5,24 +5,26 @@ import { Footer } from '@/components/Footer';
 export const metadata = { title: '상속과 기록 · GoldPath' };
 
 const eyebrow: React.CSSProperties = {
-  fontFamily: 'var(--font-sans)',
+  fontFamily: 'var(--font-mono)',
   fontSize: '0.72rem',
-  letterSpacing: '0.18em',
+  letterSpacing: '0.22em',
   textTransform: 'uppercase',
   color: 'var(--accent)',
   margin: '0 0 0.8rem',
 };
 
 const sectionTitle: React.CSSProperties = {
-  fontFamily: 'var(--font-display)',
-  fontStyle: 'italic',
+  fontFamily: 'var(--font-krs)',
+  fontWeight: 300,
   fontSize: 'clamp(1.6rem, 3vw, 2.2rem)',
+  letterSpacing: '-0.01em',
   margin: '0 0 1rem',
   lineHeight: 1.2,
 };
 
 const body: React.CSSProperties = {
-  fontFamily: 'var(--font-sans)',
+  fontFamily: 'var(--font-kr)',
+  fontWeight: 300,
   fontSize: '1rem',
   lineHeight: 1.8,
   opacity: 0.85,
@@ -52,10 +54,11 @@ export default function HeritagePage() {
           <p style={eyebrow}>§ V · HERITAGE</p>
           <h1
             style={{
-              fontFamily: 'var(--font-display)',
-              fontStyle: 'italic',
+              fontFamily: 'var(--font-krs)',
+              fontWeight: 300,
               fontSize: 'clamp(2.6rem, 6vw, 4.2rem)',
               lineHeight: 1.05,
+              letterSpacing: '-0.02em',
               margin: '0 0 1rem',
             }}
           >
@@ -63,7 +66,8 @@ export default function HeritagePage() {
           </h1>
           <p
             style={{
-              fontFamily: 'var(--font-sans)',
+              fontFamily: 'var(--font-kr)',
+              fontWeight: 300,
               fontSize: '1.05rem',
               lineHeight: 1.7,
               opacity: 0.75,
@@ -96,7 +100,8 @@ export default function HeritagePage() {
               gridTemplateColumns: 'minmax(140px, 200px) 1fr',
               gap: '0.9rem 2rem',
               margin: 0,
-              fontFamily: 'var(--font-sans)',
+              fontFamily: 'var(--font-kr)',
+              fontWeight: 300,
               fontSize: '0.95rem',
               lineHeight: 1.75,
             }}
@@ -180,7 +185,7 @@ export default function HeritagePage() {
           >
             <p
               style={{
-                fontFamily: 'var(--font-display)',
+                fontFamily: 'var(--font-serif)',
                 fontStyle: 'italic',
                 fontSize: '1.6rem',
                 margin: '0 0 0.6rem',
@@ -191,9 +196,9 @@ export default function HeritagePage() {
             </p>
             <p
               style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: '0.78rem',
-                letterSpacing: '0.16em',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.72rem',
+                letterSpacing: '0.20em',
                 textTransform: 'uppercase',
                 opacity: 0.65,
                 margin: 0,
@@ -204,7 +209,8 @@ export default function HeritagePage() {
             <figcaption
               style={{
                 marginTop: '1.4rem',
-                fontFamily: 'var(--font-sans)',
+                fontFamily: 'var(--font-kr)',
+                fontWeight: 300,
                 fontSize: '0.85rem',
                 lineHeight: 1.7,
                 opacity: 0.75,
@@ -270,7 +276,7 @@ function Card({ k, en, text }: { k: string; en: string; text: string }) {
       </p>
       <p
         style={{
-          fontFamily: 'var(--font-display)',
+          fontFamily: 'var(--font-serif)',
           fontStyle: 'italic',
           fontSize: '0.85rem',
           opacity: 0.55,
@@ -281,7 +287,8 @@ function Card({ k, en, text }: { k: string; en: string; text: string }) {
       </p>
       <p
         style={{
-          fontFamily: 'var(--font-sans)',
+          fontFamily: 'var(--font-kr)',
+          fontWeight: 300,
           fontSize: '0.92rem',
           lineHeight: 1.7,
           opacity: 0.85,

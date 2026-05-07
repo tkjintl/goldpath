@@ -5,24 +5,26 @@ import { Footer } from '@/components/Footer';
 export const metadata = { title: '세금 안내 · GoldPath' };
 
 const eyebrow: React.CSSProperties = {
-  fontFamily: 'var(--font-sans)',
+  fontFamily: 'var(--font-mono)',
   fontSize: '0.72rem',
-  letterSpacing: '0.18em',
+  letterSpacing: '0.22em',
   textTransform: 'uppercase',
   color: 'var(--accent)',
   margin: '0 0 0.8rem',
 };
 
 const sectionTitle: React.CSSProperties = {
-  fontFamily: 'var(--font-display)',
-  fontStyle: 'italic',
+  fontFamily: 'var(--font-krs)',
+  fontWeight: 300,
   fontSize: 'clamp(1.5rem, 3vw, 2rem)',
+  letterSpacing: '-0.01em',
   margin: '0 0 1rem',
-  lineHeight: 1.25,
+  lineHeight: 1.2,
 };
 
 const body: React.CSSProperties = {
-  fontFamily: 'var(--font-sans)',
+  fontFamily: 'var(--font-kr)',
+  fontWeight: 300,
   fontSize: '0.98rem',
   lineHeight: 1.85,
   opacity: 0.85,
@@ -35,8 +37,9 @@ const section: React.CSSProperties = {
 };
 
 const cite: React.CSSProperties = {
-  fontFamily: 'var(--font-sans)',
-  fontSize: '0.78rem',
+  fontFamily: 'var(--font-mono)',
+  fontSize: '0.72rem',
+  letterSpacing: '0.12em',
   opacity: 0.55,
   marginTop: '0.8rem',
   display: 'block',
@@ -60,10 +63,11 @@ export default function TaxPage() {
           <p style={eyebrow}>§ VIII · TAX</p>
           <h1
             style={{
-              fontFamily: 'var(--font-display)',
-              fontStyle: 'italic',
+              fontFamily: 'var(--font-krs)',
+              fontWeight: 300,
               fontSize: 'clamp(2.6rem, 6vw, 4rem)',
               lineHeight: 1.05,
+              letterSpacing: '-0.02em',
               margin: '0 0 1rem',
             }}
           >
@@ -71,7 +75,8 @@ export default function TaxPage() {
           </h1>
           <p
             style={{
-              fontFamily: 'var(--font-sans)',
+              fontFamily: 'var(--font-kr)',
+              fontWeight: 300,
               fontSize: '1.05rem',
               lineHeight: 1.7,
               opacity: 0.75,

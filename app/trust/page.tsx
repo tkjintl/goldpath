@@ -79,11 +79,12 @@ export default function TrustPage() {
           </h1>
           <p
             style={{
-              fontFamily: 'var(--font-display)',
-              fontStyle: 'italic',
+              fontFamily: 'var(--font-krs)',
+              fontWeight: 300,
               fontSize: 'clamp(20px, 2.4vw, 28px)',
               color: 'var(--ink-2)',
               maxWidth: 640,
+              lineHeight: 1.4,
             }}
           >
             <span lang="ko">말이 아니라 증거로.</span>
@@ -327,12 +328,13 @@ export default function TrustPage() {
           </ul>
           <p
             style={{
-              fontFamily: 'var(--font-display)',
-              fontStyle: 'italic',
+              fontFamily: 'var(--font-krs)',
+              fontWeight: 300,
               fontSize: 'clamp(18px, 2vw, 22px)',
               color: 'var(--ink)',
               borderLeft: '2px solid var(--accent)',
               paddingLeft: 18,
+              lineHeight: 1.5,
             }}
             lang="ko"
           >
