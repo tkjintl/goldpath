@@ -100,7 +100,7 @@ export function Leaderboard({ recentSignups }: { recentSignups: Row[] }) {
               <span style={{ color: 'var(--ink)' }}>{r.initial}</span>
               <span
                 style={{
-                  fontFamily: 'var(--font-display)',
+                  fontFamily: 'var(--font-serif)',
                   fontStyle: 'italic',
                   fontSize: 18,
                   color: 'var(--accent)',

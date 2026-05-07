@@ -114,7 +114,7 @@ function Step({
     >
       <div
         style={{
-          fontFamily: 'var(--font-display)',
+          fontFamily: 'var(--font-serif)',
           fontStyle: 'italic',
           fontWeight: 300,
           fontSize: 36,

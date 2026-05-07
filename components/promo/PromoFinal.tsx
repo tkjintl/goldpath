@@ -34,7 +34,7 @@ export function PromoFinal({ joined, cap }: { joined: number; cap: number }) {
           한 그램.{' '}
           <span
             style={{
-              fontFamily: 'var(--font-display)',
+              fontFamily: 'var(--font-serif)',
               fontStyle: 'italic',
               fontWeight: 400,
               color: 'var(--inv-accent)',
