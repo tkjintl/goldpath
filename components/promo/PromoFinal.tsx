@@ -87,7 +87,7 @@ export function PromoFinal({ joined, cap }: { joined: number; cap: number }) {
             borderRadius: 2,
           }}
         >
-          ₩200K로 시작 →
+          ₩20만으로 시작 →
         </Link>
 
         <div

@@ -83,7 +83,7 @@ export async function Hero() {
               boxShadow: '0 2px 8px rgba(122,90,44,0.25)',
             }}
           >
-            ₩200K로 시작 →
+            ₩20만으로 시작 →
           </Link>
           <Link
             href="/why"
@@ -234,7 +234,7 @@ export async function Hero() {
                 borderRadius: 2,
               }}
             >
-              ₩200K로 시작 →
+              ₩20만으로 시작 →
             </Link>
             <Link
               href="/why"

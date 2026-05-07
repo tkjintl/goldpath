@@ -99,7 +99,7 @@ export function EndCTA() {
             letterSpacing: '0.06em',
           }}
         >
-          ₩200K로 시작 →
+          ₩20만으로 시작 →
         </Link>
         <div
           style={{

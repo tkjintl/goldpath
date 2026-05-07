@@ -168,7 +168,16 @@ export const getPriceSnapshot = unstable_cache(
 
 // ─── Helpers ─────────────────────────────────────────────────────────────
 export function fmtKRW(n: number): string {
-  return '₩' + Math.round(n).toLocaleString('ko-KR');
+  const abs = Math.abs(Math.round(n));
+  if (abs >= 100_000_000) {
+    const v = abs / 100_000_000;
+    return '₩' + (v % 1 === 0 ? v : v.toFixed(1).replace(/\.0$/, '')) + '억';
+  }
+  if (abs >= 10_000) {
+    const v = abs / 10_000;
+    return '₩' + (v % 1 === 0 ? v : v.toFixed(1).replace(/\.0$/, '')) + '만';
+  }
+  return '₩' + abs.toLocaleString('ko-KR');
 }
 export function fmtPct(n: number, digits = 1): string {
   return (n >= 0 ? '+' : '') + (n * 100).toFixed(digits) + '%';

@@ -1,8 +1,8 @@
 const GATES: Array<{ gmv: string; label: string }> = [
-  { gmv: '₩2.4M', label: '등급 I 베스팅 완료' },
-  { gmv: '₩7.2M', label: '등급 II 승급 · +0.5g 보너스' },
-  { gmv: '₩18M', label: '등급 III 승급 · +2g 보너스' },
-  { gmv: '₩60M', label: '등급 IV 승급 · +5g 보너스' },
+  { gmv: '₩240만', label: '등급 I 베스팅 완료' },
+  { gmv: '₩720만', label: '등급 II 승급 · +0.5g 보너스' },
+  { gmv: '₩1,800만', label: '등급 III 승급 · +2g 보너스' },
+  { gmv: '₩6,000만', label: '등급 IV 승급 · +5g 보너스' },
 ];
 
 export function TierUpTimeline() {

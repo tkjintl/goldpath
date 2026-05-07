@@ -131,7 +131,7 @@ export function HeroDrop({
                 borderRadius: 2,
               }}
             >
-              ₩200K로 시작 →
+              ₩20만으로 시작 →
             </Link>
             <Link
               href="#how"
