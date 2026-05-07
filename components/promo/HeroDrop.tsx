@@ -54,8 +54,8 @@ export function HeroDrop({
               gap: 12,
             }}
           >
-            <span>VOL. I · ISSUE 001 · MMXXVI · FOUNDERS DROP</span>
-            <span className="gp-num" style={{ color: 'var(--accent)' }}>
+            <span style={{ whiteSpace: 'nowrap' }}>VOL. I · ISSUE 001 · MMXXVI · FOUNDERS DROP</span>
+            <span className="gp-num" style={{ color: 'var(--accent)', whiteSpace: 'nowrap' }}>
               <CountUp to={joined} /> / {cap}
             </span>
           </div>

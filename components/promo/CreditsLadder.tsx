@@ -1,3 +1,6 @@
+'use client';
+
+import { useLayoutEffect, useRef } from 'react';
 import type { PriceSnapshot } from '@/lib/pricing';
 
 type Tier = {
@@ -86,6 +89,17 @@ function fmtManFromKrw(krw: number): string {
 }
 
 export function CreditsLadder({ snapshot }: { snapshot: PriceSnapshot }) {
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const card = track.children[2] as HTMLElement | undefined;
+    if (!card) return;
+    // scroll so Gold (index 2) is centered
+    track.scrollLeft = card.offsetLeft - (track.offsetWidth - card.offsetWidth) / 2;
+  }, []);
+
   return (
     <section style={{ padding: '96px 36px', borderBottom: '1px solid var(--rule)' }}>
       <div style={{ maxWidth: 1280, margin: '0 auto' }}>
@@ -116,6 +130,7 @@ export function CreditsLadder({ snapshot }: { snapshot: PriceSnapshot }) {
         </h2>
 
         <div
+          ref={trackRef}
           className="gp-credits-ladder"
           style={{
             display: 'grid',
