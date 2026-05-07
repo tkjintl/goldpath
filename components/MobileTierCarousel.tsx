@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { TIERS, type Tier } from './tiers-data';
 
 // Tier-specific palette — bronze → silver → gold → platinum → sovereign
@@ -58,7 +58,7 @@ export function MobileTierCarousel() {
     card.scrollIntoView({ behavior: smooth ? 'smooth' : 'instant', block: 'nearest', inline: 'center' });
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const id = requestAnimationFrame(() => scrollTo(2, false));
     return () => cancelAnimationFrame(id);
   }, []);
@@ -110,7 +110,8 @@ export function MobileTierCarousel() {
           gap: 12,
           paddingLeft: 4,
           paddingRight: 4,
-          paddingBottom: 4,
+          paddingTop: 10,
+          paddingBottom: 10,
         } as React.CSSProperties}
       >
         {TIERS.map((t: Tier, i: number) => {

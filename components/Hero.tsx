@@ -4,7 +4,6 @@ import { getSignupCount } from '@/lib/db/store';
 import { foundersDisplayCount, FOUNDERS_CAP } from '@/lib/founders';
 import { FlakeParticles } from './FlakeParticles';
 import { CountUp } from './CountUp';
-import { HeroCard } from './HeroCard';
 
 // Hero — B2 magazine layout, GP brass-gold palette.
 // Left: editorial-issue eyebrow → giant Korean serif headline → Pretendard accent →
@@ -26,7 +25,6 @@ export async function Hero() {
 
       {/* ── Mobile-only card-first layout ── */}
       <div data-mobile="hero-mobile-block" style={{ display: 'none', minHeight: 'calc(100dvh - 105px)', boxSizing: 'border-box' }}>
-        <HeroCard founderNumber={founderNumber} logoAbove />
 
         {/* Editorial + price table + founder bar */}
         <div style={{ padding: '28px 24px 0' }}>
@@ -254,7 +252,7 @@ export async function Hero() {
           </div>
         </div>
 
-        {/* RIGHT — obsidian product card */}
+        {/* RIGHT — product card / specimen */}
         <div style={{ position: 'relative' }}>
           <div
             aria-hidden="true"
@@ -263,13 +261,49 @@ export async function Hero() {
               position: 'absolute',
               inset: -24,
               borderRadius: 4,
-              boxShadow: '0 0 80px rgba(201,152,87,0.25)',
+              boxShadow: '0 0 80px color-mix(in srgb, var(--accent) 40%, transparent)',
               pointerEvents: 'none',
               zIndex: 0,
             }}
           />
-          <div style={{ position: 'relative', zIndex: 1 }}>
-            <HeroCard founderNumber={founderNumber} desktop />
+          <div
+            data-mobile="hero-card"
+            className="gp-card-lift"
+            style={{
+              position: 'relative',
+              zIndex: 1,
+              aspectRatio: '4 / 5',
+              maxHeight: 520,
+              margin: '0 auto',
+              background: 'linear-gradient(170deg, var(--accent-bright) 0%, var(--accent) 50%, var(--accent-dim) 100%)',
+              color: 'var(--inv-ink)',
+              padding: 36,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              overflow: 'hidden',
+              boxShadow: 'inset 0 0 0 1px color-mix(in srgb, white 14%, transparent), inset 0 -16px 24px -8px color-mix(in srgb, black 18%, transparent), 0 30px 60px -30px color-mix(in srgb, black 40%, transparent)',
+              transition: 'transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 320ms cubic-bezier(0.2, 0.8, 0.2, 1)',
+            }}
+          >
+            <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 30% 22%, color-mix(in srgb, white 22%, transparent), transparent 56%)', pointerEvents: 'none', zIndex: 1 }} />
+            <div style={{ position: 'absolute', inset: 18, border: '1px solid color-mix(in srgb, var(--inv-ink) 22%, transparent)', pointerEvents: 'none', zIndex: 2 }} />
+            <div style={{ fontFamily: 'var(--font-krs)', fontWeight: 300, fontSize: 14, letterSpacing: '0.32em', position: 'relative', zIndex: 3 }}>
+              金 · GOLDPATH
+            </div>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 3 }}>
+              <div style={{ fontFamily: 'var(--font-krs)', fontWeight: 200, fontSize: 'clamp(96px, 16vw, 160px)', lineHeight: 0.9, letterSpacing: '-0.06em', filter: 'drop-shadow(0 4px 24px color-mix(in srgb, black 22%, transparent))' }}>
+                금
+              </div>
+              <div style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: 32, fontWeight: 400, marginTop: 6 }}>
+                Au · 999.9
+              </div>
+            </div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.32em', position: 'relative', zIndex: 3, display: 'flex', justifyContent: 'space-between' }}>
+              <span>#{founderNumber.toString().padStart(4, '0')}</span>
+              <span>1g · MMXXVI</span>
+              <span>SGP</span>
+            </div>
           </div>
         </div>
       </div>
