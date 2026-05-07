@@ -55,12 +55,17 @@ export function MobileTierCarousel() {
     if (!track) return;
     const card = track.children[index] as HTMLElement | undefined;
     if (!card) return;
-    card.scrollIntoView({ behavior: smooth ? 'smooth' : 'instant', block: 'nearest', inline: 'center' });
+    const stride = card.offsetWidth + 12;
+    const target = 4 + index * stride;
+    if (smooth) {
+      track.scrollTo({ left: target, behavior: 'smooth' });
+    } else {
+      track.scrollLeft = target;
+    }
   };
 
   useLayoutEffect(() => {
-    const id = requestAnimationFrame(() => scrollTo(2, false));
-    return () => cancelAnimationFrame(id);
+    scrollTo(2, false);
   }, []);
 
   useEffect(() => {
