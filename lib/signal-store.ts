@@ -131,6 +131,15 @@ export async function insertSignalPost(post: SignalPostInsert): Promise<SignalPo
   return rowToSignalPost(row);
 }
 
+export async function deleteSignalPost(id: string): Promise<boolean> {
+  await ensureSchema();
+  const db = sql();
+  const rows = await db`
+    DELETE FROM signal_posts WHERE id = ${id} RETURNING id
+  `;
+  return rows.length > 0;
+}
+
 export async function getSignalFeed(limit = 20): Promise<SignalPost[]> {
   await ensureSchema();
   const db = sql();
