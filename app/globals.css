@@ -222,9 +222,11 @@ input, textarea, select {
   }
 
   /* ── Hero — card-first mobile layout ────────────────────────── */
+  section.gp-hero,
   .gp-hero {
     padding: 0 !important;
-    overflow: hidden;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
   }
   /* Show mobile block, hide desktop grid */
   .gp-hero [data-mobile="hero-mobile-block"] {
@@ -239,8 +241,11 @@ input, textarea, select {
   }
 
   /* ── WhyStrip — accordion on mobile ─────────────────────────── */
+  section.gp-why-strip,
   .gp-why-strip {
     padding: 40px 16px !important;
+    padding-top: 40px !important;
+    padding-bottom: 40px !important;
   }
   /* Show accordion, hide desktop grid */
   .gp-why-strip [data-mobile="why-mobile"] {
