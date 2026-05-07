@@ -38,7 +38,7 @@ export function HeroDrop({
         }}
       >
         {/* LEFT — copy */}
-        <div className="gp-fade-up" style={{ order: 2 }}>
+        <div className="gp-fade-up">
           <div
             style={{
               fontFamily: 'var(--font-mono)',
@@ -163,124 +163,6 @@ export function HeroDrop({
           </div>
         </div>
 
-        {/* RIGHT — specimen card */}
-        <div style={{ position: 'relative', order: 1 }}>
-          <div
-            aria-hidden="true"
-            className="gp-breathe"
-            style={{
-              position: 'absolute',
-              inset: -24,
-              borderRadius: 4,
-              boxShadow: '0 0 80px color-mix(in srgb, var(--accent) 40%, transparent)',
-              pointerEvents: 'none',
-              zIndex: 0,
-            }}
-          />
-          <div
-            className="gp-card-lift"
-            style={{
-              position: 'relative',
-              zIndex: 1,
-              aspectRatio: '3 / 4',
-              maxWidth: 460,
-              margin: '0 auto',
-              background:
-                'linear-gradient(170deg, var(--accent-bright) 0%, var(--accent) 50%, var(--accent-dim) 100%)',
-              color: 'var(--inv-ink)',
-              padding: 36,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              overflow: 'hidden',
-              boxShadow:
-                'inset 0 0 0 1px color-mix(in srgb, white 14%, transparent), inset 0 -16px 24px -8px color-mix(in srgb, black 18%, transparent), 0 30px 60px -30px color-mix(in srgb, black 40%, transparent)',
-            }}
-          >
-            <FlakeParticles count={3} tone="inv-accent" />
-            <div
-              aria-hidden="true"
-              style={{
-                position: 'absolute',
-                inset: 0,
-                background:
-                  'radial-gradient(circle at 30% 22%, color-mix(in srgb, white 22%, transparent), transparent 56%)',
-                pointerEvents: 'none',
-                zIndex: 1,
-              }}
-            />
-            <div
-              style={{
-                position: 'absolute',
-                inset: 18,
-                border: '1px solid color-mix(in srgb, var(--inv-ink) 22%, transparent)',
-                pointerEvents: 'none',
-                zIndex: 2,
-              }}
-            />
-            <div
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: 11,
-                letterSpacing: '0.32em',
-                position: 'relative',
-                zIndex: 3,
-              }}
-            >
-              金 · GOLDPATH · FOUNDERS
-            </div>
-            <div
-              style={{
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'relative',
-                zIndex: 3,
-              }}
-            >
-              <div
-                lang="ko"
-                style={{
-                  fontFamily: 'var(--font-krs)',
-                  fontWeight: 200,
-                  fontSize: 'clamp(96px, 18vw, 144px)',
-                  lineHeight: 0.9,
-                  letterSpacing: '-0.06em',
-                  filter: 'drop-shadow(0 4px 24px color-mix(in srgb, black 22%, transparent))',
-                }}
-              >
-                금
-              </div>
-              <div
-                style={{
-                  fontFamily: 'var(--font-serif)',
-                  fontStyle: 'italic',
-                  fontSize: 28,
-                  fontWeight: 400,
-                  marginTop: 6,
-                }}
-              >
-                Au · 999.9
-              </div>
-            </div>
-            <div
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: 11,
-                letterSpacing: '0.32em',
-                position: 'relative',
-                zIndex: 3,
-                display: 'flex',
-                justifyContent: 'space-between',
-              }}
-            >
-              <span>#{founderNumber.toString().padStart(4, '0')}</span>
-              <span>SGP · MMXXVI</span>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
