@@ -16,7 +16,6 @@ export async function Hero() {
     <section
       className="gp-hero"
       style={{
-        padding: 'clamp(48px, 6vh, 80px) 36px clamp(60px, 7vh, 100px)',
         borderBottom: '1px solid var(--rule)',
         position: 'relative',
         overflow: 'hidden',
@@ -144,6 +143,7 @@ export async function Hero() {
       <div
         data-mobile="hero-grid"
         style={{
+          padding: 'clamp(48px, 6vh, 80px) 36px clamp(60px, 7vh, 100px)',
           maxWidth: 1280,
           margin: '0 auto',
           display: 'grid',
