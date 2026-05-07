@@ -4,6 +4,7 @@ import { getSignupCount } from '@/lib/db/store';
 import { foundersDisplayCount, FOUNDERS_CAP } from '@/lib/founders';
 import { FlakeParticles } from './FlakeParticles';
 import { CountUp } from './CountUp';
+import { HeroCard } from './HeroCard';
 
 // Hero — B2 magazine layout, GP brass-gold palette.
 // Left: editorial-issue eyebrow → giant Korean serif headline → Pretendard accent →
@@ -25,44 +26,7 @@ export async function Hero() {
 
       {/* ── Mobile-only card-first layout ── */}
       <div data-mobile="hero-mobile-block" style={{ display: 'none' }}>
-        {/* Gold credit card */}
-        <div style={{ padding: '20px 24px 0' }}>
-          <div
-            style={{
-              width: '100%',
-              aspectRatio: '1.586',
-              borderRadius: 16,
-              background: 'linear-gradient(170deg, var(--accent-bright) 0%, var(--accent) 50%, var(--accent-dim) 100%)',
-              position: 'relative',
-              overflow: 'hidden',
-              boxShadow: '0 4px 6px rgba(122,90,44,0.12), 0 12px 40px rgba(122,90,44,0.30), 0 1px 0 rgba(255,255,255,0.18) inset, 0 -1px 0 rgba(0,0,0,0.25) inset',
-            }}
-          >
-            <div aria-hidden style={{ position: 'absolute', inset: 0, background: 'repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,255,255,0.025) 2px, rgba(255,255,255,0.025) 4px)' }} />
-            <div aria-hidden style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '45%', background: 'linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 100%)', borderRadius: '16px 16px 0 0' }} />
-            <div style={{ position: 'relative', zIndex: 2, height: '100%', padding: '20px 22px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <span style={{ fontFamily: 'var(--font-serif)', fontSize: 28, fontWeight: 300, color: 'rgba(255,255,255,0.95)', lineHeight: 1, letterSpacing: '-0.02em' }}>Au</span>
-                <div style={{ textAlign: 'right' }}>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.06em', display: 'block' }}>PURITY</span>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: 'rgba(255,255,255,0.95)', fontWeight: 500, letterSpacing: '0.04em', display: 'block', marginTop: 2 }}>999.9‰</span>
-                </div>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-                <span style={{ fontFamily: 'var(--font-krs)', fontSize: 15, fontWeight: 500, letterSpacing: '0.12em', color: 'rgba(255,255,255,0.9)', textTransform: 'uppercase' }}>GoldPath</span>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'rgba(255,255,255,0.55)', letterSpacing: '0.08em', textAlign: 'right' }}>
-                  FOUNDER SERIES
-                  <span style={{ display: 'block', color: 'rgba(255,255,255,0.8)', fontSize: 11, fontWeight: 500, marginTop: 2 }}>#{founderNumber.toString().padStart(4, '0')} / 5,000</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* Vault tag */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 10, padding: '0 2px' }}>
-            <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent-2)', flexShrink: 0 }} />
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--accent-2)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Singapore Vault · LBMA Certified · 실물 보관</span>
-          </div>
-        </div>
+        <HeroCard founderNumber={founderNumber} />
 
         {/* Editorial + price table + founder bar */}
         <div style={{ padding: '20px 24px 0' }}>
