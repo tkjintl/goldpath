@@ -131,10 +131,9 @@ export function HeroCard({ founderNumber, logoAbove = false, desktop = false }: 
                 fontFamily: 'var(--font-sans)',
                 fontWeight: 800,
                 fontSize: 13,
-                letterSpacing: '0.22em',
+                letterSpacing: logoHovered ? '0.28em' : '0.22em',
                 color: `rgba(201,152,87,${logoHovered ? 0.95 : 0.7})`,
                 transition: 'color 300ms ease, letter-spacing 300ms ease',
-                letterSpacing: logoHovered ? '0.28em' : '0.22em',
               } as React.CSSProperties}
             >
               GOLDPATH
