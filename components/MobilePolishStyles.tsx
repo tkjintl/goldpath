@@ -117,7 +117,7 @@ const CSS = `
   }
 
   /* ── F. More breathing room — universal padding bump ─────────────── */
-  section {
+  section:not(.gp-hero) {
     padding-top: clamp(40px, 10vw, 64px) !important;
     padding-bottom: clamp(40px, 10vw, 64px) !important;
   }
