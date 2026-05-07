@@ -72,8 +72,15 @@ const TIERS: Tier[] = [
   },
 ];
 
+const TIER_PALETTE = [
+  { from: '#2a1f0e', mid: '#3d2c10', glow: 'rgba(180,110,40,0.35)', accent: 'rgba(180,110,40,0.85)', border: 'rgba(180,110,40,0.30)' },
+  { from: '#141414', mid: '#1e1e22', glow: 'rgba(192,192,200,0.25)', accent: 'rgba(200,200,210,0.85)', border: 'rgba(200,200,210,0.28)' },
+  { from: '#0d0b08', mid: '#1a1410', glow: 'rgba(201,152,87,0.45)', accent: 'rgba(201,152,87,0.95)', border: 'rgba(201,152,87,0.35)' },
+  { from: '#0b1018', mid: '#131c28', glow: 'rgba(140,180,230,0.25)', accent: 'rgba(150,190,240,0.85)', border: 'rgba(140,180,230,0.28)' },
+  { from: '#12090d', mid: '#1c0f16', glow: 'rgba(180,130,200,0.25)', accent: 'rgba(185,140,210,0.85)', border: 'rgba(180,130,200,0.28)' },
+] as const;
+
 function fmtManFromKrw(krw: number): string {
-  // Round to 만원 unit
   const man = Math.round(krw / 10_000);
   return `≈ ₩${man.toLocaleString('en-US')}만`;
 }
@@ -101,23 +108,12 @@ export function CreditsLadder({ snapshot }: { snapshot: PriceSnapshot }) {
             fontSize: 'clamp(36px, 5vw, 64px)',
             lineHeight: 1.05,
             letterSpacing: '-0.02em',
-            margin: '0 0 12px',
+            margin: '0 0 56px',
             color: 'var(--ink)',
           }}
         >
           5,000명에게만 주는 첫 그램.
         </h2>
-        <div
-          style={{
-            fontFamily: 'var(--font-serif)',
-            fontStyle: 'italic',
-            fontSize: 22,
-            color: 'var(--accent)',
-            marginBottom: 56,
-          }}
-        >
-          The first gram, on the house.
-        </div>
 
         <div
           className="gp-credits-ladder"
@@ -128,142 +124,154 @@ export function CreditsLadder({ snapshot }: { snapshot: PriceSnapshot }) {
             alignItems: 'end',
           }}
         >
-          {TIERS.map((t) => {
+          {TIERS.map((t, i) => {
             const wonValue = t.foundersGram * snapshot.aurumKrwPerGram;
+            const pal = TIER_PALETTE[i];
             return (
               <article
                 key={t.roman}
                 className="gp-card-lift"
                 style={{
                   position: 'relative',
-                  border: '1px solid var(--rule)',
-                  background: t.featured
-                    ? 'color-mix(in srgb, var(--accent) 6%, var(--bg))'
-                    : 'var(--bg)',
+                  background: `linear-gradient(145deg, ${pal.from} 0%, ${pal.mid} 60%, ${pal.from} 100%)`,
+                  border: `1px solid ${pal.border}`,
+                  borderRadius: 4,
                   padding: 22,
                   minHeight: t.height,
                   display: 'flex',
                   flexDirection: 'column',
                   gap: 12,
+                  overflow: 'hidden',
                   transform: t.featured ? 'translateY(-12px)' : undefined,
                   boxShadow: t.featured
-                    ? '0 24px 60px color-mix(in srgb, var(--accent) 22%, transparent)'
-                    : undefined,
-                  borderColor: t.featured ? 'var(--accent)' : 'var(--rule)',
+                    ? `0 0 40px ${pal.glow}, 0 24px 60px rgba(0,0,0,0.5), inset 0 1px 0 ${pal.border}`
+                    : `0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 ${pal.border}`,
                 }}
               >
+                {/* Metallic grain */}
+                <div aria-hidden style={{
+                  position: 'absolute', inset: 0,
+                  backgroundImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' seed='3'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.035 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
+                  mixBlendMode: 'screen', pointerEvents: 'none', opacity: 0.8,
+                }} />
+
+                {/* RECOMMENDED badge — top strip, no overflow */}
                 {t.featured && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: -14,
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      background: 'var(--accent)',
-                      color: 'var(--inv-ink)',
-                      padding: '4px 12px',
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: 10,
-                      letterSpacing: '0.22em',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
+                  <div style={{
+                    position: 'absolute',
+                    top: 0, left: 0, right: 0,
+                    background: `linear-gradient(90deg, ${pal.mid}, ${pal.accent.replace('0.95', '0.15')}, ${pal.mid})`,
+                    borderBottom: `1px solid ${pal.border}`,
+                    textAlign: 'center',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 8,
+                    letterSpacing: '0.28em',
+                    color: pal.accent,
+                    padding: '7px 0 6px',
+                    zIndex: 4,
+                  }}>
                     RECOMMENDED · 추천
                   </div>
                 )}
-                <div
-                  style={{
-                    fontFamily: 'var(--font-serif)',
-                    fontStyle: 'italic',
-                    fontWeight: 300,
-                    fontSize: 56,
-                    lineHeight: 1,
-                    color: 'var(--accent)',
-                  }}
-                >
-                  {t.roman}
-                </div>
-                <div
-                  lang="ko"
-                  style={{
-                    fontFamily: 'var(--font-kr)',
-                    fontWeight: 600,
-                    fontSize: 18,
-                    color: 'var(--ink)',
-                  }}
-                >
-                  {t.name}
-                </div>
-                <div
-                  className="gp-num"
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 13,
-                    color: 'var(--ink-2)',
-                    letterSpacing: '0.06em',
-                  }}
-                >
-                  {t.monthlyLabel} / 월
-                </div>
 
-                <div
-                  style={{
-                    borderTop: '1px solid var(--rule)',
-                    paddingTop: 12,
-                    marginTop: 4,
-                  }}
-                >
+                <div style={{ position: 'relative', zIndex: 2, paddingTop: t.featured ? 28 : 0 }}>
                   <div
                     style={{
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: 10,
-                      letterSpacing: '0.22em',
-                      color: 'var(--ink-3)',
-                      marginBottom: 6,
-                    }}
-                  >
-                    파운더스 그램
-                  </div>
-                  <div
-                    className="gp-num"
-                    style={{
-                      fontFamily: 'var(--font-mono)',
-                      fontWeight: 600,
-                      fontSize: 32,
+                      fontFamily: 'var(--font-serif)',
+                      fontStyle: 'italic',
+                      fontWeight: 300,
+                      fontSize: 56,
                       lineHeight: 1,
-                      color: 'var(--accent)',
+                      color: pal.accent,
+                      filter: `drop-shadow(0 2px 12px ${pal.glow})`,
                     }}
                   >
-                    {t.foundersGram.toFixed(2)}g
+                    {t.roman}
+                  </div>
+                  <div
+                    lang="ko"
+                    style={{
+                      fontFamily: 'var(--font-krs)',
+                      fontWeight: 600,
+                      fontSize: 18,
+                      color: 'rgba(255,255,255,0.92)',
+                      marginTop: 10,
+                    }}
+                  >
+                    {t.name}
                   </div>
                   <div
                     className="gp-num"
                     style={{
                       fontFamily: 'var(--font-mono)',
-                      fontSize: 11,
-                      color: 'var(--ink-3)',
+                      fontSize: 13,
+                      color: 'rgba(255,255,255,0.5)',
+                      letterSpacing: '0.06em',
                       marginTop: 4,
                     }}
                   >
-                    {fmtManFromKrw(wonValue)}
+                    {t.monthlyLabel} / 월
                   </div>
-                </div>
 
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 6,
-                    marginTop: 'auto',
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 11,
-                    color: 'var(--ink-2)',
-                    letterSpacing: '0.06em',
-                  }}
-                >
-                  <Row k="스프레드" v={t.spread} />
-                  <Row k="보관 무료" v={t.storageFree} />
-                  <Row k="12개월 선물" v={t.streakGift} />
+                  <div
+                    style={{
+                      borderTop: `1px solid ${pal.border}`,
+                      paddingTop: 12,
+                      marginTop: 12,
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: 10,
+                        letterSpacing: '0.22em',
+                        color: 'rgba(255,255,255,0.35)',
+                        marginBottom: 6,
+                      }}
+                    >
+                      파운더스 그램
+                    </div>
+                    <div
+                      className="gp-num"
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontWeight: 600,
+                        fontSize: 32,
+                        lineHeight: 1,
+                        color: pal.accent,
+                      }}
+                    >
+                      {t.foundersGram.toFixed(2)}g
+                    </div>
+                    <div
+                      className="gp-num"
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: 11,
+                        color: 'rgba(255,255,255,0.35)',
+                        marginTop: 4,
+                      }}
+                    >
+                      {fmtManFromKrw(wonValue)}
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 6,
+                      marginTop: 'auto',
+                      paddingTop: 12,
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 11,
+                      letterSpacing: '0.06em',
+                    }}
+                  >
+                    <Row k="스프레드" v={t.spread} accentColor={pal.accent} />
+                    <Row k="보관 무료" v={t.storageFree} accentColor={pal.accent} />
+                    <Row k="12개월 선물" v={t.streakGift} accentColor={pal.accent} />
+                  </div>
                 </div>
               </article>
             );
@@ -291,13 +299,13 @@ export function CreditsLadder({ snapshot }: { snapshot: PriceSnapshot }) {
   );
 }
 
-function Row({ k, v }: { k: string; v: string }) {
+function Row({ k, v, accentColor }: { k: string; v: string; accentColor: string }) {
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
-      <span lang="ko" style={{ color: 'var(--ink-3)' }}>
+      <span lang="ko" style={{ color: 'rgba(255,255,255,0.35)' }}>
         {k}
       </span>
-      <span style={{ color: 'var(--ink)' }}>{v}</span>
+      <span style={{ color: accentColor }}>{v}</span>
     </div>
   );
 }

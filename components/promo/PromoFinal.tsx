@@ -68,7 +68,7 @@ export function PromoFinal({ joined, cap }: { joined: number; cap: number }) {
             marginBottom: 40,
           }}
         >
-          <CountUp to={joined} /> / {cap.toString().padStart(5, '0')} · 남은 자리{' '}
+          <CountUp to={joined} /> / {cap} · 남은 자리{' '}
           {remaining.toLocaleString('en-US')}
         </div>
 

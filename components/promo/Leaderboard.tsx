@@ -55,14 +55,17 @@ export function Leaderboard({ recentSignups }: { recentSignups: Row[] }) {
           style={{
             border: '1px solid var(--rule)',
             background: 'var(--bg)',
+            overflowX: 'auto',
           }}
         >
           <div
+            className="gp-lb-row"
             style={{
               display: 'grid',
               gridTemplateColumns: '60px 1fr 80px 100px 1fr',
               gap: 12,
               padding: '14px 22px',
+              minWidth: 460,
               fontFamily: 'var(--font-mono)',
               fontSize: 10,
               letterSpacing: '0.22em',
@@ -81,12 +84,13 @@ export function Leaderboard({ recentSignups }: { recentSignups: Row[] }) {
           {rows.map((r, idx) => (
             <div
               key={idx}
-              className="gp-leaderboard-row"
+              className="gp-lb-row gp-leaderboard-row"
               style={{
                 display: 'grid',
                 gridTemplateColumns: '60px 1fr 80px 100px 1fr',
                 gap: 12,
                 padding: '16px 22px',
+                minWidth: 460,
                 fontFamily: 'var(--font-mono)',
                 fontSize: 13,
                 color: 'var(--ink)',
@@ -128,6 +132,7 @@ export function Leaderboard({ recentSignups }: { recentSignups: Row[] }) {
               gridTemplateColumns: '60px 1fr 80px 100px 1fr',
               gap: 12,
               padding: '20px 22px',
+              minWidth: 460,
               fontFamily: 'var(--font-mono)',
               fontSize: 13,
               color: 'var(--ink-3)',
@@ -138,7 +143,7 @@ export function Leaderboard({ recentSignups }: { recentSignups: Row[] }) {
             }}
           >
             <span>#{(rows.length + 1).toString().padStart(2, '0')}</span>
-            <span lang="ko" style={{ color: 'var(--accent)', fontWeight: 600 }}>
+            <span lang="ko" style={{ color: 'var(--accent)', fontWeight: 600, whiteSpace: 'nowrap' }}>
               당신의 자리 →
             </span>
             <span />

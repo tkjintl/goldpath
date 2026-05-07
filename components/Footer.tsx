@@ -83,9 +83,7 @@ export function Footer() {
                 lineHeight: 1.6,
               }}
             >
-              조용히 쌓이고,
-              <br />
-              영원히 남는다.
+              조용히 쌓이고, 영원히 남는다.
             </div>
           </div>
 

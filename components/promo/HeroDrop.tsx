@@ -50,13 +50,13 @@ export function HeroDrop({
               marginBottom: 36,
               display: 'flex',
               justifyContent: 'space-between',
-              flexWrap: 'wrap',
+              flexWrap: 'nowrap',
               gap: 12,
             }}
           >
             <span>VOL. I · ISSUE 001 · MMXXVI · FOUNDERS DROP</span>
             <span className="gp-num" style={{ color: 'var(--accent)' }}>
-              <CountUp to={joined} /> / {cap.toString().padStart(5, '0')}
+              <CountUp to={joined} /> / {cap}
             </span>
           </div>
 
