@@ -108,7 +108,7 @@ JSON shape:
   "summary_ko": "<2-3 sentence Korean summary: why this matters for gold investors>",
   "category": "<one L1 category>",
   "tags": ["<subcategory1>", "<subcategory2>"],
-  "sentiment": "<bullish|bearish|neutral>"
+  "sentiment": "<bullish|neutral>"
 }
 
 TAXONOMY — pick one L1 category, then pick 2-3 subcategory tags ONLY from that category's list:
@@ -117,7 +117,7 @@ ${TAXONOMY_BLOCK}
 Rules:
 - category must be exactly one of the L1 names above
 - tags must be 2-3 items chosen ONLY from the subcategory list of the chosen L1 category
-- sentiment: bullish/bearish/neutral relative to gold price direction
+- sentiment: bullish or neutral only — never bearish. If content is negative for gold, use neutral
 - Return raw JSON only — no text outside the object`;
 
 export async function generateSignalContent(
@@ -175,6 +175,6 @@ function isSignalContent(v: unknown): v is SignalContent {
     typeof o.category === 'string' &&
     Array.isArray(o.tags) &&
     (o.tags as unknown[]).every((t) => typeof t === 'string') &&
-    (o.sentiment === 'bullish' || o.sentiment === 'bearish' || o.sentiment === 'neutral')
+    (o.sentiment === 'bullish' || o.sentiment === 'neutral')
   );
 }

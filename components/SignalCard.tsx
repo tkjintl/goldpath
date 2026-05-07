@@ -26,10 +26,10 @@ const CATEGORY_KO: Record<SignalPost['category'], string> = {
   'Korea & Asia':       '한국·아시아',
 };
 
-const SENTIMENT: Record<SignalPost['sentiment'], { ko: string; color: string; border: string }> = {
-  bullish: { ko: '강세',  color: '#15803d', border: '#16a34a' },
-  bearish: { ko: '약세',  color: '#b91c1c', border: '#dc2626' },
-  neutral: { ko: '중립',  color: '#92400e', border: '#A67C3F' },
+const SENTIMENT: Record<string, { ko: string; color: string; border: string }> = {
+  bullish: { ko: '강세', color: '#15803d', border: '#16a34a' },
+  neutral: { ko: '중립', color: '#92400e', border: '#A67C3F' },
+  bearish: { ko: '중립', color: '#92400e', border: '#A67C3F' }, // legacy — display as neutral
 };
 
 let twitterScriptLoaded = false;
