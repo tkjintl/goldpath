@@ -7,20 +7,19 @@ import { TIERS, type Tier } from './tiers-data';
 export type { Tier };
 export { TIERS };
 
-// Per-tier visual scale — graduated treatment.
+// Per-tier visual config
 type TierVisual = {
-  padding: string;
   numeral: number;
-  opacity: number;
   translateY: number;
+  pal: { from: string; mid: string; glow: string; accent: string; border: string };
 };
 
 const TIER_VISUALS: TierVisual[] = [
-  { padding: '24px 22px', numeral: 36, opacity: 0.92, translateY: 0 },     // Bronze
-  { padding: '26px 22px', numeral: 42, opacity: 0.95, translateY: 0 },     // Silver
-  { padding: '32px 22px', numeral: 56, opacity: 1.0, translateY: -12 },    // Gold (apex)
-  { padding: '28px 22px', numeral: 48, opacity: 0.97, translateY: 0 },     // Platinum
-  { padding: '30px 22px', numeral: 52, opacity: 0.98, translateY: -4 },    // Sovereign
+  { numeral: 36, translateY: 0,   pal: { from: '#2a1f0e', mid: '#3d2c10', glow: 'rgba(180,110,40,0.3)',  accent: 'rgba(180,110,40,0.85)',  border: 'rgba(180,110,40,0.28)'  } }, // Bronze
+  { numeral: 42, translateY: 0,   pal: { from: '#141414', mid: '#1e1e22', glow: 'rgba(192,192,200,0.2)', accent: 'rgba(200,200,210,0.85)', border: 'rgba(200,200,210,0.25)' } }, // Silver
+  { numeral: 56, translateY: -12, pal: { from: '#0d0b08', mid: '#1a1410', glow: 'rgba(201,152,87,0.4)',  accent: 'rgba(201,152,87,0.95)',  border: 'rgba(201,152,87,0.32)'  } }, // Gold
+  { numeral: 48, translateY: 0,   pal: { from: '#0b1018', mid: '#131c28', glow: 'rgba(140,180,230,0.2)', accent: 'rgba(150,190,240,0.85)', border: 'rgba(140,180,230,0.25)' } }, // Platinum
+  { numeral: 52, translateY: -4,  pal: { from: '#12090d', mid: '#1c0f16', glow: 'rgba(180,130,200,0.2)', accent: 'rgba(185,140,210,0.85)', border: 'rgba(180,130,200,0.25)' } }, // Sovereign
 ];
 
 
@@ -112,107 +111,87 @@ export async function TierLadder() {
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
             gap: 0,
-            border: '1px solid var(--ink)',
+            border: 'none',
             alignItems: 'stretch',
           }}
         >
           {TIERS.map((t, i) => {
             const vis = TIER_VISUALS[i];
-            const cardStyle: React.CSSProperties = {
-              padding: vis.padding,
-              borderRight:
-                i < TIERS.length - 1 ? '1px solid var(--rule)' : 'none',
-              background: t.apex
-                ? 'color-mix(in srgb, var(--accent) 8%, var(--bg))'
-                : 'var(--bg)',
-              position: 'relative',
-              opacity: vis.opacity,
-              transform: vis.translateY ? `translateY(${vis.translateY}px)` : undefined,
-              boxShadow: t.apex
-                ? '0 -8px 32px -16px color-mix(in srgb, var(--accent) 40%, transparent), 0 24px 60px -32px color-mix(in srgb, var(--accent) 22%, transparent)'
-                : undefined,
-              zIndex: t.apex ? 2 : 1,
-            };
+            const pal = vis.pal;
             return (
               <article
                 key={t.n}
                 className={`gp-tier-card gp-card-lift gp-fade-up gp-fade-up-delay-${i + 1}`}
-                style={cardStyle}
+                style={{
+                  padding: t.apex ? '0 0 26px' : '26px 20px',
+                  borderRight: i < TIERS.length - 1 ? `1px solid ${pal.border}` : 'none',
+                  background: `linear-gradient(160deg, ${pal.from} 0%, ${pal.mid} 55%, ${pal.from} 100%)`,
+                  position: 'relative',
+                  overflow: 'hidden',
+                  transform: vis.translateY ? `translateY(${vis.translateY}px)` : undefined,
+                  boxShadow: t.apex ? `0 0 48px ${pal.glow}, inset 0 1px 0 ${pal.border}` : `inset 0 1px 0 ${pal.border}`,
+                  zIndex: t.apex ? 2 : 1,
+                  transition: 'box-shadow 300ms ease',
+                }}
               >
+                {/* Metallic grain */}
+                <div aria-hidden style={{
+                  position: 'absolute', inset: 0,
+                  backgroundImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' seed='5'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.03 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
+                  mixBlendMode: 'screen', pointerEvents: 'none',
+                }} />
+
+                {/* Apex glow breathe */}
                 {t.apex && (
-                  <div
-                    aria-hidden="true"
-                    className="gp-breathe"
-                    style={{
-                      position: 'absolute',
-                      inset: -16,
-                      borderRadius: 4,
-                      boxShadow:
-                        '0 0 56px color-mix(in srgb, var(--accent) 30%, transparent)',
-                      pointerEvents: 'none',
-                      zIndex: -1,
-                    }}
-                  />
+                  <div aria-hidden className="gp-breathe" style={{
+                    position: 'absolute', inset: -16,
+                    boxShadow: `0 0 56px ${pal.glow}`,
+                    pointerEvents: 'none', zIndex: -1,
+                  }} />
                 )}
+
+                {/* RECOMMENDED — top strip, no bleed */}
                 {t.apex && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: '50%',
-                      transform: 'translateX(-50%) translateY(-50%)',
-                      background: 'var(--accent)',
-                      color: 'var(--inv-ink)',
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: 9,
-                      letterSpacing: '0.22em',
-                      padding: '4px 10px',
-                      zIndex: 3,
-                    }}
-                  >
+                  <div style={{
+                    width: '100%', textAlign: 'center',
+                    background: `linear-gradient(90deg, ${pal.from}, ${pal.border.replace('0.32', '0.18')}, ${pal.from})`,
+                    borderBottom: `1px solid ${pal.border}`,
+                    fontFamily: 'var(--font-mono)', fontSize: 8,
+                    letterSpacing: '0.28em', color: pal.accent,
+                    padding: '7px 0 6px',
+                  }}>
                     RECOMMENDED · 추천
                   </div>
                 )}
-                <div
-                  style={{
-                    fontFamily: 'var(--font-serif)',
-                    fontStyle: 'italic',
-                    fontSize: vis.numeral,
-                    color: t.apex ? 'var(--accent)' : 'var(--ink)',
-                    fontWeight: 500,
-                    lineHeight: 1,
-                  }}
-                >
-                  {t.n}
-                </div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-krs)',
-                    fontWeight: 600,
-                    fontSize: 18,
-                    marginTop: 14,
-                    color: t.apex ? 'var(--accent)' : 'var(--ink)',
-                  }}
-                >
-                  {t.ko}
-                </div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-serif)',
-                    fontStyle: 'italic',
-                    fontSize: 13,
-                    color: 'var(--ink-3)',
-                    marginBottom: 24,
-                  }}
-                >
-                  {t.en}
-                </div>
 
-                <Row label="MIN MONTHLY" value={t.min} />
-                <Row label="FOUNDERS GIFT" value={t.gift} accent emphasized={t.apex} />
-                <Row label="SPREAD" value={t.spread} />
-                <Row label="STORAGE" value={t.storage} />
-                <Row label="12개월 STREAK" value={t.streak12} />
+                {/* Content */}
+                <div style={{ padding: t.apex ? '20px 20px 0' : '0' }}>
+                  <div style={{
+                    fontFamily: 'var(--font-serif)', fontStyle: 'italic',
+                    fontSize: vis.numeral, color: pal.accent, fontWeight: 500, lineHeight: 1,
+                    filter: `drop-shadow(0 2px 12px ${pal.glow})`,
+                  }}>
+                    {t.n}
+                  </div>
+                  <div style={{
+                    fontFamily: 'var(--font-krs)', fontWeight: 600, fontSize: 16,
+                    marginTop: 12, color: 'rgba(255,255,255,0.9)',
+                  }}>
+                    {t.ko}
+                  </div>
+                  <div style={{
+                    fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: 12,
+                    color: 'rgba(255,255,255,0.38)', marginBottom: 20,
+                  }}>
+                    {t.en}
+                  </div>
+                  <div style={{ height: 1, background: `linear-gradient(90deg, ${pal.border}, transparent)`, marginBottom: 16 }} />
+                  <Row label="MIN MONTHLY" value={t.min} />
+                  <Row label="FOUNDERS GIFT" value={t.gift} accent emphasized={t.apex} />
+                  <Row label="SPREAD" value={t.spread} />
+                  <Row label="STORAGE" value={t.storage} />
+                  <Row label="12개월 STREAK" value={t.streak12} />
+                </div>
               </article>
             );
           })}
@@ -290,27 +269,22 @@ function Row({
 }) {
   return (
     <div style={{ marginBottom: 12 }}>
-      <div
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: 9,
-          letterSpacing: '0.22em',
-          color: accent ? 'var(--accent)' : 'var(--ink-3)',
-          marginBottom: 3,
-        }}
-      >
+      <div style={{
+        fontFamily: 'var(--font-mono)', fontSize: 8,
+        letterSpacing: '0.22em',
+        color: accent ? 'var(--accent)' : 'rgba(255,255,255,0.32)',
+        marginBottom: 3,
+      }}>
         {label}
       </div>
-      <div
-        style={{
-          fontFamily: emphasized ? 'var(--font-serif)' : 'var(--font-mono)',
-          fontStyle: emphasized ? 'italic' : 'normal',
-          fontSize: emphasized ? 24 : 13,
-          fontWeight: emphasized ? 500 : 500,
-          color: accent ? 'var(--accent)' : 'var(--ink)',
-          lineHeight: 1.2,
-        }}
-      >
+      <div style={{
+        fontFamily: emphasized ? 'var(--font-serif)' : 'var(--font-mono)',
+        fontStyle: emphasized ? 'italic' : 'normal',
+        fontSize: emphasized ? 22 : 12,
+        fontWeight: 500,
+        color: accent ? 'var(--accent)' : 'rgba(255,255,255,0.82)',
+        lineHeight: 1.2,
+      }}>
         {value}
       </div>
     </div>

@@ -3,53 +3,53 @@
 import { useEffect, useRef, useState } from 'react';
 import { TIERS, type Tier } from './tiers-data';
 
-function Row({
-  label,
-  value,
-  accent,
-  emphasized,
-}: {
+// Tier-specific palette — bronze → silver → gold → platinum → sovereign
+const TIER_PALETTE = [
+  { from: '#2a1f0e', mid: '#3d2c10', glow: 'rgba(180,110,40,0.35)', accent: 'rgba(180,110,40,0.85)', border: 'rgba(180,110,40,0.30)' },   // Bronze
+  { from: '#141414', mid: '#1e1e22', glow: 'rgba(192,192,200,0.25)', accent: 'rgba(200,200,210,0.85)', border: 'rgba(200,200,210,0.28)' }, // Silver
+  { from: '#0d0b08', mid: '#1a1410', glow: 'rgba(201,152,87,0.45)', accent: 'rgba(201,152,87,0.95)', border: 'rgba(201,152,87,0.35)' },    // Gold (apex)
+  { from: '#0b1018', mid: '#131c28', glow: 'rgba(140,180,230,0.25)', accent: 'rgba(150,190,240,0.85)', border: 'rgba(140,180,230,0.28)' }, // Platinum
+  { from: '#12090d', mid: '#1c0f16', glow: 'rgba(180,130,200,0.25)', accent: 'rgba(185,140,210,0.85)', border: 'rgba(180,130,200,0.28)' }, // Sovereign
+] as const;
+
+const NUMERALS = [36, 42, 56, 48, 52] as const;
+
+function Row({ label, value, accent, emphasized, accentColor }: {
   label: string;
   value: string;
   accent?: boolean;
   emphasized?: boolean;
+  accentColor: string;
 }) {
   return (
-    <div style={{ marginBottom: 12 }}>
-      <div
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: 9,
-          letterSpacing: '0.22em',
-          color: accent ? 'var(--accent)' : 'var(--ink-3)',
-          marginBottom: 3,
-        }}
-      >
+    <div style={{ marginBottom: 14 }}>
+      <div style={{
+        fontFamily: 'var(--font-mono)',
+        fontSize: 8,
+        letterSpacing: '0.22em',
+        color: accent ? accentColor : 'rgba(255,255,255,0.35)',
+        marginBottom: 3,
+      }}>
         {label}
       </div>
-      <div
-        style={{
-          fontFamily: emphasized ? 'var(--font-serif)' : 'var(--font-mono)',
-          fontStyle: emphasized ? 'italic' : 'normal',
-          fontSize: emphasized ? 24 : 13,
-          fontWeight: 500,
-          color: accent ? 'var(--accent)' : 'var(--ink)',
-          lineHeight: 1.2,
-        }}
-      >
+      <div style={{
+        fontFamily: emphasized ? 'var(--font-serif)' : 'var(--font-mono)',
+        fontStyle: emphasized ? 'italic' : 'normal',
+        fontSize: emphasized ? 26 : 13,
+        fontWeight: 500,
+        color: accent ? accentColor : 'rgba(255,255,255,0.85)',
+        lineHeight: 1.2,
+      }}>
         {value}
       </div>
     </div>
   );
 }
 
-const NUMERALS = [36, 42, 56, 48, 52] as const;
-
 export function MobileTierCarousel() {
   const trackRef = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(2); // start at index 2 (Gold · APEX)
+  const [active, setActive] = useState(2);
 
-  // Scroll to card index without animation on mount, animated on nav
   const scrollTo = (index: number, smooth: boolean) => {
     const track = trackRef.current;
     if (!track) return;
@@ -58,14 +58,11 @@ export function MobileTierCarousel() {
     card.scrollIntoView({ behavior: smooth ? 'smooth' : 'instant', block: 'nearest', inline: 'center' });
   };
 
-  // On mount jump to card III (index 2) instantly
   useEffect(() => {
-    // rAF so the layout has painted before we measure
     const id = requestAnimationFrame(() => scrollTo(2, false));
     return () => cancelAnimationFrame(id);
   }, []);
 
-  // Keep active dot in sync with scroll position
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
@@ -86,22 +83,35 @@ export function MobileTierCarousel() {
 
   return (
     <div style={{ position: 'relative' }}>
+      <style>{`
+        .gp-carousel-track::-webkit-scrollbar { display: none; }
+        @keyframes gp-tier-glow-pulse {
+          0%, 100% { opacity: 0.7; }
+          50%       { opacity: 1; }
+        }
+        @keyframes gp-tier-foil {
+          from { background-position: -200% center; }
+          to   { background-position: 200% center; }
+        }
+      `}</style>
+
       {/* Track */}
       <div
         ref={trackRef}
+        className="gp-carousel-track"
         style={{
           display: 'flex',
           overflowX: 'scroll',
           scrollSnapType: 'x mandatory',
           scrollbarWidth: 'none',
-          WebkitOverflowScrolling: 'touch' as never,
           gap: 0,
-          border: '1px solid var(--ink)',
         } as React.CSSProperties}
-        className="gp-carousel-track"
       >
         {TIERS.map((t: Tier, i: number) => {
           const numeral = NUMERALS[i];
+          const pal = TIER_PALETTE[i];
+          const isActive = i === active;
+
           return (
             <article
               key={t.n}
@@ -109,181 +119,177 @@ export function MobileTierCarousel() {
                 scrollSnapAlign: 'center',
                 flex: '0 0 calc(100vw - 32px)',
                 minWidth: 0,
-                padding: '32px 22px',
-                background: t.apex
-                  ? 'color-mix(in srgb, var(--accent) 8%, var(--bg))'
-                  : 'var(--bg)',
+                background: `linear-gradient(145deg, ${pal.from} 0%, ${pal.mid} 60%, ${pal.from} 100%)`,
+                border: `1px solid ${pal.border}`,
+                borderRadius: 16,
                 position: 'relative',
-                boxShadow: t.apex
-                  ? '0 -8px 32px -16px color-mix(in srgb, var(--accent) 40%, transparent), 0 24px 60px -32px color-mix(in srgb, var(--accent) 22%, transparent)'
-                  : undefined,
+                overflow: 'hidden',
+                transition: 'transform 300ms ease, box-shadow 300ms ease',
+                transform: isActive ? 'scale(1.01)' : 'scale(0.97)',
+                boxShadow: isActive
+                  ? `0 0 40px ${pal.glow}, 0 16px 48px rgba(0,0,0,0.5), inset 0 1px 0 ${pal.border}`
+                  : `0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 ${pal.border}`,
               }}
             >
+              {/* Metallic grain */}
+              <div aria-hidden style={{
+                position: 'absolute', inset: 0,
+                backgroundImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' seed='3'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.035 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
+                mixBlendMode: 'screen', pointerEvents: 'none', opacity: 0.8,
+              }} />
+
+              {/* Shimmer band */}
+              <div aria-hidden style={{
+                position: 'absolute', top: '40%', left: 0, right: 0, height: '22%',
+                background: `linear-gradient(90deg, transparent 0%, ${pal.border} 40%, rgba(255,255,255,0.06) 50%, ${pal.border} 60%, transparent 100%)`,
+                pointerEvents: 'none',
+              }} />
+
+              {/* Specular top-left glow */}
+              <div aria-hidden style={{
+                position: 'absolute', inset: 0,
+                background: `radial-gradient(ellipse at 20% 15%, ${pal.glow.replace('0.', '0.0')}4 0%, transparent 55%)`,
+                pointerEvents: 'none',
+              }} />
+
+              {/* Corner accent dots */}
+              {[{ top: 12, left: 12 }, { top: 12, right: 12 }, { bottom: 12, left: 12 }, { bottom: 12, right: 12 }].map((pos, ci) => (
+                <div key={ci} aria-hidden style={{
+                  position: 'absolute', ...pos,
+                  width: 3, height: 3, borderRadius: '50%',
+                  background: pal.accent.replace('0.95', '0.4').replace('0.85', '0.3'),
+                  pointerEvents: 'none',
+                }} />
+              ))}
+
+              {/* RECOMMENDED badge — inside card, no bleeding */}
               {t.apex && (
-                <div
-                  aria-hidden="true"
-                  className="gp-breathe"
-                  style={{
-                    position: 'absolute',
-                    inset: -16,
-                    borderRadius: 4,
-                    boxShadow: '0 0 56px color-mix(in srgb, var(--accent) 30%, transparent)',
-                    pointerEvents: 'none',
-                    zIndex: -1,
-                  }}
-                />
-              )}
-              {t.apex && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: '50%',
-                    transform: 'translateX(-50%) translateY(-50%)',
-                    background: 'var(--accent)',
-                    color: 'var(--inv-ink)',
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 9,
-                    letterSpacing: '0.22em',
-                    padding: '4px 10px',
-                    zIndex: 3,
-                    whiteSpace: 'nowrap',
-                  }}
-                >
+                <div style={{
+                  position: 'absolute',
+                  top: 0, left: '50%',
+                  transform: 'translateX(-50%)',
+                  background: `linear-gradient(90deg, ${pal.mid}, ${pal.accent.replace('0.95', '0.15')}, ${pal.mid})`,
+                  borderBottom: `1px solid ${pal.border}`,
+                  width: '100%',
+                  textAlign: 'center',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 8,
+                  letterSpacing: '0.28em',
+                  color: pal.accent,
+                  padding: '7px 0 6px',
+                  zIndex: 4,
+                }}>
                   RECOMMENDED · 추천
                 </div>
               )}
 
-              {/* Tier counter */}
-              <div
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 10,
-                  letterSpacing: '0.28em',
-                  color: 'var(--ink-3)',
+              {/* Card content */}
+              <div style={{
+                position: 'relative', zIndex: 2,
+                padding: t.apex ? '44px 24px 28px' : '28px 24px',
+              }}>
+                {/* Counter */}
+                <div style={{
+                  fontFamily: 'var(--font-mono)', fontSize: 9,
+                  letterSpacing: '0.28em', color: 'rgba(255,255,255,0.3)',
                   marginBottom: 16,
-                }}
-              >
-                {i + 1} / {TIERS.length}
-              </div>
+                }}>
+                  {i + 1} / {TIERS.length}
+                </div>
 
-              <div
-                style={{
-                  fontFamily: 'var(--font-serif)',
-                  fontStyle: 'italic',
-                  fontSize: numeral,
-                  color: t.apex ? 'var(--accent)' : 'var(--ink)',
-                  fontWeight: 500,
-                  lineHeight: 1,
-                }}
-              >
-                {t.n}
-              </div>
-              <div
-                style={{
-                  fontFamily: 'var(--font-krs)',
-                  fontWeight: 600,
-                  fontSize: 18,
-                  marginTop: 14,
-                  color: t.apex ? 'var(--accent)' : 'var(--ink)',
-                }}
-              >
-                {t.ko}
-              </div>
-              <div
-                style={{
-                  fontFamily: 'var(--font-serif)',
-                  fontStyle: 'italic',
-                  fontSize: 13,
-                  color: 'var(--ink-3)',
-                  marginBottom: 24,
-                }}
-              >
-                {t.en}
-              </div>
+                {/* Big numeral */}
+                <div style={{
+                  fontFamily: 'var(--font-serif)', fontStyle: 'italic',
+                  fontSize: numeral, color: pal.accent, fontWeight: 500, lineHeight: 1,
+                  filter: `drop-shadow(0 2px 16px ${pal.glow})`,
+                }}>
+                  {t.n}
+                </div>
 
-              <Row label="MIN MONTHLY" value={t.min} />
-              <Row label="FOUNDERS GIFT" value={t.gift} accent emphasized={t.apex} />
-              <Row label="SPREAD" value={t.spread} />
-              <Row label="STORAGE" value={t.storage} />
-              <Row label="12개월 STREAK" value={t.streak12} />
+                {/* Name */}
+                <div style={{
+                  fontFamily: 'var(--font-krs)', fontWeight: 600, fontSize: 18,
+                  marginTop: 12, color: 'rgba(255,255,255,0.92)',
+                }}>
+                  {t.ko}
+                </div>
+                <div style={{
+                  fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: 12,
+                  color: 'rgba(255,255,255,0.4)', marginBottom: 24,
+                }}>
+                  {t.en}
+                </div>
+
+                {/* Divider */}
+                <div style={{
+                  height: 1,
+                  background: `linear-gradient(90deg, ${pal.border}, transparent)`,
+                  marginBottom: 20,
+                }} />
+
+                <Row label="MIN MONTHLY" value={t.min} accentColor={pal.accent} />
+                <Row label="FOUNDERS GIFT" value={t.gift} accent emphasized={t.apex} accentColor={pal.accent} />
+                <Row label="SPREAD" value={t.spread} accentColor={pal.accent} />
+                <Row label="STORAGE" value={t.storage} accentColor={pal.accent} />
+                <Row label="12개월 STREAK" value={t.streak12} accentColor={pal.accent} />
+              </div>
             </article>
           );
         })}
       </div>
 
       {/* Controls */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginTop: 20,
-          paddingLeft: 4,
-          paddingRight: 4,
-        }}
-      >
-        {/* Prev arrow */}
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        marginTop: 16, paddingLeft: 4, paddingRight: 4,
+      }}>
         <button
           onClick={() => go(-1)}
           disabled={active === 0}
           aria-label="Previous tier"
           style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 18,
+            fontFamily: 'var(--font-mono)', fontSize: 18,
             color: active === 0 ? 'var(--ink-3)' : 'var(--accent)',
-            opacity: active === 0 ? 0.35 : 1,
-            padding: '8px 12px',
-            minHeight: 44,
-            minWidth: 44,
-            transition: 'opacity 200ms ease, color 200ms ease',
+            opacity: active === 0 ? 0.3 : 1,
+            padding: '8px 12px', minHeight: 44, minWidth: 44,
+            transition: 'opacity 200ms ease',
             cursor: active === 0 ? 'default' : 'pointer',
           }}
-        >
-          ←
-        </button>
+        >←</button>
 
-        {/* Dot indicators */}
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          {TIERS.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => { setActive(i); scrollTo(i, true); }}
-              aria-label={`Go to tier ${i + 1}`}
-              style={{
-                width: i === active ? 20 : 6,
-                height: 6,
-                borderRadius: 3,
-                background: i === active ? 'var(--accent)' : 'var(--ink-3)',
-                opacity: i === active ? 1 : 0.4,
-                padding: 0,
-                minHeight: 0,
-                transition: 'width 260ms cubic-bezier(0.4,0,0.2,1), background 260ms ease, opacity 260ms ease',
-                cursor: 'pointer',
-              }}
-            />
-          ))}
+          {TIERS.map((_, i) => {
+            const pal = TIER_PALETTE[i];
+            return (
+              <button
+                key={i}
+                onClick={() => { setActive(i); scrollTo(i, true); }}
+                aria-label={`Go to tier ${i + 1}`}
+                style={{
+                  width: i === active ? 20 : 6, height: 6, borderRadius: 3,
+                  background: i === active ? pal.accent : 'var(--ink-3)',
+                  opacity: i === active ? 1 : 0.35, padding: 0, minHeight: 0,
+                  transition: 'width 260ms cubic-bezier(0.4,0,0.2,1), background 260ms ease',
+                  cursor: 'pointer',
+                }}
+              />
+            );
+          })}
         </div>
 
-        {/* Next arrow */}
         <button
           onClick={() => go(1)}
           disabled={active === TIERS.length - 1}
           aria-label="Next tier"
           style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 18,
+            fontFamily: 'var(--font-mono)', fontSize: 18,
             color: active === TIERS.length - 1 ? 'var(--ink-3)' : 'var(--accent)',
-            opacity: active === TIERS.length - 1 ? 0.35 : 1,
-            padding: '8px 12px',
-            minHeight: 44,
-            minWidth: 44,
-            transition: 'opacity 200ms ease, color 200ms ease',
+            opacity: active === TIERS.length - 1 ? 0.3 : 1,
+            padding: '8px 12px', minHeight: 44, minWidth: 44,
+            transition: 'opacity 200ms ease',
             cursor: active === TIERS.length - 1 ? 'default' : 'pointer',
           }}
-        >
-          →
-        </button>
+        >→</button>
       </div>
     </div>
   );
