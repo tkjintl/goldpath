@@ -576,20 +576,8 @@ html[lang="ko"] {
   }
   [data-mobile="mech-grid"] > div {
     border-right: none !important;
-    border-left: 2px dashed rgba(201,152,87,0.18) !important;
-    padding-left: 28px !important;
-    position: relative;
-  }
-  [data-mobile="mech-grid"] > div::before {
-    content: '';
-    position: absolute;
-    left: -5px;
-    top: 28px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 8px rgba(201,152,87,0.5);
+    border-left: none !important;
+    border-top: 1px solid var(--rule) !important;
   }
 }
 
