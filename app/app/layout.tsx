@@ -2,6 +2,7 @@ import { requireSession } from '@/lib/auth';
 import { PortalNav } from '@/components/portal/PortalNav';
 import { headers } from 'next/headers';
 
+export const dynamic = 'force-dynamic';
 export const metadata = { title: '회원 · GoldPath' };
 
 // Auth-gated layout for the customer portal. requireSession redirects to
