@@ -67,8 +67,11 @@ export function MobileTierCarousel() {
     const track = trackRef.current;
     if (!track) return;
     const handler = () => {
-      const cardWidth = (track.children[0] as HTMLElement)?.offsetWidth ?? 1;
-      const idx = Math.round(track.scrollLeft / cardWidth);
+      const card = track.children[0] as HTMLElement | undefined;
+      if (!card) return;
+      // card width + 12px gap between cards
+      const stride = card.offsetWidth + 12;
+      const idx = Math.round((track.scrollLeft - 4) / stride);
       setActive(Math.max(0, Math.min(TIERS.length - 1, idx)));
     };
     track.addEventListener('scroll', handler, { passive: true });
@@ -104,7 +107,10 @@ export function MobileTierCarousel() {
           overflowX: 'scroll',
           scrollSnapType: 'x mandatory',
           scrollbarWidth: 'none',
-          gap: 0,
+          gap: 12,
+          paddingLeft: 4,
+          paddingRight: 4,
+          paddingBottom: 4,
         } as React.CSSProperties}
       >
         {TIERS.map((t: Tier, i: number) => {
@@ -117,7 +123,7 @@ export function MobileTierCarousel() {
               key={t.n}
               style={{
                 scrollSnapAlign: 'center',
-                flex: '0 0 calc(100vw - 32px)',
+                flex: '0 0 calc(100% - 8px)',
                 minWidth: 0,
                 background: `linear-gradient(145deg, ${pal.from} 0%, ${pal.mid} 60%, ${pal.from} 100%)`,
                 border: `1px solid ${pal.border}`,

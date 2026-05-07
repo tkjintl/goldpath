@@ -50,7 +50,7 @@ export function WhyAccordion({ items }: { items: WhyItem[] }) {
               }}
             >
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.20em', color: 'rgba(31,26,20,0.45)', textTransform: 'uppercase' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.20em', color: 'var(--ink-3)', textTransform: 'uppercase' }}>
                   {it.n} · {it.lbl}
                 </span>
                 <span
@@ -70,7 +70,7 @@ export function WhyAccordion({ items }: { items: WhyItem[] }) {
               <span
                 style={{
                   fontSize: 14,
-                  color: 'rgba(31,26,20,0.30)',
+                  color: 'var(--ink-2)',
                   transition: 'transform 220ms ease',
                   transform: isOpen ? 'rotate(180deg)' : 'none',
                   flexShrink: 0,
@@ -84,7 +84,7 @@ export function WhyAccordion({ items }: { items: WhyItem[] }) {
             {/* Expandable body */}
             <div
               style={{
-                maxHeight: isOpen ? 120 : 0,
+                maxHeight: isOpen ? 400 : 0,
                 overflow: 'hidden',
                 transition: 'max-height 260ms ease',
               }}
@@ -92,7 +92,7 @@ export function WhyAccordion({ items }: { items: WhyItem[] }) {
               <div
                 style={{
                   padding: '12px 18px 18px',
-                  borderTop: '1px solid rgba(31,26,20,0.07)',
+                  borderTop: '1px solid var(--rule)',
                 }}
               >
                 <span
@@ -100,7 +100,7 @@ export function WhyAccordion({ items }: { items: WhyItem[] }) {
                     fontFamily: 'var(--font-kr)',
                     fontSize: 13,
                     fontWeight: 300,
-                    color: 'rgba(31,26,20,0.70)',
+                    color: 'var(--ink-2)',
                     lineHeight: 1.7,
                   }}
                 >
