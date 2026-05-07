@@ -115,6 +115,7 @@ Rules:
 - category must be exactly one of the L1 names above
 - tags must be 2-3 items chosen ONLY from the subcategory list of the chosen L1 category
 - sentiment: bullish/bearish/neutral relative to gold price direction
+- PRIORITY RULE: if the content specifically involves Korea, Japan, China, Hong Kong, Singapore, Taiwan, Southeast Asia, or any Asian market/institution — use "Korea & Asia" even if Central Banks or another category also fits. Asian geography beats other categories.
 - Return raw JSON only — no text outside the object`;
 
 export async function generateSignalContent(

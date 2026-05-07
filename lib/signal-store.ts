@@ -131,6 +131,12 @@ export async function insertSignalPost(post: SignalPostInsert): Promise<SignalPo
   return rowToSignalPost(row);
 }
 
+export async function updateSignalCategory(id: string, category: SignalCategory): Promise<void> {
+  await ensureSchema();
+  const db = sql();
+  await db`UPDATE signal_posts SET category = ${category} WHERE id = ${id}`;
+}
+
 export async function deleteSignalPost(id: string): Promise<boolean> {
   await ensureSchema();
   const db = sql();
