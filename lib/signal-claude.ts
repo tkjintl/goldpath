@@ -35,9 +35,8 @@ export const CATEGORY_MAP: Record<SignalCategory, string[]> = {
     'EM central bank rotation',
     'BIS / IMF signals',
     'Fed / ECB / BOJ',
-    'Bank of Korea',
-    'PBoC / China',
-    'MAS Singapore',
+    'Western CB policy',
+    'Global CB trend',
   ],
   'Physical Market': [
     'Asia demand',
@@ -72,8 +71,12 @@ export const CATEGORY_MAP: Record<SignalCategory, string[]> = {
     'KRX gold market',
     'Korean retail demand',
     'Korean institutional / pension',
+    'Bank of Korea',
     'Japan / APAC demand',
+    'BOJ policy',
     'China SGE / PBoC',
+    'PBoC purchases',
+    'MAS Singapore',
     'Southeast Asia',
     'Hong Kong market',
   ],
@@ -115,7 +118,6 @@ Rules:
 - category must be exactly one of the L1 names above
 - tags must be 2-3 items chosen ONLY from the subcategory list of the chosen L1 category
 - sentiment: bullish/bearish/neutral relative to gold price direction
-- PRIORITY RULE: if the content specifically involves Korea, Japan, China, Hong Kong, Singapore, Taiwan, Southeast Asia, or any Asian market/institution — use "Korea & Asia" even if Central Banks or another category also fits. Asian geography beats other categories.
 - Return raw JSON only — no text outside the object`;
 
 export async function generateSignalContent(
