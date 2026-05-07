@@ -137,7 +137,16 @@ export async function WhyStrip() {
             <div
               key={it.n}
               className={`gp-fade-up gp-fade-up-delay-${i + 1}`}
+              style={{ position: 'relative' }}
             >
+              {/* Per-tile ambient glow */}
+              <div aria-hidden style={{
+                position: 'absolute', top: 0, left: -8, right: -8, bottom: 0,
+                background: it.tone === 'warn'
+                  ? 'radial-gradient(ellipse at 30% 80%, rgba(180,60,60,0.06), transparent 65%)'
+                  : 'radial-gradient(ellipse at 30% 80%, rgba(201,152,87,0.07), transparent 65%)',
+                pointerEvents: 'none', zIndex: 0,
+              }} />
               <div
                 style={{
                   fontFamily: 'var(--font-mono)',

@@ -25,7 +25,7 @@ export async function Hero() {
       <FlakeParticles count={4} />
 
       {/* ── Mobile-only card-first layout ── */}
-      <div data-mobile="hero-mobile-block" style={{ display: 'none', minHeight: 'calc(100dvh - 97px)', boxSizing: 'border-box' }}>
+      <div data-mobile="hero-mobile-block" style={{ display: 'none', minHeight: 'calc(100dvh - 105px)', boxSizing: 'border-box' }}>
         <HeroCard founderNumber={founderNumber} logoAbove />
 
         {/* Editorial + price table + founder bar */}
@@ -119,7 +119,17 @@ export async function Hero() {
         }}
       >
         {/* LEFT — editorial */}
-        <div className="gp-fade-up">
+        <div className="gp-fade-up" style={{ position: 'relative' }}>
+          {/* 金 depth watermark */}
+          <div aria-hidden style={{
+            position: 'absolute', top: -40, left: -20,
+            fontFamily: 'var(--font-krs)', fontWeight: 700,
+            fontSize: 'clamp(260px, 36vw, 420px)',
+            lineHeight: 1, letterSpacing: '-0.06em',
+            color: 'var(--accent)', opacity: 0.018,
+            pointerEvents: 'none', userSelect: 'none',
+            zIndex: 0,
+          }}>금</div>
           <div
             className="gp-hero-eyebrow"
             style={{

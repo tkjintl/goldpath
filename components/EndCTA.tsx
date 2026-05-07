@@ -31,6 +31,12 @@ export function EndCTA() {
         }}
       />
       <FlakeParticles count={6} tone="inv-accent" />
+      {/* Paper grain — premium texture on inverted surface */}
+      <div aria-hidden style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1,
+        backgroundImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' seed='7'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
+        mixBlendMode: 'overlay',
+      }} />
       <div style={{ position: 'relative', zIndex: 2, maxWidth: 760, margin: '0 auto' }}>
         <div
           data-mobile="end-cta-eyebrow"

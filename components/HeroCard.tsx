@@ -490,8 +490,8 @@ export function HeroCard({ founderNumber, logoAbove = false, desktop = false }: 
       {/* Keyframe injection */}
       <style>{`
         @keyframes gp-foil-drift {
-          from { top: 32%; opacity: 0.8; }
-          to   { top: 38%; opacity: 1; }
+          from { top: 20%; opacity: 0.7; }
+          to   { top: 45%; opacity: 1; }
         }
         @keyframes gp-spark {
           0%   { opacity: 1; transform: translate(-50%, -50%) scale(1); }

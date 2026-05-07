@@ -28,6 +28,7 @@ export async function Ticker() {
         background: 'var(--inv-bg)',
         color: 'var(--inv-ink)',
         borderBottom: '1px solid var(--rule)',
+        boxShadow: '0 4px 12px -2px color-mix(in srgb, var(--bg) 70%, transparent)',
         fontFamily: 'var(--font-mono)',
         fontSize: 11,
         letterSpacing: '0.14em',

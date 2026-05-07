@@ -124,12 +124,14 @@ export async function TierLadder() {
                 className={`gp-tier-card gp-card-lift gp-fade-up gp-fade-up-delay-${i + 1}`}
                 style={{
                   padding: t.apex ? '0 0 26px' : '26px 20px',
-                  borderRight: i < TIERS.length - 1 ? `1px solid ${pal.border}` : 'none',
+                  borderRight: i < TIERS.length - 1 ? '1px solid rgba(255,255,255,0.07)' : 'none',
                   background: `linear-gradient(160deg, ${pal.from} 0%, ${pal.mid} 55%, ${pal.from} 100%)`,
                   position: 'relative',
                   overflow: 'hidden',
                   transform: vis.translateY ? `translateY(${vis.translateY}px)` : undefined,
-                  boxShadow: t.apex ? `0 0 48px ${pal.glow}, inset 0 1px 0 ${pal.border}` : `inset 0 1px 0 ${pal.border}`,
+                  boxShadow: t.apex
+                    ? `0 0 48px ${pal.glow}, inset 0 1px 0 ${pal.border}`
+                    : `0 0 20px ${pal.glow.replace(/[\d.]+\)$/, '0.08)')}, inset 0 1px 0 ${pal.border}`,
                   zIndex: t.apex ? 2 : 1,
                   transition: 'box-shadow 300ms ease',
                 }}

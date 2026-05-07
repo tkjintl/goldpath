@@ -109,11 +109,14 @@ const CSS = `
 
   /* ── E. Softer card borders on mobile ────────────────────────────── */
   [class*="-card"], [class*="card-"],
-  article[style*="border"],
   div[style*="border: 1px solid var(--rule)"],
   div[style*="border:1px solid var(--rule)"] {
     border-color: color-mix(in srgb, var(--rule) 70%, transparent) !important;
     border-radius: 4px !important;
+  }
+  /* Carousel cards keep their own border-radius */
+  .gp-carousel-track article {
+    border-radius: 16px !important;
   }
 
   /* ── F. More breathing room — universal padding bump ─────────────── */

@@ -87,6 +87,7 @@ export function Nav() {
               <Link
                 key={l.href}
                 href={l.href as any}
+                className="gp-nav-link"
                 style={{
                   fontFamily: l.live ? 'var(--font-mono)' : 'var(--font-kr)',
                   fontSize: l.live ? 11 : 14,
@@ -199,7 +200,7 @@ export function Nav() {
           overflow: 'hidden',
           transition: 'max-height 260ms ease',
           position: 'sticky',
-          top: scrolled ? 53 : 65,
+          top: scrolled ? 56 : 68,
           zIndex: 39,
           display: 'none',
         }}
@@ -221,7 +222,7 @@ export function Nav() {
                 alignItems: 'center',
                 gap: 8,
                 padding: '13px 0',
-                borderBottom: i < links.length - 1 ? '1px solid rgba(31,26,20,0.07)' : 'none',
+                borderBottom: i < links.length - 1 ? '1px solid var(--rule)' : 'none',
                 fontFamily: l.live ? 'var(--font-mono)' : 'var(--font-kr)',
                 fontSize: l.live ? 11 : 15,
                 color: l.live ? 'var(--accent)' : 'var(--ink)',

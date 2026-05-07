@@ -69,10 +69,9 @@ export function Mechanism() {
             border: '1px solid var(--rule)',
           }}
         >
-          {/* connector line — animates from 0 → 100% on first paint */}
+          {/* connector line — scales in from left on first paint */}
           <div
             aria-hidden="true"
-            className="gp-fade-up"
             style={{
               position: 'absolute',
               top: -1,
@@ -81,7 +80,7 @@ export function Mechanism() {
               width: '100%',
               background: 'linear-gradient(90deg, var(--accent), var(--accent-dim))',
               transformOrigin: 'left center',
-              animation: 'gp-fade-up 1400ms cubic-bezier(0.16, 1, 0.3, 1) both',
+              animation: 'gp-line-grow 1400ms cubic-bezier(0.16, 1, 0.3, 1) both',
               zIndex: 1,
             }}
           />

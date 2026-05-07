@@ -145,7 +145,7 @@ input, textarea, select {
 @media (max-width: 768px) {
   /* Global headline clamps as a safety net for inline-styled hX */
   h1 { font-size: clamp(28px, 8.5vw, 44px) !important; line-height: 1.05 !important; }
-  h2 { font-size: clamp(26px, 7.5vw, 40px) !important; line-height: 1.1 !important; }
+  h2:not([data-mobile="end-cta-headline"]) { font-size: clamp(26px, 7.5vw, 40px) !important; line-height: 1.1 !important; }
   h3 { font-size: clamp(22px, 6vw, 32px) !important; line-height: 1.15 !important; }
 
   /* Tighten body padding on sections that hard-code horizontal padding */
@@ -529,6 +529,12 @@ html[lang="ko"] {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Horizontal line grow — used for connector lines (no Y shift glitch) */
+@keyframes gp-line-grow {
+  from { transform: scaleX(0); opacity: 0; }
+  to   { transform: scaleX(1); opacity: 1; }
+}
+
 /* Class wrappers — components apply these */
 .gp-fade-up { animation: gp-fade-up 480ms cubic-bezier(0.16, 1, 0.3, 1) both; }
 .gp-fade-up-delay-1 { animation-delay: 80ms; }
@@ -541,6 +547,50 @@ html[lang="ko"] {
 .gp-drift {
   animation: gp-drift 7s ease-in-out infinite;
   will-change: transform, opacity;
+}
+
+/* Nav link hover */
+.gp-nav-link { transition: color 180ms ease, opacity 180ms ease; }
+.gp-nav-link:hover { color: var(--accent) !important; opacity: 1 !important; }
+
+/* WhyStrip — ambient shimmer sweep on section */
+.gp-why-strip::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--accent) 40%, transparent) 50%, transparent 100%);
+  opacity: 0.5;
+  animation: gp-shimmer-sweep 8s ease-in-out infinite;
+  background-size: 200% 100%;
+  pointer-events: none;
+}
+.gp-why-strip { position: relative; }
+
+/* Mechanism — vertical timeline on mobile (1-col collapse) */
+@media (max-width: 640px) {
+  [data-mobile="mech-grid"] {
+    grid-template-columns: 1fr !important;
+  }
+  [data-mobile="mech-grid"] > div {
+    border-right: none !important;
+    border-left: 2px dashed rgba(201,152,87,0.18) !important;
+    padding-left: 28px !important;
+    position: relative;
+  }
+  [data-mobile="mech-grid"] > div::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 28px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px rgba(201,152,87,0.5);
+  }
 }
 
 /* Reduced-motion belt-and-braces — Wave 3's `*` rule already covers,

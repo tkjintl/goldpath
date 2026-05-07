@@ -35,8 +35,23 @@ export function CohortBar({ joined, cap }: { joined: number; cap: number }) {
             inset: 0,
             width: `${pct}%`,
             background: 'linear-gradient(90deg, var(--accent), var(--accent-dim))',
-            animation: 'gp-fade-up 1400ms cubic-bezier(0.16, 1, 0.3, 1) both',
+            animation: 'gp-line-grow 1400ms cubic-bezier(0.16, 1, 0.3, 1) both',
             transformOrigin: 'left center',
+          }}
+        />
+        {/* Live fill endpoint pulse */}
+        <div
+          className="gp-breathe"
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: `${pct}%`,
+            transform: 'translate(-50%, -50%)',
+            width: 8,
+            height: 8,
+            borderRadius: '50%',
+            background: 'var(--accent)',
+            boxShadow: '0 0 10px var(--accent), 0 0 24px rgba(201,152,87,0.4)',
           }}
         />
       </div>
