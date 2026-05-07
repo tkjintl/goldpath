@@ -96,8 +96,10 @@ export function CreditsLadder({ snapshot }: { snapshot: PriceSnapshot }) {
     if (!track) return;
     const card = track.children[2] as HTMLElement | undefined;
     if (!card) return;
-    // scroll so Gold (index 2) is centered
-    track.scrollLeft = card.offsetLeft - (track.offsetWidth - card.offsetWidth) / 2;
+    // index × (cardWidth + gap) puts the Gold card's left edge into view;
+    // scroll-snap-align:center then snaps it to the center of the viewport.
+    const gap = 14;
+    track.scrollLeft = 2 * (card.offsetWidth + gap);
   }, []);
 
   return (
@@ -303,7 +305,7 @@ export function CreditsLadder({ snapshot }: { snapshot: PriceSnapshot }) {
               gap: 14px !important;
             }
             .gp-credits-ladder > article {
-              scroll-snap-align: start;
+              scroll-snap-align: center;
               min-height: 280px !important;
               transform: none !important;
             }
