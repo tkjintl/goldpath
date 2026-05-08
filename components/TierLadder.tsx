@@ -109,7 +109,7 @@ export async function TierLadder() {
           data-mobile="tier-grid"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+            gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
             gap: 0,
             border: 'none',
             alignItems: 'stretch',
@@ -205,7 +205,7 @@ export async function TierLadder() {
           style={{
             marginTop: 36,
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
             gap: 28,
           }}
         >

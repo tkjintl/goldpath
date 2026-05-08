@@ -35,7 +35,7 @@ const CELLS: Array<{
 
 export function TrustGrid() {
   return (
-    <section style={{ padding: '96px 36px', borderBottom: '1px solid var(--rule)' }}>
+    <section style={{ padding: 'clamp(48px, 7vw, 96px) clamp(16px, 4vw, 36px)', borderBottom: '1px solid var(--rule)' }}>
       <div style={{ maxWidth: 1280, margin: '0 auto' }}>
         <div
           style={{
@@ -132,9 +132,11 @@ export function TrustGrid() {
         <style>{`
           @media (max-width: 1000px) {
             .gp-trust-grid { grid-template-columns: repeat(2, 1fr) !important; }
+            .gp-trust-grid a:last-child:nth-child(odd) { grid-column: 1 / -1 !important; }
           }
           @media (max-width: 600px) {
             .gp-trust-grid { grid-template-columns: 1fr !important; }
+            .gp-trust-grid a:last-child:nth-child(odd) { grid-column: auto !important; }
           }
         `}</style>
       </div>

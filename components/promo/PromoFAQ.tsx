@@ -31,7 +31,7 @@ const QAS: Array<{ q: string; a: string }> = [
 
 export function PromoFAQ() {
   return (
-    <section style={{ padding: '96px 36px', borderBottom: '1px solid var(--rule)' }}>
+    <section style={{ padding: 'clamp(48px, 7vw, 96px) clamp(16px, 4vw, 36px)', borderBottom: '1px solid var(--rule)' }}>
       <div style={{ maxWidth: 880, margin: '0 auto' }}>
         <div
           style={{

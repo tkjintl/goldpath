@@ -14,6 +14,28 @@ export function Mechanism() {
         borderBottom: '1px solid var(--rule)',
       }}
     >
+      <style>{`
+        @media (max-width: 900px) and (min-width: 769px) {
+          .gp-mechanism [data-mobile="mech-grid"] {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+          .gp-mechanism [data-mobile="mech-grid"] > div {
+            border-right: 1px solid var(--rule) !important;
+            border-bottom: 1px solid var(--rule) !important;
+          }
+          .gp-mechanism [data-mobile="mech-grid"] > div:nth-child(2n+3) {
+            border-right: none !important;
+          }
+          .gp-mechanism [data-mobile="mech-grid"] > div:nth-last-child(-n+2) {
+            border-bottom: none !important;
+          }
+        }
+        @media (max-width: 900px) and (min-width: 769px) {
+          .gp-mechanism {
+            padding: 60px 24px !important;
+          }
+        }
+      `}</style>
       <div style={{ maxWidth: 1280, margin: '0 auto' }}>
         <div
           style={{
@@ -62,7 +84,7 @@ export function Mechanism() {
           style={{
             position: 'relative',
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
             gap: 0,
             background: 'var(--bg)',
             borderTop: '1px solid var(--ink)',
@@ -91,6 +113,8 @@ export function Mechanism() {
               style={{
                 padding: '28px 24px 32px',
                 borderRight: i < steps.length - 1 ? '1px solid var(--rule)' : 'none',
+                display: 'flex',
+                flexDirection: 'column',
               }}
             >
               <div
@@ -141,6 +165,7 @@ export function Mechanism() {
               >
                 {s.body}
               </p>
+              <div style={{ flex: 1 }} />
             </div>
           ))}
         </div>

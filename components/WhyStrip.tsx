@@ -112,6 +112,17 @@ export async function WhyStrip() {
         borderBottom: '1px solid var(--rule)',
       }}
     >
+      <style>{`
+        @media (max-width: 900px) and (min-width: 769px) {
+          .gp-why-strip [data-mobile="why-grid"] > div:first-child {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 20px !important;
+          }
+          .gp-why-strip {
+            padding: 40px 20px !important;
+          }
+        }
+      `}</style>
       {/* Mobile accordion */}
       <div data-mobile="why-mobile" style={{ display: 'none' }}>
         <div style={{ marginBottom: 24 }}>
@@ -129,8 +140,8 @@ export async function WhyStrip() {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            gap: 28,
+            gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+            gap: 20,
           }}
         >
           {items.map((it, i) => (

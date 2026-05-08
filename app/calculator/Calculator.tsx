@@ -459,6 +459,7 @@ export function Calculator({ initialSnapshot }: Props) {
               border: '1px solid var(--rule)',
               padding: '1rem 1rem 0.6rem',
               background: 'color-mix(in srgb, var(--accent) 4%, transparent)',
+              overflow: 'hidden',
             }}
           >
             <div
@@ -554,6 +555,11 @@ export function Calculator({ initialSnapshot }: Props) {
                   fontSize: 11,
                   letterSpacing: '0.22em',
                   color: 'var(--ink-2)',
+                  flexShrink: 1,
+                  minWidth: 0,
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
                 }}
               >
                 누적 그램 · {periodLabel(months)}
@@ -594,6 +600,11 @@ export function Calculator({ initialSnapshot }: Props) {
                   fontSize: 11,
                   letterSpacing: '0.22em',
                   color: 'var(--ink-2)',
+                  flexShrink: 1,
+                  minWidth: 0,
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
                 }}
               >
                 가정 미래 가치 · {cagr.pct}% CAGR
@@ -603,6 +614,9 @@ export function Calculator({ initialSnapshot }: Props) {
                   display: 'inline-flex',
                   alignItems: 'baseline',
                   gap: 8,
+                  flexShrink: 0,
+                  flexWrap: 'wrap',
+                  justifyContent: 'flex-end',
                 }}
               >
                 <span
@@ -697,6 +711,8 @@ function Row({
           fontSize: 11,
           letterSpacing: '0.22em',
           color: 'var(--ink-2)',
+          maxWidth: '60%',
+          flexShrink: 0,
         }}
       >
         {label}
@@ -707,6 +723,8 @@ function Row({
           fontFamily: 'var(--font-mono)',
           fontSize: 14,
           color,
+          wordBreak: 'break-all',
+          textAlign: 'right',
         }}
       >
         {value}

@@ -49,7 +49,7 @@ const sourceStyle = {
 } as const;
 
 const sectionWrap = {
-  padding: '64px 36px',
+  padding: 'clamp(40px, 5vw, 64px) clamp(16px, 4vw, 36px)',
   borderBottom: '1px solid var(--rule)',
 } as const;
 
@@ -61,7 +61,7 @@ export default function TrustPage() {
       <Ticker />
       <Nav />
 
-      <section style={{ padding: '100px 36px 60px', borderBottom: '1px solid var(--rule)' }}>
+      <section style={{ padding: 'clamp(48px, 8vw, 100px) clamp(16px, 4vw, 36px) 60px', borderBottom: '1px solid var(--rule)' }}>
         <div style={inner}>
           <div style={eyebrowStyle}>§ TRUST · 트러스트</div>
           <h1
@@ -164,7 +164,7 @@ export default function TrustPage() {
           <dl
             style={{
               display: 'grid',
-              gridTemplateColumns: 'auto 1fr',
+              gridTemplateColumns: 'minmax(100px, auto) 1fr',
               gap: '14px 28px',
               padding: '24px 0',
               borderTop: '1px solid var(--rule)',
@@ -175,19 +175,19 @@ export default function TrustPage() {
             <dt style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.22em', color: 'var(--accent)' }}>
               POLICY №
             </dt>
-            <dd style={{ fontFamily: 'var(--font-kr)', fontSize: 14, color: 'var(--ink)' }} lang="ko">
+            <dd style={{ fontFamily: 'var(--font-kr)', fontSize: 14, color: 'var(--ink)', wordBreak: 'break-word' }} lang="ko">
               Phase 2 공개
             </dd>
             <dt style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.22em', color: 'var(--accent)' }}>
               COVER LIMIT
             </dt>
-            <dd style={{ fontFamily: 'var(--font-kr)', fontSize: 14, color: 'var(--ink)' }} lang="ko">
+            <dd style={{ fontFamily: 'var(--font-kr)', fontSize: 14, color: 'var(--ink)', wordBreak: 'break-word' }} lang="ko">
               Phase 2 공개
             </dd>
             <dt style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.22em', color: 'var(--accent)' }}>
               UNDERWRITER
             </dt>
-            <dd style={{ fontFamily: 'var(--font-kr)', fontSize: 14, color: 'var(--ink)' }}>
+            <dd style={{ fontFamily: 'var(--font-kr)', fontSize: 14, color: 'var(--ink)', wordBreak: 'break-word' }}>
               Lloyd&rsquo;s of London syndicate
             </dd>
           </dl>
@@ -202,11 +202,12 @@ export default function TrustPage() {
           <p style={bodyStyle} lang="ko">
             현재 코호트 보유 골드바: 표 (시리얼 / 정련소 / 무게 / 주조일).
           </p>
+          <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', marginTop: 24 }}>
           <table
             style={{
               width: '100%',
+              minWidth: 480,
               borderCollapse: 'collapse',
-              marginTop: 24,
               fontFamily: 'var(--font-mono)',
               fontSize: 12,
             }}
@@ -252,6 +253,7 @@ export default function TrustPage() {
               </tr>
             </tbody>
           </table>
+          </div>
           <p
             style={{
               fontFamily: 'var(--font-mono)',

@@ -55,8 +55,8 @@ export function Footer() {
           data-mobile="footer-grid"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-            gap: 36,
+            gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
+            gap: 28,
             marginBottom: 36,
           }}
         >

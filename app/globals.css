@@ -465,6 +465,52 @@ input, textarea, select {
   }
 }
 
+/* ─────────────────────────────────────────────────────────────────
+   Tablet overrides (769px–1024px) — Agent T2
+   ───────────────────────────────────────────────────────────────── */
+
+/* Tablet footer — brand full-width, link cols 2x2 */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .gp-footer [data-mobile="footer-grid"] {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 24px !important;
+  }
+  .gp-footer [data-mobile="footer-grid"] > div:first-child {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+/* Tablet tier grid — 3-col, last 2 in second row */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .gp-tier-desktop [data-mobile="tier-grid"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    overflow-x: visible !important;
+  }
+}
+
+/* Tablet tier footnotes — stack to single column */
+@media (max-width: 900px) and (min-width: 769px) {
+  .gp-tiers [data-mobile="tier-footnotes"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Tablet section padding */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .gp-mechanism {
+    padding: 64px 24px !important;
+  }
+  .gp-tiers {
+    padding: 60px 24px !important;
+  }
+  .gp-why-strip {
+    padding: 40px 24px !important;
+  }
+  .gp-footer {
+    padding: 48px 24px 28px !important;
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    Wave 4 (Agent T) — Pretendard, focus halo, motion primitives,
    vignette + grain, hover/transition tokens, form input affordance.

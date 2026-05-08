@@ -15,7 +15,7 @@ export default async function SignupPage() {
     <>
       <Ticker />
       <Nav />
-      <section style={{ padding: '64px 36px 24px' }}>
+      <section style={{ padding: 'clamp(40px, 5vw, 64px) clamp(16px, 4vw, 36px) 24px' }}>
         <div style={{ maxWidth: 760, margin: '0 auto' }}>
           <div
             style={{
@@ -68,7 +68,7 @@ export default async function SignupPage() {
         </div>
       </section>
 
-      <section style={{ padding: '24px 24px 80px' }}>
+      <section style={{ padding: 'clamp(20px, 3vw, 24px) clamp(16px, 3vw, 24px) 80px' }}>
         <div
           style={{
             maxWidth: 720,

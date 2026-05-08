@@ -41,7 +41,7 @@ const bodyStyle = {
 } as const;
 
 const sectionWrap = {
-  padding: '64px 36px',
+  padding: 'clamp(40px, 5vw, 64px) clamp(16px, 4vw, 36px)',
   borderBottom: '1px solid var(--rule)',
 } as const;
 
@@ -49,7 +49,7 @@ const inner = { maxWidth: 880, margin: '0 auto' } as const;
 
 const dlStyle = {
   display: 'grid',
-  gridTemplateColumns: 'auto 1fr',
+  gridTemplateColumns: 'minmax(90px, auto) 1fr',
   gap: '14px 28px',
   padding: '24px 0',
   borderTop: '1px solid var(--rule)',
@@ -64,6 +64,7 @@ const dtStyle = {
   color: 'var(--accent)',
   alignSelf: 'baseline',
   paddingTop: 2,
+  wordBreak: 'break-all',
 } as const;
 
 const ddStyle = {
@@ -72,6 +73,7 @@ const ddStyle = {
   color: 'var(--ink)',
   lineHeight: 1.6,
   margin: 0,
+  wordBreak: 'break-word',
 } as const;
 
 export default function AboutPage() {
@@ -80,7 +82,7 @@ export default function AboutPage() {
       <Ticker />
       <Nav />
 
-      <section style={{ padding: '100px 36px 60px', borderBottom: '1px solid var(--rule)' }}>
+      <section style={{ padding: 'clamp(48px, 8vw, 100px) clamp(16px, 4vw, 36px) 60px', borderBottom: '1px solid var(--rule)' }}>
         <div style={inner}>
           <div style={eyebrowStyle}>§ ABOUT · 회사</div>
           <h1

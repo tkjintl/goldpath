@@ -2,7 +2,7 @@ export function SkepticBlock() {
   return (
     <section
       style={{
-        padding: '96px 36px',
+        padding: 'clamp(48px, 7vw, 96px) clamp(16px, 4vw, 36px)',
         borderBottom: '1px solid var(--rule)',
         background: 'var(--bg-2)',
       }}

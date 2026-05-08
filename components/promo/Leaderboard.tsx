@@ -24,7 +24,7 @@ function relTime(days: number): string {
 export function Leaderboard({ recentSignups }: { recentSignups: Row[] }) {
   const rows = recentSignups.length > 0 ? recentSignups : PLACEHOLDER;
   return (
-    <section style={{ padding: '96px 36px', borderBottom: '1px solid var(--rule)' }}>
+    <section style={{ padding: 'clamp(48px, 7vw, 96px) clamp(16px, 4vw, 36px)', borderBottom: '1px solid var(--rule)' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <div
           style={{
